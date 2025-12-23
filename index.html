@@ -1,0 +1,1654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VITA Devices - Personal Health Intelligence for Your Home</title>
+    <meta name="description" content="VITA personal health assistant. Kitchen-first assistant that tracks nutrition, activity, and habits without apps, subscriptions, or cloud-stored personal data.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Color Palette */
+            --primary: #2D736F; /* muted green/blue */
+            --primary-light: #3F8C87;
+            --primary-dark: #1A5552;
+            --accent: #FF9E4A; /* soft orange */
+            --accent-light: #FFB370;
+            --accent-dark: #E88A36;
+            --background: #FAF9F7; /* off-white */
+            --surface: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #5A5A5A;
+            --text-light: #8A8A8A;
+            --border: #E5E5E5;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --shadow-hover: rgba(0, 0, 0, 0.12);
+            
+            /* Typography */
+            --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 3rem;
+            --space-xl: 5rem;
+            --space-xxl: 7rem;
+            
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-full: 50%;
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-normal: 300ms ease;
+            --transition-slow: 500ms ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--background);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--space-md);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            letter-spacing: -0.5px;
+        }
+        
+        h2 {
+            font-size: 2.25rem;
+            letter-spacing: -0.3px;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: var(--space-md);
+            color: var(--text-secondary);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+        
+        section {
+            padding: var(--space-xl) 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .section-title h2 {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 1.125rem;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px var(--shadow-hover);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent);
+        }
+        
+        .btn-accent:hover {
+            background-color: var(--accent-light);
+        }
+        
+        .btn-large {
+            padding: 1.25rem 3rem;
+            font-size: 1.25rem;
+        }
+        
+        .btn-full {
+            width: 100%;
+        }
+        
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.75rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding-top: 8rem;
+            padding-bottom: var(--space-xxl);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-container {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+        }
+        
+        .hero-content {
+            flex: 1;
+        }
+        
+        .hero h1 {
+            margin-bottom: var(--space-md);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            line-height: 1.5;
+            margin-bottom: var(--space-lg);
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+        
+        .hero-cta {
+            margin-bottom: var(--space-md);
+        }
+        
+        .hero-note {
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+        
+        .hero-visual {
+            flex: 1;
+            position: relative;
+            height: 400px;
+            background: linear-gradient(135deg, #E8F4F3 0%, #D4E8E6 100%);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .device-outline {
+            width: 250px;
+            height: 300px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 20px 40px rgba(45, 115, 111, 0.1);
+            position: relative;
+        }
+        
+        .device-screen {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            padding: 1rem;
+        }
+        
+        .device-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .device-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .device-time {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        
+        .device-status {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent);
+        }
+        
+        .device-main {
+            text-align: center;
+        }
+        
+        .device-main h4 {
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+        
+        .device-main p {
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        .pulse-ring {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            border: 2px solid rgba(45, 115, 111, 0.1);
+            animation: pulse 3s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(0.8);
+                opacity: 0.7;
+            }
+            70% {
+                transform: scale(1.2);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+        }
+        
+        /* Card Styles */
+        .card {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            transition: all var(--transition-normal);
+            height: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px var(--shadow-hover);
+        }
+        
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-md);
+            background-color: rgba(45, 115, 111, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--space-md);
+        }
+        
+        .card-icon i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .card h3 {
+            margin-bottom: var(--space-sm);
+        }
+        
+        /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-lg);
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-lg);
+        }
+        
+        /* Designed for Real Life Section */
+        .real-life-section {
+            background-color: var(--surface);
+        }
+        
+        .real-life-container {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xl);
+        }
+        
+        .real-life-content {
+            flex: 1;
+        }
+        
+        .real-life-visual {
+            flex: 1;
+            height: 400px;
+            background: linear-gradient(135deg, #FFF4E8 0%, #FFE8D4 100%);
+            border-radius: var(--radius-lg);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .kitchen-counter {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background-color: #E8D9C5;
+            border-top-left-radius: var(--radius-lg);
+            border-top-right-radius: var(--radius-lg);
+        }
+        
+        .device-interaction {
+            position: absolute;
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 180px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hand-gesture {
+            position: absolute;
+            bottom: 40%;
+            right: 20%;
+            width: 60px;
+            height: 40px;
+            background: #FFE4CC;
+            border-radius: 50% 50% 0 0;
+            transform: rotate(30deg);
+        }
+        
+        .voice-wave {
+            position: absolute;
+            top: 30%;
+            left: 30%;
+            width: 100px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .voice-bar {
+            width: 6px;
+            background-color: var(--accent);
+            border-radius: 3px;
+            animation: voice-wave 1.5s infinite ease-in-out;
+        }
+        
+        .voice-bar:nth-child(1) { height: 6px; animation-delay: 0s; }
+        .voice-bar:nth-child(2) { height: 12px; animation-delay: 0.1s; }
+        .voice-bar:nth-child(3) { height: 18px; animation-delay: 0.2s; }
+        .voice-bar:nth-child(4) { height: 12px; animation-delay: 0.3s; }
+        .voice-bar:nth-child(5) { height: 6px; animation-delay: 0.4s; }
+        
+        @keyframes voice-wave {
+            0%, 100% { height: 6px; }
+            50% { height: 18px; }
+        }
+        
+        /* Privacy Section */
+        .privacy-section {
+            background-color: var(--surface);
+        }
+        
+        .privacy-container {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xl);
+        }
+        
+        .privacy-visual {
+            flex: 1;
+            height: 300px;
+            position: relative;
+        }
+        
+        .local-cloud {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .local-device {
+            position: absolute;
+            bottom: 0;
+            left: 20%;
+            width: 120px;
+            height: 150px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .local-device i {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .cloud {
+            position: absolute;
+            top: 0;
+            right: 10%;
+            width: 140px;
+            height: 80px;
+            background: #F0F8FF;
+            border-radius: 50px;
+            box-shadow: 0 10px 20px var(--shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cloud i {
+            font-size: 2rem;
+            color: var(--text-light);
+        }
+        
+        .data-flow {
+            position: absolute;
+            top: 50%;
+            left: 35%;
+            width: 40%;
+            height: 2px;
+            background-color: var(--border);
+        }
+        
+        .data-flow::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--text-light);
+        }
+        
+        .privacy-content {
+            flex: 1;
+        }
+        
+        /* How It Works Section */
+        .accordion {
+            margin-top: var(--space-lg);
+        }
+        
+        .accordion-item {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-sm);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+        
+        .accordion-header {
+            padding: var(--space-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .accordion-header:hover {
+            background-color: rgba(45, 115, 111, 0.03);
+        }
+        
+        .accordion-header h4 {
+            margin-bottom: 0;
+        }
+        
+        .accordion-icon {
+            transition: transform var(--transition-normal);
+        }
+        
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+        
+        .accordion-content {
+            padding: 0 var(--space-lg);
+            max-height: 0;
+            overflow: hidden;
+            transition: all var(--transition-normal);
+        }
+        
+        .accordion-item.active .accordion-content {
+            padding-bottom: var(--space-lg);
+            max-height: 500px;
+        }
+        
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: var(--space-lg) 0;
+            position: relative;
+        }
+        
+        .process-step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+        }
+        
+        .process-step-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-full);
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-sm);
+            font-size: 1.5rem;
+        }
+        
+        .process-arrow {
+            position: absolute;
+            top: 30px;
+            right: -30px;
+            color: var(--text-light);
+        }
+        
+        /* Roadmap Section */
+        .roadmap {
+            position: relative;
+            padding: var(--space-lg) 0;
+        }
+        
+        .roadmap-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--border);
+            z-index: 1;
+        }
+        
+        .roadmap-steps {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .roadmap-step {
+            text-align: center;
+            width: 20%;
+        }
+        
+        .step-marker {
+            width: 24px;
+            height: 24px;
+            border-radius: var(--radius-full);
+            background-color: var(--surface);
+            border: 3px solid var(--border);
+            margin: 0 auto var(--space-sm);
+            position: relative;
+        }
+        
+        .step-marker.completed {
+            border-color: var(--primary);
+            background-color: var(--primary);
+        }
+        
+        .step-marker.in-progress {
+            border-color: var(--accent);
+            background-color: var(--accent);
+        }
+        
+        .step-label {
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .step-date {
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+        
+        /* FAQ Section */
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        /* Founder Note */
+        .founder-note {
+            background-color: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+        
+        .founder-note::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            font-size: 4rem;
+            color: rgba(45, 115, 111, 0.1);
+            font-family: serif;
+        }
+        
+        .founder-signature {
+            margin-top: var(--space-lg);
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: var(--space-xl) 0 var(--space-md);
+        }
+        
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: var(--space-lg);
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-copyright {
+            width: 100%;
+            text-align: center;
+            margin-top: var(--space-lg);
+            padding-top: var(--space-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+        
+        /* Sticky CTA for Mobile */
+        .sticky-cta {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--surface);
+            padding: var(--space-sm);
+            box-shadow: 0 -5px 20px var(--shadow);
+            z-index: 999;
+            display: none;
+        }
+        
+        /* Pricing Section Styles */
+        .pricing-section {
+            background-color: var(--background);
+            padding: var(--space-xl) 0;
+        }
+        
+        .price-card {
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--surface);
+            border: 2px solid var(--primary);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            text-align: center;
+            box-shadow: 0 20px 40px var(--shadow);
+        }
+        
+        .price-tag {
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: var(--space-md) 0;
+        }
+        
+        .price-tag span {
+            font-size: 1.5rem;
+            color: var(--text-light);
+            font-weight: 400;
+        }
+        
+        .price-features {
+            list-style: none;
+            padding: 0;
+            margin: var(--space-lg) 0;
+            text-align: left;
+        }
+        
+        .price-features li {
+            margin-bottom: var(--space-sm);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .price-features i {
+            color: var(--primary);
+        }
+        
+        /* Enhanced guarantee styling */
+        .guarantee-box {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 2px solid var(--accent);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin: var(--space-lg) 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .guarantee-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+        }
+        
+        .guarantee-icon {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: var(--radius-full);
+            text-align: center;
+            line-height: 40px;
+            margin-right: var(--space-sm);
+            font-size: 1.25rem;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            section {
+                padding: var(--space-lg) 0;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
+            
+            .hero-container,
+            .real-life-container,
+            .privacy-container {
+                flex-direction: column;
+            }
+            
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-visual,
+            .real-life-visual {
+                height: 300px;
+                width: 100%;
+                margin-top: var(--space-lg);
+            }
+            
+            .process-flow {
+                flex-direction: column;
+                gap: var(--space-lg);
+            }
+            
+            .process-arrow {
+                display: none;
+            }
+            
+            .roadmap-steps {
+                flex-direction: column;
+                gap: var(--space-lg);
+            }
+            
+            .roadmap-step {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                text-align: left;
+                gap: var(--space-sm);
+            }
+            
+            .roadmap-line {
+                display: none;
+            }
+            
+            .step-marker {
+                margin: 0;
+                flex-shrink: 0;
+            }
+            
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--space-md);
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+            
+            .sticky-cta {
+                display: block;
+            }
+            
+            .price-card {
+                padding: var(--space-lg);
+            }
+            
+            .price-tag {
+                font-size: 3rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 var(--space-sm);
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .btn {
+                padding: 0.875rem 1.5rem;
+            }
+            
+            .btn-large {
+                padding: 1rem 2rem;
+                font-size: 1.125rem;
+            }
+            
+            .price-tag {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">VITA</a>
+            <!-- Navigation could be added here -->
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1>VITA , Personal Health Intelligence for Your Home</h1>
+                <p class="hero-subtitle">A kitchen-first assistant that tracks your nutrition, activity, and habits , all without apps, subscriptions, or cloud-stored personal data.</p>
+                <div class="hero-cta">
+                    <a href="#founding-members" class="btn btn-accent btn-large">Become a Founding Member</a>
+                </div>
+                <p class="hero-note">Refundable deposit · Priority access · No risk</p>
+            </div>
+            <div class="hero-visual">
+                <div class="pulse-ring"></div>
+                <div class="device-outline">
+                    <div class="device-screen">
+                        <div class="device-content">
+                            <div class="device-header">
+                                <div class="device-time">10:30 AM</div>
+                                <div class="device-status">
+                                    <div class="status-dot"></div>
+                                </div>
+                            </div>
+                            <div class="device-main">
+                                <h4>Today's Nutrition</h4>
+                                <p>Breakfast: 420 calories</p>
+                                <p>Protein target: 68%</p>
+                            </div>
+                            <div class="device-footer">
+                                <div style="height: 20px; background: linear-gradient(90deg, var(--primary) 68%, var(--border) 32%); border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Designed for Real Life Section -->
+    <section class="real-life-section">
+        <div class="container real-life-container">
+            <div class="real-life-content">
+                <h2>Designed for Real Life</h2>
+                <p>Health decisions don't happen on your phone , they happen in the kitchen. VITA is built to live where daily choices are made: quietly present, always ready, and designed to adapt to you.</p>
+                <ul style="margin-bottom: var(--space-lg); padding-left: 1.5rem;">
+                    <li style="margin-bottom: var(--space-sm);">No dashboards to manage</li>
+                    <li style="margin-bottom: var(--space-sm);">No constant logging</li>
+                    <li style="margin-bottom: var(--space-sm);">No subscriptions required</li>
+                </ul>
+                <a href="#founding-members" class="btn">Become a Founding Member</a>
+            </div>
+            <div class="real-life-visual">
+                <div class="kitchen-counter"></div>
+                <div class="device-interaction"></div>
+                <div class="hand-gesture"></div>
+                <div class="voice-wave">
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                    <div class="voice-bar"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The VITA Approach Section -->
+    <section>
+        <div class="container">
+            <div class="section-title">
+                <h2>The VITA Approach , Hybrid Intelligence</h2>
+                <p class="section-subtitle">Local-first AI for privacy, cloud intelligence for insights , the perfect balance for your health.</p>
+            </div>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>Kitchen Command Center</h3>
+                    <p>Always available where meals and routines happen, integrated seamlessly into your kitchen environment.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Private Data, Local First</h3>
+                    <p>Your health data stays securely on-device. No cloud storage of personal information means true privacy.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Hybrid Intelligence</h3>
+                    <p>The AI is a stateless parser on our servers; the data is yours on your hardware.</p>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: var(--space-lg);">
+                <a href="#founding-members" class="btn">Become a Founding Member</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- What VITA Will Help You With Section -->
+    <section style="background-color: var(--surface);">
+        <div class="container">
+            <div class="section-title">
+                <h2>What VITA Will Help You With at Launch</h2>
+            </div>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-utensils"></i>
+                    </div>
+                    <h3>Nutrition & Cooking</h3>
+                    <p>Beyond tracking: VITA recommends exactly what to eat based on your goals and provides step-by-step cooking instructions for every meal.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-running"></i>
+                    </div>
+                    <h3>Activity</h3>
+                    <p>Movement awareness with gentle reminders and habit-based recommendations that fit your lifestyle.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3>Daily Habits</h3>
+                    <p>Clear insights and sustainable guidance without gamification or pressure to "win" at health.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NEW: Pricing & Transparency Section -->
+    <section class="pricing-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Hardware Pricing</h2>
+                <p class="section-subtitle">Transparent pricing. No hidden fees. No data-harvesting subscriptions.</p>
+            </div>
+
+            <div class="price-card">
+                <h3>VITA Core Device</h3>
+                <div class="price-tag">$249<span> (MSRP)</span></div>
+                <p>Target retail price for the 2027 launch.</p>
+                
+                <ul class="price-features">
+                    <li><i class="fas fa-check-circle"></i> <strong>Lifetime Core Access:</strong> No subscription for Founding Members.</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Local Privacy:</strong> Own your SQLAlchemy database.</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>Hybrid Intel:</strong> Access to our Stateless Cloud Parser.</li>
+                    <li><i class="fas fa-check-circle"></i> <strong>2027 Shipment:</strong> Priority in the production queue.</li>
+                </ul>
+
+                <div class="guarantee-box" style="margin: 0; padding: var(--space-sm); font-size: 0.9rem; text-align: left; border-color: var(--primary);">
+                    <i class="fas fa-info-circle" style="color: var(--primary);"></i> 
+                    Reserve your spot today with a <strong>$50 deposit</strong>, lock in your price, get <strong>50% off</strong>, and have the deposit applied to your final balance in 2027.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Privacy Section -->
+    <section class="privacy-section">
+        <div class="container privacy-container">
+            <div class="privacy-visual">
+                <div class="local-cloud">
+                    <div class="local-device">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <div class="data-flow"></div>
+                    <div class="cloud">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="privacy-content">
+                <h2>Privacy Without Compromise</h2>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: var(--space-sm); padding-left: 1.5rem; position: relative;">
+                        <i class="fas fa-check" style="position: absolute; left: 0; color: var(--primary);"></i>
+                        <strong>Privacy by Architecture:</strong> Your health history lives locally
+                    </li>
+                    <li style="margin-bottom: var(--space-sm); padding-left: 1.5rem; position: relative;">
+                        <i class="fas fa-check" style="position: absolute; left: 0; color: var(--primary);"></i>
+                        Speech is processed securely in the cloud, but your long-term health profile never leaves your home
+                    </li>
+                    <li style="margin-bottom: var(--space-sm); padding-left: 1.5rem; position: relative;">
+                        <i class="fas fa-check" style="position: absolute; left: 0; color: var(--primary);"></i>
+                        No selling or sharing of your personal data
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- How VITA Works Section -->
+    <section>
+        <div class="container">
+            <div class="section-title">
+                <h2>How VITA Works , For Tech Enthusiasts</h2>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-item active">
+                    <div class="accordion-header">
+                        <h4>Local Data Layer</h4>
+                        <div class="accordion-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="accordion-content">
+                        <p>All personal health data is stored locally on your VITA device using encrypted storage. This includes meal logs, activity patterns, biometric data, and personal preferences. No personal information leaves your home unless you explicitly choose to share anonymized summaries.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h4>Intelligent Query Interface</h4>
+                        <div class="accordion-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Natural language processing happens locally when possible, with a lightweight LLM for speech recognition and basic queries. For complex requests, anonymized queries are sent to cloud AI, with responses returned to your device for local processing and storage.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h4>Automated Nutrient Processing</h4>
+                        <div class="accordion-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Using and voice input, VITA automatically identifies food items and estimates portion sizes. This data is processed locally to track nutrition against your personal goals, with all calculations happening on-device for maximum privacy.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="process-flow">
+                <div class="process-step">
+                    <div class="process-step-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <div class="step-label">Voice Input</div>
+                </div>
+                <div class="process-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="process-step">
+                    <div class="process-step-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="step-label">Local AI Processing</div>
+                </div>
+                <div class="process-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="process-step">
+                    <div class="process-step-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <div class="step-label">Local Storage</div>
+                </div>
+                <div class="process-arrow">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="process-step">
+                    <div class="process-step-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="step-label">Personalized Recommendations</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Roadmap Section -->
+    <section style="background-color: var(--surface);">
+        <div class="container">
+            <div class="section-title">
+                <h2>Roadmap / Where We Are Today</h2>
+            </div>
+            
+            <div class="roadmap">
+                <div class="roadmap-line"></div>
+                <div class="roadmap-steps">
+                    <div class="roadmap-step">
+                        <div class="step-marker completed"></div>
+                        <div class="step-label">System Architecture</div>
+                        <div class="step-date">Q4 2024</div>
+                    </div>
+                    <div class="roadmap-step">
+                        <div class="step-marker in-progress"></div>
+                        <div class="step-label">Data Models & Logic</div>
+                        <div class="step-date">In dev/testing</div>
+                    </div>
+                    <div class="roadmap-step">
+                        <div class="step-marker in-progress"></div>
+                        <div class="step-label">Hardware Prototyping</div>
+                        <div class="step-date">In progress</div>
+                    </div>
+                    <div class="roadmap-step">
+                        <div class="step-marker"></div>
+                        <div class="step-label">First Production Release</div>
+                        <div class="step-date">Q2–Q3 2027</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: var(--space-lg);">
+                <a href="#founding-members" class="btn">Become a Founding Member</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Founding Members Section -->
+    <section id="founding-members" style="background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white;">
+        <div class="container">
+            <div class="section-title">
+                <h2 style="color: white;">Become a VITA Founding Member</h2>
+                <p class="section-subtitle" style="color: rgba(255,255,255,0.9);">
+                    Join us in shaping the future of personal health intelligence and enjoy exclusive benefits as an early supporter.
+                </p>
+            </div>
+            
+            <div class="grid-2">
+                <div>
+                    <h3 style="color: white;">Founding Member Benefits</h3>
+                    <ul style="list-style: none; margin-bottom: var(--space-lg);">
+                        <li style="margin-bottom: var(--space-sm); padding-left: 1.5rem; position: relative;">
+                            <i class="fas fa-star" style="position: absolute; left: 0; color: var(--accent);"></i>
+                            <strong>Priority Access:</strong> Be among the first to receive VITA when it launches
+                        </li>
+                        <li style="margin-bottom: var(--space-sm); padding-left: 1.5rem; position: relative;">
+                            <i class="fas fa-tag" style="position: absolute; left: 0; color: var(--accent);"></i>
+                            <strong>Lifetime Discount:</strong> Exclusive pricing for all future accessories and updates
+                        </li>
+                        <li style="margin-bottom: var(--space-sm); padding-left: 1.5rem; position: relative;">
+                            <i class="fas fa-comments" style="position: absolute; left: 0; color: var(--accent);"></i>
+                            <strong>Direct Feedback:</strong> Shape development with direct access to our engineering team
+                        </li>
+                        <li style="margin-bottom: var(--space-sm); padding-left: 1.5rem; position: relative;">
+                            <i class="fas fa-award" style="position: absolute; left: 0; color: var(--accent);"></i>
+                            <strong>Recognition:</strong> Your name included in our special founders' recognition list
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <div class="card" style="text-align: center; border: 2px solid var(--accent);">
+                        <div style="font-size: 3rem; color: var(--primary); margin-bottom: var(--space-sm);">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <h3>$50 Refundable Deposit</h3>
+                        <p style="font-size: 1.25rem; color: var(--text-secondary); margin-bottom: var(--space-sm);">
+                            Secure your priority access to the first production run
+                        </p>
+                        
+                        <!-- Enhanced Guarantee Box -->
+                        <div style="background-color: rgba(45, 115, 111, 0.1); padding: var(--space-md); border-radius: var(--radius-md); margin-bottom: var(--space-lg); border-left: 4px solid var(--accent);">
+                            <div style="display: flex; align-items: flex-start; gap: var(--space-sm);">
+                                <i class="fas fa-shield-alt" style="color: var(--accent); font-size: 1.5rem; flex-shrink: 0;"></i>
+                                <div>
+                                    <h4 style="color: var(--primary); margin-bottom: var(--space-xs);">The VITA Guarantee</h4>
+                                    <p style="margin-bottom: 0; font-weight: 600; font-size: 1rem;">
+                                        If VITA has not shipped by <strong style="color: var(--primary);">May 31st, 2027</strong>, your deposit will be automatically refunded in full.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- In a real implementation, this would connect to Stripe -->
+                        <button class="btn btn-accent btn-full" onclick="showDepositModal()">Become a Founding Member</button>
+                        
+                        <p style="font-size: 0.875rem; color: var(--text-light); margin-top: var(--space-sm);">
+                            <i class="fas fa-lock"></i> Secure payment processed by Revolut
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section style="background-color: var(--surface);">
+        <div class="container">
+            <div class="section-title">
+                <h2>Frequently Asked Questions</h2>
+            </div>
+            
+            <div class="faq-container">
+                <div class="accordion">
+                    <div class="accordion-item active">
+                        <div class="accordion-header">
+                            <h4>Is this a pre-order?</h4>
+                            <div class="accordion-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p>No, this is not a pre-order. This is a refundable deposit to become a Founding Member. Founding Members get priority access when VITA launches, exclusive benefits, and help us validate demand and shape the product. Your $50 deposit is fully refundable at any time before shipping, and automatically refunded if we don't ship by May 31st, 2027.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h4>What if you don't ship by May 31st, 2027?</h4>
+                            <div class="accordion-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p>If VITA does not ship by May 31st, 2027, deposits are fully refunded automatically. We're committed to this timeline and have structured our development to meet it, but we want to eliminate any risk for our earliest supporters.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h4>Does VITA require an internet connection?</h4>
+                            <div class="accordion-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p>Yes. While your health database is stored locally for privacy, VITA uses advanced cloud-based LLMs to understand natural speech and provide intelligent cooking guidance. Your meal history, personal preferences, and long-term health data remain securely on your device.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header">
+                            <h4>Will I be forced into a subscription?</h4>
+                            <div class="accordion-icon">
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                        </div>
+                        <div class="accordion-content">
+                            <p>No. Founding Members receive lifetime access to all core features without any subscription. There will be optional premium cloud services available (like advanced analytics or recipe libraries), but the core VITA experience , local health tracking, insights, and recommendations , will always be subscription-free for Founding Members.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Founder Note -->
+    <section>
+        <div class="container">
+            <div class="founder-note">
+                <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: var(--space-lg);">
+                    We started VITA because we believe health technology should respect your privacy, adapt to your life, and work for you , not the other way around. As health-conscious individuals and parents, we were frustrated by devices that demanded constant attention, sold our data, or required monthly fees just to access our own information.
+                </p>
+                <p style="font-size: 1.25rem; line-height: 1.8; margin-bottom: var(--space-lg);">
+                    VITA is our answer: intelligent enough to be helpful, private enough to be trustworthy, and designed for the place where health actually happens , your home. We're building this with our own families in mind, and we're inviting you to join us in creating something better.
+                </p>
+                <div class="founder-signature">
+                    <p style="margin-bottom: 0;">, The VITA Team</p>
+                    <p style="font-size: 0.875rem; margin-top: var(--space-xs);">Designed in Europe</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div>
+                    <div class="footer-logo">VITA</div>
+                    <p style="color: rgba(255, 255, 255, 0.8); max-width: 400px;">Personal Health Intelligence for Your Home</p>
+                </div>
+                <div class="footer-links">
+                    <a href="privacy.html">Privacy Policy</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="blog.html">Blog</a>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                © VITA Devices | Designed in Europe
+            </div>
+        </div>
+    </footer>
+
+    <!-- Sticky CTA for Mobile -->
+    <div class="sticky-cta">
+    <button onclick="openDepositModal()" class="btn btn-accent btn-full">Become a Founding Member</button>
+</div>
+
+<div id="depositModal" style="display: none; position: fixed; inset: 0; background-color: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; backdrop-filter: blur(4px);" role="dialog">
+    <div style="background: white; padding: 2.5rem; border-radius: 1.5rem; max-width: 500px; width: 90%; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+        
+        <button onclick="closeDepositModal()" aria-label="Close" style="position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; font-size: 1.75rem; cursor: pointer; color: #999;">&times;</button>
+        
+        <h3 style="margin-bottom: 0.5rem; color: var(--primary-dark);">Secure Your Founding Membership</h3>
+        <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Lock in your 50% discount and receive Revolut payment instructions.</p>
+        
+        <div style="background-color: #f4f7f6; padding: 1.25rem; border-radius: 1rem; margin-bottom: 1.5rem; border: 1px solid var(--border);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Founding Member Deposit</span>
+                <span style="font-weight: 600;">$50.00</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Final Device Price</span>
+                <span style="color: var(--primary); font-weight: 600;">$124 (MSRP $249)</span>
+            </div>
+            <div style="border-top: 1px solid var(--border); margin-top: 0.5rem; padding-top: 0.5rem; display: flex; justify-content: space-between;">
+                <span style="font-size: 0.85rem;">Refundable until 2027 shipment</span>
+                <span style="color: #27ae60; font-weight: 600; font-size: 0.85rem;">✓ Guaranteed</span>
+            </div>
+        </div>
+
+        <button onclick="launchVITAForm()" class="btn btn-accent btn-full" style="padding: 1.25rem; font-size: 1.1rem; border:none; cursor:pointer;">
+            Continue to Registration &rarr;
+        </button>
+    </div>
+</div>
+
+<div data-fillout-id="v7ABUtDfhWus" data-fillout-embed-type="popup" data-fillout-inherit-parameters></div>
+<script src="https://server.fillout.com/embed/v1/"></script>
+
+<script>
+    function openDepositModal() {
+        document.getElementById('depositModal').style.display = 'flex';
+        document.body.style.overflow = 'hidden'; 
+    }
+
+    function closeDepositModal() {
+        document.getElementById('depositModal').style.display = 'none';
+        document.body.style.overflow = 'auto'; 
+    }
+
+    // Launch Popup via API
+    function launchVITAForm() {
+        closeDepositModal();
+        if (window.Fillout) {
+            window.Fillout.openPopup("v7ABUtDfhWus");
+        } else {
+            // New URL used as a secure fallback
+            window.open("https://forms.fillout.com/t/v7ABUtDfhWus", "_blank");
+        }
+    }
+
+    // AUTO-CLOSE LISTENER: Closes popup on completion
+    window.addEventListener("message", (event) => {
+        if (event.data && event.data.type === "formCompleted") {
+            if (window.Fillout && window.Fillout.closePopup) {
+                window.Fillout.closePopup();
+                // Optional: alert("Thank you for joining the VITA movement!");
+            }
+        }
+    });
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('depositModal');
+        if (event.target == modal) { closeDepositModal(); }
+    }
+</script>
+
+    <script>
+        // Accordion functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const item = this.parentElement;
+                    const isActive = item.classList.contains('active');
+                    
+                    // Close all accordion items
+                    document.querySelectorAll('.accordion-item').forEach(el => {
+                        el.classList.remove('active');
+                    });
+                    
+                    // If it wasn't active, open it
+                    if (!isActive) {
+                        item.classList.add('active');
+                    }
+                });
+            });
+            
+            // Set first accordion item as active by default
+            document.querySelectorAll('.accordion').forEach(accordion => {
+                const firstItem = accordion.querySelector('.accordion-item');
+                if (firstItem) {
+                    firstItem.classList.add('active');
+                }
+            });
+        });
+        
+        // Sticky CTA visibility
+        window.addEventListener('scroll', function() {
+            const stickyCta = document.querySelector('.sticky-cta');
+            if (window.innerWidth <= 768) {
+                stickyCta.style.display = 'block';
+            } else {
+                stickyCta.style.display = 'none';
+            }
+        });
+        
+        // Modal functions
+        function showDepositModal() {
+            document.getElementById('depositModal').style.display = 'flex';
+        }
+        
+        function closeDepositModal() {
+            document.getElementById('depositModal').style.display = 'none';
+        }
+        
+        function processDeposit() {
+            // In a real implementation, this would process the Stripe payment
+            alert('In a real implementation, this would redirect to Stripe checkout. For this demo, we\'ll simulate a successful deposit.');
+            closeDepositModal();
+            
+            // Show success message
+            const successMsg = document.createElement('div');
+            successMsg.innerHTML = `
+                <div style="position: fixed; top: 20px; right: 20px; background-color: var(--primary); color: white; padding: var(--space-md); border-radius: var(--radius-md); z-index: 3000; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                    <p style="margin-bottom: 0;"><i class="fas fa-check-circle"></i> Deposit successful! Welcome to the VITA Founding Members.</p>
+                </div>
+            `;
+            document.body.appendChild(successMsg);
+            
+            setTimeout(() => {
+                successMsg.remove();
+            }, 5000);
+        }
+        
+        // Close modal when clicking outside
+        document.getElementById('depositModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDepositModal();
+            }
+        });
+    </script>
+</body>
+</html>

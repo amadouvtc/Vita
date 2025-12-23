@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact VITA - Get in Touch with the Team</title>
+    <meta name="description" content="Contact VITA Devices directly. No bots, no ticket numbers. You're talking to the people building the hardware.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Color Palette */
+            --primary: #2D736F; /* muted green/blue */
+            --primary-light: #3F8C87;
+            --primary-dark: #1A5552;
+            --accent: #FF9E4A; /* soft orange */
+            --accent-light: #FFB370;
+            --accent-dark: #E88A36;
+            --background: #FAF9F7; /* off-white */
+            --surface: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #5A5A5A;
+            --text-light: #8A8A8A;
+            --border: #E5E5E5;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --shadow-hover: rgba(0, 0, 0, 0.12);
+            
+            /* Typography */
+            --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 3rem;
+            --space-xl: 5rem;
+            --space-xxl: 7rem;
+            
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-full: 50%;
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-normal: 300ms ease;
+            --transition-slow: 500ms ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--background);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--space-md);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            letter-spacing: -0.5px;
+        }
+        
+        h2 {
+            font-size: 2.25rem;
+            letter-spacing: -0.3px;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: var(--space-md);
+            color: var(--text-secondary);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+        
+        section {
+            padding: var(--space-xl) 0;
+        }
+        
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.75rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--space-lg);
+        }
+        
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Hero Section */
+        .contact-hero {
+            padding-top: 8rem;
+            padding-bottom: var(--space-lg);
+            text-align: center;
+            background: linear-gradient(135deg, #E8F4F3 0%, #D4E8E6 100%);
+        }
+        
+        .contact-hero h1 {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .contact-hero p {
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Contact Grid */
+        .contact-grid {
+            padding: var(--space-xl) 0;
+        }
+        
+        .contact-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-lg);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .contact-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .contact-card {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            box-shadow: 0 5px 15px var(--shadow);
+            transition: all var(--transition-normal);
+            height: 100%;
+        }
+        
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px var(--shadow-hover);
+        }
+        
+        .contact-card h3 {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--primary);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .contact-card h3 i {
+            color: var(--accent);
+        }
+        
+        .contact-link {
+            display: inline-block;
+            margin-top: var(--space-sm);
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        
+        .contact-link:hover {
+            color: var(--primary-light);
+            text-decoration: underline;
+        }
+        
+        /* Status Section */
+        .status-section {
+            background-color: var(--surface);
+            text-align: center;
+        }
+        
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-sm);
+            background-color: rgba(255, 158, 74, 0.1);
+            color: var(--accent-dark);
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .status-indicator i {
+            color: var(--accent);
+        }
+        
+        /* Tally Form Container */
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--space-lg);
+            background-color: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .form-header h2 {
+            color: var(--primary);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: var(--space-xl) 0 var(--space-md);
+        }
+        
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: var(--space-lg);
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-copyright {
+            width: 100%;
+            text-align: center;
+            margin-top: var(--space-lg);
+            padding-top: var(--space-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
+            
+            section {
+                padding: var(--space-lg) 0;
+            }
+            
+            .contact-hero {
+                padding-top: 6rem;
+                padding-bottom: var(--space-md);
+            }
+            
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--space-md);
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+            
+            .nav-links {
+                display: none; /* Could implement mobile menu if needed */
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 var(--space-sm);
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">VITA</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="blog.html">Blog</a>
+                <a href="contact.html" style="color: var(--primary); font-weight: 600;">Contact</a>
+                <a href="privacy.html">Privacy</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contact Hero -->
+    <section class="contact-hero">
+        <div class="container">
+            <h1>Let's Talk VITA</h1>
+            <p>No bots, no ticket numbers. You're talking to the people building the hardware.</p>
+        </div>
+    </section>
+
+    <!-- Contact Grid -->
+    <section class="contact-grid">
+        <div class="container">
+            <div class="contact-cards">
+                <div class="contact-card">
+                    <h3><i class="fas fa-receipt"></i> Membership & Deposits</h3>
+                    <p><strong>Already a Founding Member?</strong> If you haven't received your confirmation email within 24 hours of your Revolut transfer, email us with your transaction ID.</p>
+                    <p>We manually verify every payment to ensure your Founding Member status is activated.</p>
+                    <a href="mailto:members@vitadevices.com" class="contact-link">members@vitadevices.com</a>
+                </div>
+
+                <div class="contact-card">
+                    <h3><i class="fas fa-code"></i> Architecture & API</h3>
+                    <p><strong>Questions about our data architecture or local SQL storage?</strong> Our lead engineer handles technical inquiries directly.</p>
+                    <p>Want to know more about the stateless parser or init.sql implementation?</p>
+                    <a href="mailto:tech@vitadevices.com" class="contact-link">tech@vitadevices.com</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Status Section -->
+    <section class="status-section">
+        <div class="container">
+            <div class="status-indicator">
+                <i class="fas fa-sync-alt"></i>
+                <span>VITA is currently in the prototyping phase</span>
+            </div>
+            <h2>2027 Roadmap Transparency</h2>
+            <p style="max-width: 700px; margin: 0 auto var(--space-lg);">
+                We're building in public and maintaining complete transparency about our progress. 
+                We respond to all inquiries personally within 48 hours.
+            </p>
+            <p style="max-width: 700px; margin: 0 auto;">
+                <strong>Current Status:</strong> Hardware prototyping & data model testing. 
+                Follow our <a href="#" style="color: var(--primary); text-decoration: none; font-weight: 600;">public build log</a> for weekly updates.
+            </p>
+        </div>
+    </section>
+
+    <!-- Founding Member Registration Form -->
+    <section>
+        <div class="container">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>Become a VITA Founding Member</h2>
+                    <p>Complete the form below to secure your $50 refundable deposit and priority access.</p>
+                </div>
+                
+                <!-- Tally.so Embedded Form -->
+                <div id="tally-form">
+                    <!-- Replace YOUR_FORM_ID with your actual Tally form ID -->
+                    <iframe 
+                        data-tally-src="https://tally.so/embed/YOUR_FORM_ID?hideTitle=1&transparentBackground=1&dynamicHeight=1" 
+                        loading="lazy" 
+                        width="100%" 
+                        height="500" 
+                        frameborder="0" 
+                        marginheight="0" 
+                        marginwidth="0" 
+                        title="VITA Founding Member Registration">
+                    </iframe>
+                    <script>
+                        var d=document,w="https://tally.so/widgets/embed.js",v=function(){"undefined"!=typeof Tally?Tally.loadEmbeds():d.querySelectorAll("iframe[data-tally-src]:not([src])").forEach((function(e){e.src=e.dataset.tallySrc}))};if("undefined"!=typeof Tally)v();else if(d.querySelector('script[src="'+w+'"]')==null){var s=d.createElement("script");s.src=w,s.onload=v,s.onerror=v,d.body.appendChild(s);}
+                    </script>
+                </div>
+                
+                <div style="margin-top: var(--space-lg); padding: var(--space-md); background-color: rgba(45, 115, 111, 0.05); border-radius: var(--radius-md);">
+                    <h4 style="color: var(--primary); margin-bottom: var(--space-sm);">After Form Submission:</h4>
+                    <p style="margin-bottom: var(--space-sm);">1. You'll receive an email confirmation within 24 hours</p>
+                    <p style="margin-bottom: var(--space-sm);">2. Make your $50 deposit via Revolut to the details provided</p>
+                    <p>3. Upload your payment screenshot using the link in your confirmation email</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div>
+                    <div class="footer-logo">VITA</div>
+                    <p style="color: rgba(255, 255, 255, 0.8); max-width: 400px;">Personal Health Intelligence for Your Home</p>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="privacy.html">Privacy</a>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                © VITA Devices | Designed in Europe | Building in Public since 2024
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Ensure Tally form loads properly
+        document.addEventListener('DOMContentLoaded', function() {
+            // If Tally script hasn't loaded, reload embeds
+            if (typeof Tally !== 'undefined') {
+                Tally.loadEmbeds();
+            }
+        });
+    </script>
+</body>
+</html>

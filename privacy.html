@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - VITA Devices</title>
+    <meta name="description" content="VITA Devices Privacy Policy. Your health data stays local. No cloud storage. Stateless voice parsing only.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Color Palette */
+            --primary: #2D736F; /* muted green/blue */
+            --primary-light: #3F8C87;
+            --primary-dark: #1A5552;
+            --accent: #FF9E4A; /* soft orange */
+            --accent-light: #FFB370;
+            --accent-dark: #E88A36;
+            --background: #FAF9F7; /* off-white */
+            --surface: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #5A5A5A;
+            --text-light: #8A8A8A;
+            --border: #E5E5E5;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --shadow-hover: rgba(0, 0, 0, 0.12);
+            
+            /* Typography */
+            --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 3rem;
+            --space-xl: 5rem;
+            --space-xxl: 7rem;
+            
+            /* Border Radius */
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --radius-full: 50%;
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-normal: 300ms ease;
+            --transition-slow: 500ms ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--background);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--space-md);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            letter-spacing: -0.5px;
+        }
+        
+        h2 {
+            font-size: 2.25rem;
+            letter-spacing: -0.3px;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+        }
+        
+        p {
+            margin-bottom: var(--space-md);
+            color: var(--text-secondary);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+        
+        section {
+            padding: var(--space-xl) 0;
+        }
+        
+        /* Header & Navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.75rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--space-lg);
+        }
+        
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-fast);
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        /* Privacy Hero */
+        .privacy-hero {
+            padding-top: 8rem;
+            padding-bottom: var(--space-lg);
+            text-align: center;
+            background: linear-gradient(135deg, #E8F4F3 0%, #D4E8E6 100%);
+        }
+        
+        .privacy-hero h1 {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .privacy-hero p {
+            font-size: 1.25rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        /* Privacy Content */
+        .privacy-content {
+            background-color: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            box-shadow: 0 10px 30px var(--shadow);
+            margin-bottom: var(--space-xl);
+        }
+        
+        .privacy-section {
+            margin-bottom: var(--space-xl);
+            padding-bottom: var(--space-xl);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .privacy-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .privacy-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background-color: rgba(45, 115, 111, 0.1);
+            border-radius: var(--radius-full);
+            margin-bottom: var(--space-md);
+        }
+        
+        .privacy-icon i {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .highlight-box {
+            background-color: rgba(45, 115, 111, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: var(--space-md);
+            border-radius: var(--radius-sm);
+            margin: var(--space-md) 0;
+        }
+        
+        /* Technical Diagram */
+        .tech-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: var(--space-xl) 0;
+            padding: var(--space-lg);
+            background-color: var(--background);
+            border-radius: var(--radius-lg);
+        }
+        
+        .data-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 800px;
+            position: relative;
+        }
+        
+        .flow-step {
+            text-align: center;
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .flow-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-full);
+            background-color: var(--surface);
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--space-sm);
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .flow-label {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .flow-arrow {
+            position: absolute;
+            top: 30px;
+            left: 20%;
+            right: 20%;
+            height: 2px;
+            background-color: var(--border);
+            z-index: 1;
+        }
+        
+        .flow-arrow::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            border-top: 2px solid var(--border);
+            border-right: 2px solid var(--border);
+            transform: rotate(45deg);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: var(--space-xl) 0 var(--space-md);
+        }
+        
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: var(--space-lg);
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-copyright {
+            width: 100%;
+            text-align: center;
+            margin-top: var(--space-lg);
+            padding-top: var(--space-md);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
+            
+            section {
+                padding: var(--space-lg) 0;
+            }
+            
+            .privacy-hero {
+                padding-top: 6rem;
+                padding-bottom: var(--space-md);
+            }
+            
+            .privacy-content {
+                padding: var(--space-lg);
+            }
+            
+            .data-flow {
+                flex-direction: column;
+                gap: var(--space-xl);
+            }
+            
+            .flow-arrow {
+                display: none;
+            }
+            
+            .flow-step {
+                width: 100%;
+            }
+            
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+                gap: var(--space-md);
+            }
+            
+            .footer-links {
+                flex-direction: column;
+                gap: var(--space-sm);
+            }
+            
+            .nav-links {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 var(--space-sm);
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .privacy-content {
+                padding: var(--space-md);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">VITA</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="blog.html">Blog</a>
+                <a href="contact.html">Contact</a>
+                <a href="privacy.html" style="color: var(--primary); font-weight: 600;">Privacy</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Privacy Hero -->
+    <section class="privacy-hero">
+        <div class="container">
+            <h1>Privacy by Architecture</h1>
+            <p>Your health data stays local. No cloud storage. Stateless voice parsing only.</p>
+            <p style="font-size: 1rem; max-width: 800px; margin-top: var(--space-md);">
+                Last Updated: March 2024 | Effective for Founding Members through 2027
+            </p>
+        </div>
+    </section>
+
+    <!-- Privacy Content -->
+    <section>
+        <div class="container">
+            <div class="privacy-content">
+                <!-- Section 1: Data Sovereignty -->
+                <div class="privacy-section">
+                    <div class="privacy-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h2>1. Data Sovereignty (The "Local First" Rule)</h2>
+                    <p><strong>We cannot sell your health data because we do not possess it.</strong></p>
+                    <p>Your personal health database (init.sql) lives on your VITA hardware, not on our servers. This includes:</p>
+                    <ul style="margin-left: var(--space-lg); margin-bottom: var(--space-md);">
+                        <li style="margin-bottom: var(--space-sm);">Nutrient logs and meal history</li>
+                        <li style="margin-bottom: var(--space-sm);">Activity patterns and biometric data</li>
+                        <li style="margin-bottom: var(--space-sm);">Personal preferences and goals</li>
+                        <li>All health-related calculations and insights</li>
+                    </ul>
+                    <div class="highlight-box">
+                        <p><strong>Technical Implementation:</strong> Data is stored locally via SQLAlchemy in a standard SQLite database. The schema is open and can be queried through our Query Interface at any time.</p>
+                    </div>
+                </div>
+
+                <!-- Section 2: Stateless Parser -->
+                <div class="privacy-section">
+                    <div class="privacy-icon">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <h2>2. The Stateless Parser Clause</h2>
+                    <p><strong>Voice data is processed, not stored.</strong></p>
+                    <p>When you speak to VITA:</p>
+                    
+                    <div class="tech-diagram">
+                        <div class="data-flow">
+                            <div class="flow-arrow"></div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-microphone"></i>
+                                </div>
+                                <div class="flow-label">Your Voice</div>
+                            </div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-cloud"></i>
+                                </div>
+                                <div class="flow-label">Stateless LLM Processing</div>
+                            </div>
+                            <div class="flow-step">
+                                <div class="flow-icon">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <div class="flow-label">Local Storage</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p>1. Voice is transmitted to a cloud-based LLM <strong>solely for intent parsing</strong></p>
+                    <p>2. This request is <strong>stateless and anonymized</strong> - no user identification is included</p>
+                    <p>3. Once speech is converted into a command template, the cloud <strong>"forgets" the interaction</strong></p>
+                    <p>4. The parsed command returns to your device where it's executed and stored locally</p>
+                    
+                    <div class="highlight-box">
+                        <p><strong>No Health Data in Cloud:</strong> Your nutrient information, meal logs, and health metrics never leave your device during voice processing.</p>
+                    </div>
+                </div>
+
+                <!-- Section 3: Payment Data -->
+                <div class="privacy-section">
+                    <div class="privacy-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h2>3. Payment & Membership Data</h2>
+                    <p><strong>Minimal data collection for Founding Members.</strong></p>
+                    <p>For Founding Members, we collect and store:</p>
+                    <ul style="margin-left: var(--space-lg); margin-bottom: var(--space-md);">
+                        <li style="margin-bottom: var(--space-sm);"><strong>Email address:</strong> For order confirmation and shipping updates</li>
+                        <li style="margin-bottom: var(--space-sm);"><strong>Shipping address:</strong> For 2027 delivery of your VITA device</li>
+                        <li style="margin-bottom: var(--space-sm);"><strong>Transaction reference number:</strong> To verify your deposit and honor our refund guarantee</li>
+                        <li><strong>Revolut payment screenshot:</strong> Temporarily stored for manual verification (deleted after 30 days)</li>
+                    </ul>
+                    <p><strong>Payment Processing:</strong> All payments are processed externally via Revolut. We never see or store your full payment details.</p>
+                </div>
+
+                <!-- Section 4: Company Continuity -->
+                <div class="privacy-section">
+                    <div class="privacy-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h2>4. Company Continuity & Your Data</h2>
+                    <p><strong>Your data remains yours, regardless of our company's status.</strong></p>
+                    <div class="highlight-box">
+                        <p><strong>The "Company Failure" Clause:</strong> In the event that VITA Devices ceases operations, the cloud-based parsing service will be terminated. However, your local data remains on your device and can be exported at any time.</p>
+                    </div>
+                    <p><strong>Data Portability:</strong> Because we use a standard SQL schema, your entire health history can be:</p>
+                    <ul style="margin-left: var(--space-lg); margin-bottom: var(--space-md);">
+                        <li style="margin-bottom: var(--space-sm);">Exported as CSV or JSON through our Query Interface</li>
+                        <li style="margin-bottom: var(--space-sm);">Queried directly using standard SQL tools</li>
+                        <li>Migrated to any SQL-compatible system</li>
+                    </ul>
+                    <p><strong>Open Source Commitment:</strong> Should the company cease operations, we will open-source the core database schema and Query Interface to ensure your continued access to your data.</p>
+                </div>
+
+                <!-- Section 5: GDPR & Your Rights -->
+                <div class="privacy-section">
+                    <div class="privacy-icon">
+                        <i class="fas fa-gavel"></i>
+                    </div>
+                    <h2>5. Your Rights (GDPR Compliance)</h2>
+                    <p>As a European company, we fully comply with GDPR regulations:</p>
+                    <ul style="margin-left: var(--space-lg); margin-bottom: var(--space-md);">
+                        <li style="margin-bottom: var(--space-sm);"><strong>Right to Access:</strong> Request all data we have about you (minimal - see Section 3)</li>
+                        <li style="margin-bottom: var(--space-sm);"><strong>Right to Deletion:</strong> Request deletion of your membership data</li>
+                        <li style="margin-bottom: var(--space-sm);"><strong>Right to Data Portability:</strong> Export your health data from your device at any time</li>
+                        <li><strong>Right to Rectification:</strong> Update your membership information</li>
+                    </ul>
+                    <p>To exercise any of these rights, email <a href="mailto:privacy@vitadevices.com" style="color: var(--primary); text-decoration: none; font-weight: 600;">privacy@vitadevices.com</a>.</p>
+                </div>
+
+                <!-- Section 6: Contact -->
+                <div class="privacy-section">
+                    <div class="privacy-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h2>6. Contact & Updates</h2>
+                    <p><strong>Privacy Officer Contact:</strong> <a href="mailto:privacy@vitadevices.com" style="color: var(--primary); text-decoration: none; font-weight: 600;">privacy@vitadevices.com</a></p>
+                    <p><strong>Policy Updates:</strong> This policy is effective for all Founding Members through 2027. Any updates will be communicated via email and will not reduce your existing privacy protections.</p>
+                    <p><strong>Founding Member Guarantee:</strong> Your privacy protections are guaranteed for the lifetime of your device, regardless of future policy changes for new customers.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div>
+                    <div class="footer-logo">VITA</div>
+                    <p style="color: rgba(255, 255, 255, 0.8); max-width: 400px;">Personal Health Intelligence for Your Home</p>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="privacy.html">Privacy</a>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                © VITA Devices | Designed in Europe | Building in Public since 2024
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

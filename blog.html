@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - VITA Devices | Building in Public</title>
+    <meta name="description" content="Follow our journey building VITA. Weekly updates on hardware prototyping, data architecture, and our local-first AI approach.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Color Palette - Simplified */
+            --primary: #2D736F;
+            --primary-light: #3F8C87;
+            --primary-dark: #1A5552;
+            --accent: #FF9E4A;
+            --background: #FAF9F7;
+            --surface: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #5A5A5A;
+            --text-light: #8A8A8A;
+            --border: #E5E5E5;
+            --shadow: rgba(0, 0, 0, 0.05);
+            
+            /* Typography */
+            --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 3rem;
+            --space-xl: 4rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-normal: 250ms ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--background);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: var(--space-md);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            letter-spacing: -0.5px;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            letter-spacing: -0.3px;
+        }
+        
+        h3 {
+            font-size: 1.375rem;
+        }
+        
+        p {
+            margin-bottom: var(--space-md);
+            color: var(--text-secondary);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+        
+        section {
+            padding: var(--space-xl) 0;
+        }
+        
+        /* Header - Fixed with single navigation */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--surface);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--space-lg);
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color var(--transition-fast);
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1.25rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .nav-btn:hover {
+            background-color: var(--primary-light);
+        }
+        
+        /* Blog Hero */
+        .blog-hero {
+            padding-top: 6rem;
+            padding-bottom: var(--space-xl);
+            text-align: center;
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .blog-hero h1 {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .blog-hero p {
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto var(--space-md);
+            color: var(--text-secondary);
+        }
+        
+        .update-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: 0.375rem 0.75rem;
+            background-color: rgba(45, 115, 111, 0.08);
+            color: var(--primary);
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: var(--space-md);
+            z-index: 999;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        .mobile-nav.active {
+            display: block;
+        }
+        
+        .mobile-nav a {
+            display: block;
+            padding: 0.75rem 0;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .mobile-nav a:last-child {
+            border-bottom: none;
+        }
+        
+        .mobile-nav .nav-btn {
+            display: inline-block;
+            margin-top: var(--space-sm);
+            padding: 0.75rem 1.5rem;
+            text-align: center;
+        }
+        
+        /* Blog Content */
+        .blog-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: var(--space-lg);
+            align-items: start;
+        }
+        
+        @media (max-width: 900px) {
+            .blog-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .blog-main {
+            max-width: 800px;
+        }
+        
+        /* Blog List */
+        .blog-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+        
+        .blog-post {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            border: 1px solid var(--border);
+            transition: border-color var(--transition-fast), transform var(--transition-normal);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .blog-post:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-md);
+        }
+        
+        .post-date {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .post-category {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            background-color: rgba(45, 115, 111, 0.1);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .post-category:hover {
+            background-color: rgba(45, 115, 111, 0.15);
+        }
+        
+        .post-title {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .post-title a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+        
+        .post-title a:hover {
+            color: var(--primary);
+        }
+        
+        .post-excerpt {
+            color: var(--text-secondary);
+            margin-bottom: var(--space-md);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: var(--space-sm);
+            border-top: 1px solid var(--border);
+        }
+        
+        .read-time {
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+        
+        .read-more {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            transition: gap var(--transition-fast);
+        }
+        
+        .read-more:hover {
+            gap: 0.5rem;
+        }
+        
+        /* Sidebar */
+        .blog-sidebar {
+            position: sticky;
+            top: 6rem;
+        }
+        
+        .sidebar-section {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            border: 1px solid var(--border);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .sidebar-section h3 {
+            font-size: 1.125rem;
+            margin-bottom: var(--space-md);
+            color: var(--text-primary);
+        }
+        
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .newsletter-form input {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: border-color var(--transition-fast);
+        }
+        
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .newsletter-form button {
+            padding: 0.75rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .newsletter-form button:hover {
+            background-color: var(--primary-light);
+        }
+        
+        .newsletter-note {
+            font-size: 0.8125rem;
+            color: var(--text-light);
+            margin-top: var(--space-xs);
+            line-height: 1.4;
+        }
+        
+        .categories-list {
+            list-style: none;
+        }
+        
+        .categories-list li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .categories-list a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+        
+        .categories-list a:hover,
+        .categories-list a.active {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .categories-list a i {
+            color: var(--primary);
+            font-size: 0.875rem;
+        }
+        
+        .archive-list {
+            list-style: none;
+        }
+        
+        .archive-list li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .archive-list a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color var(--transition-fast);
+            cursor: pointer;
+        }
+        
+        .archive-list a:hover,
+        .archive-list a.active {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        /* Newsletter Section */
+        .newsletter-section {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            border: 1px solid var(--border);
+            margin-top: var(--space-xl);
+        }
+        
+        .newsletter-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .newsletter-content h2 {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .newsletter-content p {
+            margin-bottom: var(--space-md);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: var(--space-xl) 0 var(--space-lg);
+            margin-top: var(--space-xl);
+        }
+        
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+        }
+        
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color var(--transition-fast);
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-copyright {
+            width: 100%;
+            text-align: center;
+            margin-top: var(--space-lg);
+            padding-top: var(--space-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-top: var(--space-xl);
+        }
+        
+        .pagination a {
+            padding: 0.5rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .pagination a:hover:not(.active):not(.disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .pagination a.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .pagination a.disabled {
+            color: var(--text-light);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        
+        .pagination a.disabled:hover {
+            border-color: var(--border);
+            color: var(--text-light);
+        }
+        
+        .pagination-info {
+            text-align: center;
+            margin-top: var(--space-sm);
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+        
+        /* Active Filters */
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-lg);
+            align-items: center;
+        }
+        
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        
+        .filter-tag .remove-filter {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 0.875rem;
+            padding: 0 0.25rem;
+        }
+        
+        .clear-filters {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .clear-filters:hover {
+            text-decoration: underline;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: var(--space-xl);
+            color: var(--text-light);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
+            
+            h3 {
+                font-size: 1.25rem;
+            }
+            
+            section {
+                padding: var(--space-lg) 0;
+            }
+            
+            .blog-hero {
+                padding-top: 5rem;
+                padding-bottom: var(--space-lg);
+            }
+            
+            .blog-post {
+                padding: var(--space-md);
+            }
+            
+            /* Hide desktop nav on mobile */
+            .nav-links {
+                display: none;
+            }
+            
+            /* Show mobile menu toggle on mobile */
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-links {
+                align-items: center;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-menu-toggle,
+            .mobile-nav {
+                display: none;
+            }
+            
+            .nav-links {
+                display: flex;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 var(--space-sm);
+            }
+            
+            h1 {
+                font-size: 1.75rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .blog-post {
+                padding: var(--space-md);
+            }
+            
+            .post-header {
+                flex-wrap: wrap;
+            }
+            
+            .pagination {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - Clean single navigation -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">VITA</a>
+            
+            <!-- Desktop Navigation -->
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="blog.html" class="active">Blog</a>
+                <a href="contact.html">Contact</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="index.html#founding-members" class="nav-btn">Become a Member</a>
+            </div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <a href="index.html">Home</a>
+            <a href="blog.html">Blog</a>
+            <a href="contact.html">Contact</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="index.html#founding-members" class="nav-btn">Become a Member</a>
+        </div>
+    </header>
+
+    <!-- Blog Hero -->
+    <section class="blog-hero">
+        <div class="container">
+            <h1>Building VITA in Public</h1>
+            <p>Weekly updates on hardware prototyping, data architecture, and our local-first AI approach.</p>
+            <div class="update-tag">
+                <i class="fas fa-rss"></i>
+                <span>Updates every Monday</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section>
+        <div class="container blog-container">
+            <!-- Main Blog Posts -->
+            <div class="blog-main">
+                <!-- Active Filters -->
+                <div id="activeFilters" class="active-filters" style="display: none;">
+                    <span>Filtered by:</span>
+                </div>
+                
+                <!-- Blog List Container -->
+                <div class="blog-list" id="blogList">
+                    <!-- Articles will be loaded dynamically -->
+                </div>
+
+                <!-- No Results Message -->
+                <div id="noResults" class="no-results" style="display: none;">
+                    <h3>No articles found</h3>
+                    <p>Try a different filter or clear all filters.</p>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="pagination">
+                    <!-- Pagination will be loaded dynamically -->
+                </div>
+                
+                <!-- Pagination Info -->
+                <div class="pagination-info" id="paginationInfo">
+                    <!-- Info will be loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="blog-sidebar">
+                <!-- Newsletter -->
+                <div class="sidebar-section">
+                    <h3>Stay Updated</h3>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                    <p class="newsletter-note">
+                        Get weekly updates on our progress. No spam. Unsubscribe anytime.
+                    </p>
+                </div>
+
+                <!-- Categories -->
+                <div class="sidebar-section">
+                    <h3>Categories</h3>
+                    <ul class="categories-list" id="categoriesList">
+                        <!-- Will be generated dynamically -->
+                    </ul>
+                </div>
+
+                <!-- Archive -->
+                <div class="sidebar-section">
+                    <h3>Archive</h3>
+                    <ul class="archive-list" id="archiveList">
+                        <!-- Will be generated dynamically -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section (for mobile) -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Building in Public</h2>
+                <p>Follow our journey from prototype to production. Weekly technical deep dives and progress updates.</p>
+                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div>
+                    <div class="footer-logo">VITA</div>
+                    <p style="color: rgba(255, 255, 255, 0.8); max-width: 300px; font-size: 0.95rem;">
+                        Personal Health Intelligence for Your Home
+                    </p>
+                </div>
+                <div class="footer-links">
+                    <a href="index.html">Home</a>
+                    <a href="blog.html">Blog</a>
+                    <a href="contact.html">Contact</a>
+                    <a href="privacy.html">Privacy</a>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                © VITA Devices | Designed in Europe | Building in Public since 2024
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Blog Data
+        const blogPosts = [
+            {
+                id: 1,
+                title: "Why We're Building VITA: The Case for Data Sovereignty",
+                excerpt: "In a world where health data is monetized by tech giants, we're building VITA to put control back in your hands. This is our manifesto for true data sovereignty in personal health.",
+                date: "December 22, 2025",
+                category: "Vision",
+                readTime: "8 min read",
+                link: "article-data-sovereignty.html",
+                archiveKey: "December 2025"
+            },
+            {
+                id: 2,
+                title: "The 'Stateless Parser' Explained: How We Use AI Without Knowing Who You Are",
+                excerpt: "Our unique approach to voice AI: understand your commands without storing your conversations. A deep dive into our stateless parser architecture that prioritizes privacy above all.",
+                date: "December 15, 2025",
+                category: "AI Architecture",
+                readTime: "12 min read",
+                link: "article-stateless-parser.html",
+                archiveKey: "December 2025"
+            },
+            {
+                id: 3,
+                title: "Why Local Storage is the Future of Personal Health",
+                excerpt: "Cloud storage has failed personal health data. We explain why local-first architecture isn't just more private—it's technically superior for personalized health insights.",
+                date: "December 8, 2025",
+                category: "Technology",
+                readTime: "10 min read",
+                link: "article-local-storage.html",
+                archiveKey: "December 2025"
+            },
+            {
+                id: 4,
+                title: "Meet the ETL Pipeline: How VITA Turns Speech into Science",
+                excerpt: "From 'I ate an apple' to precise nutrient tracking: our ETL pipeline transforms natural language into structured health data without compromising your privacy.",
+                date: "December 1, 2025",
+                category: "Data Science",
+                readTime: "14 min read",
+                link: "article-etl-pipeline.html",
+                archiveKey: "December 2025"
+            },
+            {
+                id: 5,
+                title: "Beyond Calorie Counting: Tracking Micronutrients in Real-Time",
+                excerpt: "Calories tell only part of the story. We're building VITA to track 27 essential micronutrients in real-time, giving you a complete picture of your nutritional health.",
+                date: "November 24, 2025",
+                category: "Nutrition Science",
+                readTime: "9 min read",
+                link: "article-micronutrients.html",
+                archiveKey: "November 2025"
+            },
+            {
+                id: 6,
+                title: "The 'May 2027' Promise: Our Hardware Roadmap and Refund Guarantee",
+                excerpt: "Transparency about our timeline, manufacturing challenges, and why we stand behind our May 31, 2027 refund guarantee. Building hardware is hard; we're being honest about it.",
+                date: "November 17, 2025",
+                category: "Company",
+                readTime: "7 min read",
+                link: "article-may-2027-promise.html",
+                archiveKey: "November 2025"
+            },
+            {
+                id: 7,
+                title: "The Science of Nutrient Normalization: How We Ensure Accuracy",
+                excerpt: "Different food databases, different portion sizes—how VITA normalizes nutrient data across sources to give you accurate, actionable insights about your diet.",
+                date: "November 10, 2025",
+                category: "Nutrition Science",
+                readTime: "11 min read",
+                link: "article-nutrient-normalization.html",
+                archiveKey: "November 2025"
+            }
+        ];
+
+        // Configuration
+        const ITEMS_PER_PAGE = 5;
+        let currentPage = 1;
+        let currentFilter = { type: null, value: null };
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initBlog();
+        });
+
+        function initBlog() {
+            // Generate categories list
+            generateCategories();
+            
+            // Generate archive list
+            generateArchive();
+            
+            // Render first page
+            renderBlogPosts();
+            
+            // Setup event listeners
+            setupEventListeners();
+        }
+
+        function generateCategories() {
+            const categories = [...new Set(blogPosts.map(post => post.category))];
+            const categoriesList = document.getElementById('categoriesList');
+            
+            // Add "All" category
+            const allLi = document.createElement('li');
+            const allLink = document.createElement('a');
+            allLink.textContent = 'All Categories';
+            allLink.href = '#';
+            allLink.dataset.category = 'all';
+            allLink.classList.add('active');
+            allLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                setCategoryFilter('all');
+            });
+            allLi.appendChild(allLink);
+            categoriesList.appendChild(allLi);
+            
+            // Add each category
+            categories.forEach(category => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.innerHTML = `<i class="fas fa-${getCategoryIcon(category)}"></i> ${category}`;
+                a.href = '#';
+                a.dataset.category = category;
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    setCategoryFilter(category);
+                });
+                li.appendChild(a);
+                categoriesList.appendChild(li);
+            });
+        }
+
+        function getCategoryIcon(category) {
+            const icons = {
+                'Vision': 'eye',
+                'AI Architecture': 'brain',
+                'Technology': 'server',
+                'Data Science': 'chart-line',
+                'Nutrition Science': 'utensils',
+                'Company': 'building'
+            };
+            return icons[category] || 'file-alt';
+        }
+
+        function generateArchive() {
+            const archives = [...new Set(blogPosts.map(post => post.archiveKey))];
+            const archiveList = document.getElementById('archiveList');
+            
+            // Add "All" archive
+            const allLi = document.createElement('li');
+            const allLink = document.createElement('a');
+            allLink.textContent = 'All Dates';
+            allLink.href = '#';
+            allLink.dataset.archive = 'all';
+            allLink.classList.add('active');
+            allLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                setArchiveFilter('all');
+            });
+            allLi.appendChild(allLink);
+            archiveList.appendChild(allLi);
+            
+            // Add each archive
+            archives.forEach(archive => {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.textContent = archive;
+                a.href = '#';
+                a.dataset.archive = archive;
+                a.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    setArchiveFilter(archive);
+                });
+                li.appendChild(a);
+                archiveList.appendChild(li);
+            });
+        }
+
+        function setCategoryFilter(category) {
+            currentFilter = { type: 'category', value: category };
+            currentPage = 1;
+            updateActiveFilters();
+            updateCategoryActiveState(category);
+            renderBlogPosts();
+        }
+
+        function setArchiveFilter(archive) {
+            currentFilter = { type: 'archive', value: archive };
+            currentPage = 1;
+            updateActiveFilters();
+            updateArchiveActiveState(archive);
+            renderBlogPosts();
+        }
+
+        function updateCategoryActiveState(activeCategory) {
+            document.querySelectorAll('#categoriesList a').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.category === activeCategory) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Also update archive links
+            document.querySelectorAll('#archiveList a').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.archive === 'all') {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        function updateArchiveActiveState(activeArchive) {
+            document.querySelectorAll('#archiveList a').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.archive === activeArchive) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // Also update category links
+            document.querySelectorAll('#categoriesList a').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.category === 'all') {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        function getFilteredPosts() {
+            let filtered = [...blogPosts];
+            
+            if (currentFilter.type === 'category' && currentFilter.value !== 'all') {
+                filtered = filtered.filter(post => post.category === currentFilter.value);
+            } else if (currentFilter.type === 'archive' && currentFilter.value !== 'all') {
+                filtered = filtered.filter(post => post.archiveKey === currentFilter.value);
+            }
+            
+            return filtered;
+        }
+
+        function renderBlogPosts() {
+            const blogList = document.getElementById('blogList');
+            const pagination = document.getElementById('pagination');
+            const paginationInfo = document.getElementById('paginationInfo');
+            const noResults = document.getElementById('noResults');
+            
+            // Clear existing content
+            blogList.innerHTML = '';
+            pagination.innerHTML = '';
+            paginationInfo.innerHTML = '';
+            
+            // Get filtered posts
+            const filteredPosts = getFilteredPosts();
+            
+            // Show no results message if no posts
+            if (filteredPosts.length === 0) {
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            
+            // Calculate pagination
+            const totalPages = Math.ceil(filteredPosts.length / ITEMS_PER_PAGE);
+            const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+            const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, filteredPosts.length);
+            const pagePosts = filteredPosts.slice(startIndex, endIndex);
+            
+            // Render posts with staggered animation
+            pagePosts.forEach((post, index) => {
+                const article = createBlogPostElement(post, index);
+                blogList.appendChild(article);
+            });
+            
+            // Render pagination
+            renderPagination(totalPages, pagination);
+            
+            // Render pagination info
+            paginationInfo.textContent = `Showing ${startIndex + 1}-${endIndex} of ${filteredPosts.length} articles`;
+        }
+
+        function createBlogPostElement(post, index) {
+            const article = document.createElement('article');
+            article.className = 'blog-post';
+            article.style.animationDelay = `${index * 0.1}s`;
+            
+            article.innerHTML = `
+                <div class="post-header">
+                    <span class="post-date">${post.date}</span>
+                    <span class="post-category" data-category="${post.category}">${post.category}</span>
+                </div>
+                <div class="post-title">
+                    <h3><a href="${post.link}">${post.title}</a></h3>
+                </div>
+                <p class="post-excerpt">${post.excerpt}</p>
+                <div class="post-footer">
+                    <span class="read-time">${post.readTime}</span>
+                    <a href="${post.link}" class="read-more">
+                        Read article
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            `;
+            
+            // Add click event to category tag
+            const categoryTag = article.querySelector('.post-category');
+            categoryTag.addEventListener('click', () => {
+                setCategoryFilter(post.category);
+            });
+            
+            return article;
+        }
+
+        function renderPagination(totalPages, container) {
+            if (totalPages <= 1) return;
+            
+            // Previous button
+            const prevLink = document.createElement('a');
+            prevLink.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevLink.title = 'Previous page';
+            if (currentPage === 1) {
+                prevLink.classList.add('disabled');
+            } else {
+                prevLink.addEventListener('click', () => {
+                    currentPage--;
+                    renderBlogPosts();
+                });
+            }
+            container.appendChild(prevLink);
+            
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const pageLink = document.createElement('a');
+                pageLink.textContent = i;
+                if (i === currentPage) {
+                    pageLink.classList.add('active');
+                } else {
+                    pageLink.addEventListener('click', () => {
+                        currentPage = i;
+                        renderBlogPosts();
+                    });
+                }
+                container.appendChild(pageLink);
+            }
+            
+            // Next button
+            const nextLink = document.createElement('a');
+            nextLink.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextLink.title = 'Next page';
+            if (currentPage === totalPages) {
+                nextLink.classList.add('disabled');
+            } else {
+                nextLink.addEventListener('click', () => {
+                    currentPage++;
+                    renderBlogPosts();
+                });
+            }
+            container.appendChild(nextLink);
+        }
+
+        function updateActiveFilters() {
+            const activeFilters = document.getElementById('activeFilters');
+            activeFilters.innerHTML = '<span>Filtered by:</span>';
+            
+            if (currentFilter.type && currentFilter.value !== 'all') {
+                const filterTag = document.createElement('div');
+                filterTag.className = 'filter-tag';
+                filterTag.innerHTML = `
+                    ${currentFilter.type === 'category' ? 'Category:' : 'Date:'} ${currentFilter.value}
+                    <button class="remove-filter" onclick="clearFilters()">×</button>
+                `;
+                activeFilters.appendChild(filterTag);
+                activeFilters.style.display = 'flex';
+                
+                const clearAll = document.createElement('a');
+                clearAll.className = 'clear-filters';
+                clearAll.textContent = 'Clear all';
+                clearAll.onclick = clearFilters;
+                activeFilters.appendChild(clearAll);
+            } else {
+                activeFilters.style.display = 'none';
+            }
+        }
+
+        function clearFilters() {
+            currentFilter = { type: null, value: null };
+            currentPage = 1;
+            updateActiveFilters();
+            updateCategoryActiveState('all');
+            updateArchiveActiveState('all');
+            renderBlogPosts();
+        }
+
+        function setupEventListeners() {
+            // Mobile menu toggle
+            const toggleBtn = document.querySelector('.mobile-menu-toggle');
+            const mobileNav = document.getElementById('mobileNav');
+            
+            toggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                mobileNav.classList.toggle('active');
+            });
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!mobileNav.contains(e.target) && !toggleBtn.contains(e.target)) {
+                    mobileNav.classList.remove('active');
+                }
+            });
+            
+            // Close mobile menu on link click
+            mobileNav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileNav.classList.remove('active');
+                });
+            });
+        }
+
+        // Newsletter subscription
+        function subscribeNewsletter(event) {
+            event.preventDefault();
+            const email = event.target.querySelector('input[type="email"]').value;
+            
+            // In a real implementation, this would connect to your newsletter service
+            alert(`Thank you! You've subscribed to VITA updates with: ${email}`);
+            event.target.reset();
+            
+            // Show success message
+            const successMsg = document.createElement('div');
+            successMsg.innerHTML = `
+                <div style="position: fixed; top: 20px; right: 20px; background-color: var(--primary); color: white; padding: 1rem; border-radius: var(--radius-md); z-index: 3000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-size: 0.9rem;">
+                    <p style="margin-bottom: 0;"><i class="fas fa-check-circle"></i> Subscribed successfully!</p>
+                </div>
+            `;
+            document.body.appendChild(successMsg);
+            
+            setTimeout(() => {
+                successMsg.remove();
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
