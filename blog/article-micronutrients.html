@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond Calorie Counting: Tracking Micronutrients in Real-Time | VITA Devices</title>
+    <meta name="description" content="Calories tell only part of the story. We're building VITA to track 27 essential micronutrients in real-time, giving you a complete picture of your nutritional health.">
+    
+    <!-- Open Graph for Social Sharing -->
+    <meta property="og:title" content="Beyond Calorie Counting: Tracking Micronutrients in Real-Time">
+    <meta property="og:description" content="We're building VITA to track 27 essential micronutrients in real-time, giving you a complete picture of your nutritional health.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://vitadevices.com/article-micronutrients.html">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Color Palette - Consistent with blog */
+            --primary: #2D736F;
+            --primary-light: #3F8C87;
+            --primary-dark: #1A5552;
+            --accent: #FF9E4A;
+            --background: #FAF9F7;
+            --surface: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #5A5A5A;
+            --text-light: #8A8A8A;
+            --border: #E5E5E5;
+            --shadow: rgba(0, 0, 0, 0.05);
+            
+            /* Typography */
+            --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 3rem;
+            --space-xl: 4rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-normal: 250ms ease;
+            
+            /* Article specific */
+            --content-width: 720px;
+            --sidebar-width: 280px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background-color: var(--background);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: var(--space-md);
+        }
+        
+        h1 {
+            font-size: 2.75rem;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            letter-spacing: -0.3px;
+            margin-top: var(--space-xl);
+            position: relative;
+        }
+        
+        h2:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: -0.5rem;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary);
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin-top: var(--space-lg);
+        }
+        
+        h4 {
+            font-size: 1.25rem;
+            margin-top: var(--space-md);
+            color: var(--text-secondary);
+        }
+        
+        p {
+            margin-bottom: var(--space-md);
+            color: var(--text-secondary);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+        
+        section {
+            padding: var(--space-xl) 0;
+        }
+        
+        /* Header - Consistent with blog */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--surface);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--space-lg);
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color var(--transition-fast);
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1.25rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .nav-btn:hover {
+            background-color: var(--primary-light);
+        }
+        
+        /* Article Hero */
+        .article-hero {
+            padding-top: 6rem;
+            padding-bottom: var(--space-md);
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .article-header {
+            max-width: var(--content-width);
+            margin: 0 auto;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .article-date {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .article-category {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            background-color: rgba(45, 115, 111, 0.1);
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .article-title {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .article-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            line-height: 1.5;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .article-stats {
+            display: flex;
+            gap: var(--space-lg);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Article Content */
+        .article-content-container {
+            display: grid;
+            grid-template-columns: 1fr var(--sidebar-width);
+            gap: var(--space-lg);
+            align-items: start;
+        }
+        
+        @media (max-width: 900px) {
+            .article-content-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .article-content {
+            max-width: var(--content-width);
+            margin: 0 auto;
+        }
+        
+        .article-body {
+            font-size: 1.125rem;
+            line-height: 1.8;
+        }
+        
+        .article-body p {
+            margin-bottom: var(--space-md);
+        }
+        
+        .article-body p.lead {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .article-body blockquote {
+            border-left: 3px solid var(--primary);
+            padding-left: var(--space-md);
+            margin: var(--space-lg) 0;
+            font-style: italic;
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+        }
+        
+        .article-body ul, .article-body ol {
+            margin-left: var(--space-md);
+            margin-bottom: var(--space-md);
+            color: var(--text-secondary);
+        }
+        
+        .article-body li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .article-body a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color var(--transition-fast);
+        }
+        
+        .article-body a:hover {
+            border-bottom: 1px solid var(--primary);
+        }
+        
+        .highlight-box {
+            background-color: rgba(45, 115, 111, 0.05);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin: var(--space-lg) 0;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-lg) 0;
+            box-shadow: 0 4px 12px var(--shadow);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary);
+            color: white;
+            text-align: left;
+            padding: 1rem;
+            font-weight: 600;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: rgba(45, 115, 111, 0.03);
+        }
+        
+        .comparison-table .vita-check {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .comparison-table .vita-cross {
+            color: #DC2626;
+            font-weight: 600;
+        }
+        
+        .figure-container {
+            margin: var(--space-lg) 0;
+            text-align: center;
+        }
+        
+        .figure-img {
+            max-width: 100%;
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .figure-caption {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: var(--space-xs);
+            font-style: italic;
+        }
+        
+        /* Micronutrient grid */
+        .micronutrient-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: var(--space-sm);
+            margin: var(--space-lg) 0;
+        }
+        
+        .nutrient-card {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--space-sm);
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+        }
+        
+        .nutrient-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px var(--shadow);
+        }
+        
+        .nutrient-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: var(--space-xs);
+        }
+        
+        .nutrient-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .nutrient-category {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Nutrient meter */
+        .nutrient-meter {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            margin: var(--space-md) 0;
+            border: 1px solid var(--border);
+        }
+        
+        .meter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .meter-bar {
+            height: 8px;
+            background-color: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: var(--space-xs);
+        }
+        
+        .meter-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+        
+        .meter-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+        
+        /* Article Sidebar */
+        .article-sidebar {
+            position: sticky;
+            top: 6rem;
+        }
+        
+        .sidebar-section {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            border: 1px solid var(--border);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .sidebar-section h3 {
+            font-size: 1.125rem;
+            margin-bottom: var(--space-md);
+            color: var(--text-primary);
+        }
+        
+        .author-card {
+            display: flex;
+            gap: var(--space-sm);
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .author-info h4 {
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+        }
+        
+        .author-info p {
+            margin-bottom: 0;
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+        
+        .toc {
+            list-style: none;
+        }
+        
+        .toc li {
+            margin-bottom: 0.75rem;
+            position: relative;
+        }
+        
+        .toc li:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+        
+        .toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-left: 1.25rem;
+            display: block;
+            transition: color var(--transition-fast);
+        }
+        
+        .toc a:hover {
+            color: var(--primary);
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: var(--space-md);
+        }
+        
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--background);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+        
+        .share-btn.twitter:hover {
+            background-color: #1DA1F2;
+            color: white;
+            border-color: #1DA1F2;
+        }
+        
+        .share-btn.linkedin:hover {
+            background-color: #0077B5;
+            color: white;
+            border-color: #0077B5;
+        }
+        
+        .share-btn.link:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Article Navigation */
+        .article-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--space-xl);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--border);
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--text-primary);
+            text-decoration: none;
+            max-width: 45%;
+            padding: var(--space-sm);
+            border-radius: var(--radius-md);
+            transition: background-color var(--transition-fast);
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(45, 115, 111, 0.05);
+        }
+        
+        .nav-prev {
+            text-align: left;
+        }
+        
+        .nav-next {
+            text-align: right;
+        }
+        
+        .nav-arrow {
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+        
+        .nav-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-title {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        /* Newsletter Section */
+        .newsletter-section {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            border: 1px solid var(--border);
+            margin-top: var(--space-xl);
+        }
+        
+        .newsletter-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .newsletter-content h2 {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .newsletter-content p {
+            margin-bottom: var(--space-md);
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: var(--space-sm);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: border-color var(--transition-fast);
+        }
+        
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .newsletter-form button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .newsletter-form button:hover {
+            background-color: var(--primary-light);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: var(--space-xl) 0 var(--space-lg);
+            margin-top: var(--space-xl);
+        }
+        
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+        }
+        
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color var(--transition-fast);
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-copyright {
+            width: 100%;
+            text-align: center;
+            margin-top: var(--space-lg);
+            padding-top: var(--space-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: var(--space-md);
+            z-index: 999;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        .mobile-nav.active {
+            display: block;
+        }
+        
+        .mobile-nav a {
+            display: block;
+            padding: 0.75rem 0;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .mobile-nav a:last-child {
+            border-bottom: none;
+        }
+        
+        .mobile-nav .nav-btn {
+            display: inline-block;
+            margin-top: var(--space-sm);
+            padding: 0.75rem 1.5rem;
+            text-align: center;
+        }
+        
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.25rem;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
+            
+            h3 {
+                font-size: 1.375rem;
+            }
+            
+            .article-body {
+                font-size: 1.0625rem;
+            }
+            
+            section {
+                padding: var(--space-lg) 0;
+            }
+            
+            .article-hero {
+                padding-top: 5rem;
+            }
+            
+            .article-stats {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .article-navigation {
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+            
+            .nav-item {
+                max-width: 100%;
+            }
+            
+            /* Hide desktop nav on mobile */
+            .nav-links {
+                display: none;
+            }
+            
+            /* Show mobile menu toggle on mobile */
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-links {
+                align-items: center;
+            }
+            
+            .micronutrient-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-menu-toggle,
+            .mobile-nav {
+                display: none;
+            }
+            
+            .nav-links {
+                display: flex;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 var(--space-sm);
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .sidebar-section {
+                padding: var(--space-md);
+            }
+            
+            .micronutrient-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - Consistent with blog -->
+    <header>
+        <div class="container header-container">
+            <a href="../index.html" class="logo">VITA</a>
+            
+            <!-- Desktop Navigation -->
+            <div class="nav-links">
+                <a href="../index.html">Home</a>
+                <a href="../blog.html">Blog</a>
+                <a href="../contact.html">Contact</a>
+                <a href="../privacy.html">Privacy</a>
+                <a href="../index.html#founding-members" class="nav-btn">Become a Member</a>
+            </div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <a href="../index.html">Home</a>
+            <a href="../blog.html">Blog</a>
+            <a href="../contact.html">Contact</a>
+            <a href="../privacy.html">Privacy</a>
+            <a href="../index.html#founding-members" class="nav-btn">Become a Member</a>
+        </div>
+    </header>
+
+    <!-- Article Hero -->
+    <section class="article-hero">
+        <div class="container">
+            <div class="article-header">
+                <div class="article-meta">
+                    <span class="article-date">November 24, 2025</span>
+                    <span class="article-category">Nutrition Science</span>
+                </div>
+                <h1 class="article-title">Beyond Calorie Counting: Tracking Micronutrients in Real-Time</h1>
+                <p class="article-subtitle">Calories tell only part of the story. We're building VITA to track 27 essential micronutrients in real-time, giving you a complete picture of your nutritional health.</p>
+                <div class="article-stats">
+                    <div class="stat-item">
+                        <i class="far fa-clock"></i>
+                        <span>9 min read</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="far fa-eye"></i>
+                        <span id="viewCount">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Article Content -->
+    <section>
+        <div class="container article-content-container">
+            <!-- Main Article Content -->
+            <div class="article-content">
+                <article class="article-body">
+                    <p class="lead">For decades, we've been obsessing over calories while largely ignoring the microscopic compounds that actually power our bodies. You could hit your calorie target every day and still be malnourished. VITA changes this by tracking 27 essential vitamins and minerals in real-time, revealing the true quality of your nutrition beyond simple energy balance.</p>
+                    
+                    <h2 id="calorie-problem">The Calorie Counting Fallacy</h2>
+                    
+                    <p>The calorie was invented in the 19th century by burning food in a bomb calorimeter—hardly reflective of human metabolism. This crude measurement tells us about energy potential, but nothing about nutritional quality. Two meals with identical calories can have vastly different effects on your health:</p>
+                    
+                    <div class="highlight-box">
+                        <h4>Calorie-Identical, Nutrition-Opposite</h4>
+                        <p><strong>Meal A:</strong> 500 calories of soda and chips → High in empty calories, low in nutrients</p>
+                        <p><strong>Meal B:</strong> 500 calories of salmon and broccoli → Rich in omega-3s, vitamins C, K, B12, selenium</p>
+                        <p>Both provide the same energy. Only one nourishes your body at a cellular level.</p>
+                    </div>
+                    
+                    <p>Calorie counting fails because:</p>
+                    
+                    <ul>
+                        <li><strong>Not all calories are equal:</strong> 100 calories of sugar affects your body differently than 100 calories of protein</li>
+                        <li><strong>Absorption varies:</strong> Your body absorbs different percentages of calories from different foods</li>
+                        <li><strong>Nutrient timing matters:</strong> When you eat affects how nutrients are used</li>
+                        <li><strong>Individual differences:</strong> Your genetics, microbiome, and health status affect nutrient needs</li>
+                    </ul>
+                    
+                    <h2 id="micronutrient-mastery">The 27 Essential Micronutrients</h2>
+                    
+                    <p>Micronutrients are vitamins and minerals required in small amounts but essential for every bodily function. We track all 27 that your body cannot produce on its own:</p>
+                    
+                    <div class="micronutrient-grid">
+                        <!-- Vitamins -->
+                        <div class="nutrient-card">
+                            <div class="nutrient-icon"><i class="fas fa-capsules"></i></div>
+                            <div class="nutrient-name">Vitamin A</div>
+                            <div class="nutrient-category">Vision & Immunity</div>
+                        </div>
+                        <div class="nutrient-card">
+                            <div class="nutrient-icon"><i class="fas fa-brain"></i></div>
+                            <div class="nutrient-name">B Vitamins</div>
+                            <div class="nutrient-category">Energy & Brain</div>
+                        </div>
+                        <div class="nutrient-card">
+                            <div class="nutrient-icon"><i class="fas fa-shield-virus"></i></div>
+                            <div class="nutrient-name">Vitamin C</div>
+                            <div class="nutrient-category">Immunity & Skin</div>
+                        </div>
+                        <div class="nutrient-card">
+                            <div class="nutrient-icon"><i class="fas fa-bone"></i></div>
+                            <div class="nutrient-name">Vitamin D</div>
+                            <div class="nutrient-category">Bones & Mood</div>
+                        </div>
+                        <div class="nutrient-card">
+                            <div class="nutrient-icon"><i class="fas fa-heart"></i></div>
+                            <div class="nutrient-name">Vitamin E</div>
+                            <div class="nutrient-category">Antioxidant</div>
+                        </div>
+                        <div class="nutrient-card">
+                            <div class="nutrient-icon"><i class="fas fa-tint"></i></div>
+                            <div class="nutrient-name">Vitamin K</div>
+                            <div class="nutrient-category">Blood & Bones</div>
+                        </div>
+                        
+                        <!-- Minerals -->
+                        <div class="nutrient-card">
+                            <div class="nutrient-icon"><i class="fas fa-temperature-high"></i></div>
+                            <div class="nutrient-name">Iron</div>
+                            <div class="nutrient-category">Oxygen Transport</div>
+                        </div>
+                        <div class="nutrient-card">
+                            <div class="nutrient-icon"><i class="fas fa-bolt"></i></div>
+                            <div class="nutrient-name">Magnesium</div>
+                            <div class="nutrient-category">Muscle & Nerve</div>
+                        </div>
+                        <div class="nutrient-card">
+                            <div class="nutrient-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="nutrient-name">Zinc</div>
+                            <div class="nutrient-category">Immunity & Healing</div>
+                        </div>
+                        <div class="nutrient-card">
+                            <div class="nutrient-icon"><i class="fas fa-water"></i></div>
+                            <div class="nutrient-name">Calcium</div>
+                            <div class="nutrient-category">Bones & Muscles</div>
+                        </div>
+                        <div class="nutrient-card">
+                            <div class="nutrient-icon"><i class="fas fa-battery-full"></i></div>
+                            <div class="nutrient-name">Potassium</div>
+                            <div class="nutrient-category">Fluid Balance</div>
+                        </div>
+                        <div class="nutrient-card">
+                            <div class="nutrient-icon"><i class="fas fa-atom"></i></div>
+                            <div class="nutrient-name">Selenium</div>
+                            <div class="nutrient-category">Antioxidant</div>
+                        </div>
+                    </div>
+                    
+                    <p class="figure-caption">A selection of the 27 essential micronutrients VITA tracks in real-time</p>
+                    
+                    <h2 id="real-time-tracking">How Real-Time Micronutrient Tracking Works</h2>
+                    
+                    <p>Traditional nutrient tracking requires manual entry, food weighing, and guesswork. VITA automates everything through intelligent voice recognition and a massive local food database.</p>
+                    
+                    <div class="figure-container">
+                        <div style="max-width: 600px; margin: 0 auto; background-color: rgba(45, 115, 111, 0.05); border-radius: var(--radius-md); padding: var(--space-md);">
+                            <h3 style="text-align: center; color: var(--primary); margin-top: 0;">From Speech to Nutrient Analysis</h3>
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Step</th>
+                                        <th>Traditional Method</th>
+                                        <th>VITA's Method</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Food Logging</strong></td>
+                                        <td><span class="vita-cross">Manual app entry</span></td>
+                                        <td><span class="vita-check">Natural conversation</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Portion Estimation</strong></td>
+                                        <td><span class="vita-cross">Guesswork or weighing</span></td>
+                                        <td><span class="vita-check">AI estimates from description</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Nutrient Lookup</strong></td>
+                                        <td><span class="vita-cross">Generic database values</span></td>
+                                        <td><span class="vita-check">Personalized food profiles</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Real-Time Feedback</strong></td>
+                                        <td><span class="vita-cross">None or delayed</span></td>
+                                        <td><span class="vita-check">Immediate nutrient analysis</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Personalization</strong></td>
+                                        <td><span class="vita-cross">One-size-fits-all RDAs</span></td>
+                                        <td><span class="vita-check">Adapts to your needs</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figure-caption">Comparison of traditional vs. VITA's approach to nutrient tracking</p>
+                    </div>
+                    
+                    <h3>The Local Food Database</h3>
+                    <p>Unlike apps that query cloud databases, VITA maintains a comprehensive local database with:</p>
+                    
+                    <ul>
+                        <li><strong>10,000+ foods</strong> with complete micronutrient profiles</li>
+                        <li><strong>Regional variations:</strong> Different potato varieties, apple types, etc.</li>
+                        <li><strong>Cooking effects:</strong> How preparation affects nutrient availability</li>
+                        <li><strong>Bioavailability factors:</strong> How well your body can absorb each nutrient</li>
+                        <li><strong>Your custom foods:</strong> Personal recipes and family dishes</li>
+                    </ul>
+                    
+                    <h3>Portion Intelligence</h3>
+                    <p>When you say "I had a medium apple," VITA understands what "medium" means to you based on your previous corrections and regional norms.</p>
+                    
+                    <div class="highlight-box">
+                        <h4>Example: Micronutrient Breakdown</h4>
+                        <p><strong>Input:</strong> "I had a spinach salad with salmon, avocado, and walnuts for lunch"</p>
+                        <p><strong>VITA analyzes:</strong><br>
+                        • <strong>Vitamin K:</strong> 800% of daily needs (from spinach)<br>
+                        • <strong>Omega-3s:</strong> 2.5g (from salmon and walnuts)<br>
+                        • <strong>Magnesium:</strong> 45% of daily needs (from spinach, avocado, walnuts)<br>
+                        • <strong>Selenium:</strong> 85% of daily needs (from salmon)<br>
+                        • <strong>Vitamin E:</strong> 35% of daily needs (from avocado and walnuts)</p>
+                    </div>
+                    
+                    <h2 id="personalized-needs">Personalized Nutrient Requirements</h2>
+                    
+                    <p>Recommended Daily Allowances (RDAs) are population averages that ignore individual differences. VITA personalizes your targets based on:</p>
+                    
+                    <div class="nutrient-meter">
+                        <div class="meter-header">
+                            <strong>Vitamin D Target</strong>
+                            <span>Personalized: 800 IU/day</span>
+                        </div>
+                        <div class="meter-bar">
+                            <div class="meter-fill" style="width: 65%; background-color: var(--primary);"></div>
+                        </div>
+                        <div class="meter-labels">
+                            <span>0%</span>
+                            <span>Your target: 800 IU</span>
+                            <span>100%</span>
+                        </div>
+                        <div style="text-align: center; margin-top: var(--space-xs); font-size: 0.875rem; color: var(--text-secondary);">
+                            Based on: Northern latitude lifestyle + office job + fair skin
+                        </div>
+                    </div>
+                    
+                    <h3>Factors That Personalize Your Needs</h3>
+                    
+                    <ul>
+                        <li><strong>Genetics:</strong> MTHFR variants affect folate needs, hemochromatosis affects iron tolerance</li>
+                        <li><strong>Lifestyle:</strong> Office workers need more Vitamin D, athletes need more magnesium</li>
+                        <li><strong>Health conditions:</strong> IBS affects absorption, pregnancy increases certain needs</li>
+                        <li><strong>Medications:</strong> Statins deplete CoQ10, diuretics deplete potassium</li>
+                        <li><strong>Age & Gender:</strong> Changing needs through life stages</li>
+                        <li><strong>Season & Location:</strong> Vitamin D needs vary with sunlight exposure</li>
+                    </ul>
+                    
+                    <h2 id="deficiency-detection">Early Deficiency Detection</h2>
+                    
+                    <p>By tracking micronutrients over time, VITA can spot patterns that might indicate developing deficiencies before symptoms appear.</p>
+                    
+                    <blockquote>
+                        "Most nutrient deficiencies take months or years to manifest as obvious symptoms. By then, cellular damage has already occurred. Real-time tracking allows for early intervention through diet rather than supplements."
+                    </blockquote>
+                    
+                    <div class="highlight-box">
+                        <h4>Deficiency Warning Signs VITA Detects</h4>
+                        <p><strong>Pattern:</strong> Consistently <60% of magnesium target + frequent muscle cramps + poor sleep</p>
+                        <p><strong>Insight:</strong> "Your magnesium intake has been below optimal for 3 weeks. This could explain your recent muscle cramps. Try adding more spinach, almonds, or avocado."</p>
+                        <p><strong>Pattern:</strong> Low iron intake + increasing fatigue + pale skin noted in photos</p>
+                        <p><strong>Insight:</strong> "Your iron levels appear suboptimal. Consider more lentils, red meat, or cooking in cast iron. Consult your doctor if fatigue persists."</p>
+                    </div>
+                    
+                    <h2 id="synergy-understanding">Understanding Nutrient Synergies</h2>
+                    
+                    <p>Nutrients don't work in isolation. VITA tracks important synergies and antagonisms:</p>
+                    
+                    <div class="figure-container">
+                        <div style="max-width: 600px; margin: 0 auto; background-color: rgba(45, 115, 111, 0.05); border-radius: var(--radius-md); padding: var(--space-md);">
+                            <h3 style="text-align: center; color: var(--primary); margin-top: 0;">Key Nutrient Partnerships</h3>
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nutrient Pair</th>
+                                        <th>Synergy Effect</th>
+                                        <th>Food Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Vitamin D + Calcium</strong></td>
+                                        <td>D enables calcium absorption</td>
+                                        <td>Fortified milk</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Vitamin C + Iron</strong></td>
+                                        <td>C increases iron absorption</td>
+                                        <td>Bell peppers with lentils</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Vitamin K + Vitamin D</strong></td>
+                                        <td>Both needed for bone health</td>
+                                        <td>Leafy greens + sunlight</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Zinc + Copper</strong></td>
+                                        <td>Need balance (high zinc depletes copper)</td>
+                                        <td>Seeds + liver</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>B Vitamins</strong></td>
+                                        <td>Work together in energy production</td>
+                                        <td>Whole grains, eggs, meat</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figure-caption">How nutrients work together for optimal health</p>
+                    </div>
+                    
+                    <h2 id="privacy-approach">Privacy-First Micronutrient Tracking</h2>
+                    
+                    <p>Your nutrient data reveals intimate details about your health, lifestyle, and even potential medical conditions. We protect this information through:</p>
+                    
+                    <ul>
+                        <li><strong>Local-only processing:</strong> All analysis happens on your device</li>
+                        <li><strong>No cloud storage:</strong> Your nutrient patterns never leave your home</li>
+                        <li><strong>Encrypted data:</strong> Even if someone accessed your device, data is encrypted</li>
+                        <li><strong>No data sharing:</strong> We never sell or share your nutrient information</li>
+                        <li><strong>Research opt-in:</strong> You choose if anonymous data contributes to nutrition science</li>
+                    </ul>
+                    
+                    <div class="highlight-box">
+                        <h4>Why Nutrient Privacy Matters</h4>
+                        <p>Your micronutrient profile could reveal:<br>
+                        • Pregnancy (increased folate needs)<br>
+                        • Genetic conditions (like hemochromatosis)<br>
+                        • Mental health patterns (certain deficiencies link to mood)<br>
+                        • Chronic disease risks<br>
+                        • Medication use (through nutrient depletion patterns)<br><br>
+                        This information deserves the highest privacy protection.</p>
+                    </div>
+                    
+                    <h2 id="real-world-impact">Real-World Health Impact</h2>
+                    
+                    <p>Tracking micronutrients changes health outcomes:</p>
+                    
+                    <h3>Case Study: Migraine Reduction</h3>
+                    <p>Users tracking magnesium and riboflavin (B2) can identify when intake drops below their personal threshold for migraine prevention.</p>
+                    
+                    <h3>Case Study: Energy Optimization</h3>
+                    <p>By correlating iron, B12, and folate intake with energy levels, users optimize timing and combinations for sustained energy.</p>
+                    
+                    <h3>Case Study: Immune Support</h3>
+                    <p>Tracking zinc, vitamin C, and vitamin D helps optimize intake before cold/flu season.</p>
+                    
+                    <h2 id="future-developments">Future Developments</h2>
+                    
+                    <p>We're expanding VITA's micronutrient capabilities:</p>
+                    
+                    <h3>1. Phytonutrient Tracking</h3>
+                    <p>Beyond vitamins and minerals to include beneficial plant compounds: flavonoids, carotenoids, polyphenols.</p>
+                    
+                    <h3>2. Gut Microbiome Interactions</h3>
+                    <p>How your microbiome affects nutrient absorption and production.</p>
+                    
+                    <h3>3. Genetic Integration</h3>
+                    <p>Optional genetic data integration for ultra-personalized nutrient targets.</p>
+                    
+                    <h3>4. Continuous Biomarker Integration</h3>
+                    <p>Connecting nutrient intake with blood markers, wearables data, and other biomarkers.</p>
+                    
+                    <h3>5. Food Quality Assessment</h3>
+                    <p>Tracking not just what you eat, but the quality: organic vs conventional, fresh vs processed.</p>
+                    
+                    <h2 id="beyond-tracking">Beyond Tracking: Intelligent Nutrition</h2>
+                    
+                    <p>VITA doesn't just track—it educates and suggests:</p>
+                    
+                    <div class="highlight-box">
+                        <h4>Intelligent Suggestions</h4>
+                        <p><strong>Situation:</strong> You're low on magnesium this week</p>
+                        <p><strong>VITA suggests:</strong> "For dinner tonight, how about salmon with roasted almonds and spinach? That would provide about 60% of your daily magnesium needs."</p>
+                        <p><strong>Situation:</strong> You're planning meals for the week</p>
+                        <p><strong>VITA suggests:</strong> "Looking at your upcoming week, let's make sure we include iron-rich foods on Tuesday and Thursday since you'll be exercising heavily those days."</p>
+                    </div>
+                    
+                    <h2 id="conclusion">The Future of Personalized Nutrition</h2>
+                    
+                    <p>We're moving from one-size-fits-all nutrition advice to truly personalized nourishment. Calorie counting was the first step—a crude measurement that helped us understand energy balance. Micronutrient tracking is the next evolution: understanding nutritional quality at a cellular level.</p>
+                    
+                    <blockquote>
+                        "Food is more than fuel. It's information that tells your cells how to function, repair, and thrive. By understanding the micronutrient content of every bite, we move from eating to nourishing."
+                    </blockquote>
+                    
+                    <p>VITA's real-time micronutrient tracking represents a fundamental shift: from reactive healthcare (treating deficiencies after they cause problems) to proactive nourishment (optimizing intake to prevent issues before they start).</p>
+                    
+                    <p>This isn't just about counting vitamins and minerals. It's about understanding your unique nutritional needs, recognizing that food affects everyone differently, and using technology to bridge the gap between what we eat and how we feel.</p>
+                    
+                    <p>Because when you understand not just how much you're eating, but what you're eating—down to the last microgram of selenium and milligram of magnesium—you gain control over your health at the most fundamental level.</p>
+                </article>
+                
+                <!-- Article Navigation -->
+                <div class="article-navigation">
+                    <a href="article-etl-pipeline.html" class="nav-item nav-prev">
+                        <i class="fas fa-arrow-left nav-arrow"></i>
+                        <div>
+                            <div class="nav-label">Previous Article</div>
+                            <div class="nav-title">Meet the ETL Pipeline: How VITA Turns Speech into Science</div>
+                        </div>
+                    </a>
+                    <a href="article-may-2027-promise.html" class="nav-item nav-next">
+                        <div>
+                            <div class="nav-label">Previous Article</div>
+                            <div class="nav-title">The 'May 2027' Promise: Our Hardware Roadmap and Refund Guarantee</div>
+                        </div>
+                        <i class="fas fa-arrow-right nav-arrow"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Article Sidebar -->
+            <div class="article-sidebar">
+                <!-- Author Card -->
+                <div class="sidebar-section">
+                    <h3>Written by</h3>
+                    <div class="author-card">
+                        <div class="author-avatar">MD</div>
+                        <div class="author-info">
+                            <h4>Ahmed Souli</h4>
+                            <p>Founder & CEO of VITA Devices</p>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.9rem; margin-top: var(--space-sm); color: var(--text-secondary);">
+                        2 years in autonomous robotics, 1 year in warehouse logistics automation. Applied systems engineering to human biology, reaching top 1% sports performance. Spent a year mastering nutrient science to build this.
+                    </p>
+                </div>
+                
+                <!-- Table of Contents -->
+                <div class="sidebar-section">
+                    <h3>In this article</h3>
+                    <ul class="toc">
+                        <li><a href="#calorie-problem">The Calorie Counting Fallacy</a></li>
+                        <li><a href="#micronutrient-mastery">The 27 Essential Micronutrients</a></li>
+                        <li><a href="#real-time-tracking">How Real-Time Micronutrient Tracking Works</a></li>
+                        <li><a href="#personalized-needs">Personalized Nutrient Requirements</a></li>
+                        <li><a href="#deficiency-detection">Early Deficiency Detection</a></li>
+                        <li><a href="#synergy-understanding">Understanding Nutrient Synergies</a></li>
+                        <li><a href="#privacy-approach">Privacy-First Micronutrient Tracking</a></li>
+                        <li><a href="#real-world-impact">Real-World Health Impact</a></li>
+                        <li><a href="#future-developments">Future Developments</a></li>
+                        <li><a href="#beyond-tracking">Beyond Tracking: Intelligent Nutrition</a></li>
+                        <li><a href="#conclusion">The Future of Personalized Nutrition</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Share Buttons -->
+                <div class="sidebar-section">
+                    <h3>Share this article</h3>
+                    <div class="share-buttons">
+                        <button class="share-btn twitter" onclick="shareArticle('twitter')">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button class="share-btn linkedin" onclick="shareArticle('linkedin')">
+                            <i class="fab fa-linkedin-in"></i>
+                        </button>
+                        <button class="share-btn link" onclick="copyArticleLink()">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Newsletter -->
+                <div class="sidebar-section">
+                    <h3>Get more like this</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: var(--space-sm); color: var(--text-secondary);">
+                        Subscribe for weekly articles on nutrition science, personalized health, and building VITA in public.
+                    </p>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" placeholder="Your email" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Join the Nutrition Science Revolution</h2>
+                <p>Get weekly insights on personalized nutrition, micronutrient science, and building health technology that respects your privacy.</p>
+                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div>
+                    <div class="footer-logo">VITA</div>
+                    <p style="color: rgba(255, 255, 255, 0.8); max-width: 300px; font-size: 0.95rem;">
+                        Personal Health Intelligence for Your Home
+                    </p>
+                </div>
+                <div class="footer-links">
+                    <a href="../index.html">Home</a>
+                    <a href="../blog.html">Blog</a>
+                    <a href="../contact.html">Contact</a>
+                    <a href="../privacy.html">Privacy</a>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                © VITA Devices | Designed in Europe | Building in Public since 2024
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu functionality
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
+        }
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const mobileNav = document.getElementById('mobileNav');
+            const toggleBtn = document.querySelector('.mobile-menu-toggle');
+            
+            if (!mobileNav.contains(e.target) && !toggleBtn.contains(e.target)) {
+                mobileNav.classList.remove('active');
+            }
+        });
+        
+        // Track article views
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate view count (in production, this would come from your analytics)
+            const viewCount = document.getElementById('viewCount');
+            const baseViews = 582;
+            const randomIncrement = Math.floor(Math.random() * 28);
+            viewCount.textContent = `${(baseViews + randomIncrement).toLocaleString()} views`;
+            
+            // Initialize back to top button
+            const backToTopButton = document.getElementById('backToTop');
+            
+            // Show/hide back to top button based on scroll position
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
+            
+            // Back to top functionality
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Smooth scrolling for table of contents links
+            document.querySelectorAll('.toc a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove the hash from the href and get the target id
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        // Calculate position with offset for fixed header
+                        const headerOffset = 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Animate nutrient meter fills on scroll
+            const observerOptions = {
+                threshold: 0.5
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const meterFill = entry.target.querySelector('.meter-fill');
+                        if (meterFill) {
+                            // Reset to 0 then animate to target width
+                            meterFill.style.width = '0%';
+                            setTimeout(() => {
+                                meterFill.style.width = meterFill.dataset.targetWidth || '65%';
+                            }, 100);
+                        }
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe all nutrient meters
+            document.querySelectorAll('.nutrient-meter').forEach(meter => {
+                observer.observe(meter);
+            });
+            
+            // Set up share buttons with real URLs
+            setupShareButtons();
+        });
+        
+        // Share functionality
+        function setupShareButtons() {
+            // Current page URL and title
+            const pageUrl = encodeURIComponent(window.location.href);
+            const pageTitle = encodeURIComponent(document.title);
+            const pageDescription = encodeURIComponent("Beyond Calorie Counting: Tracking Micronutrients in Real-Time");
+            
+            // Twitter share URL
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${pageTitle}&url=${pageUrl}&hashtags=Micronutrients,NutritionScience,HealthTech`;
+            
+            // LinkedIn share URL
+            const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}`;
+            
+            // Store URLs in data attributes
+            document.querySelector('.share-btn.twitter').dataset.shareUrl = twitterUrl;
+            document.querySelector('.share-btn.linkedin').dataset.shareUrl = linkedinUrl;
+        }
+        
+        function shareArticle(platform) {
+            let shareUrl;
+            
+            if (platform === 'twitter') {
+                shareUrl = document.querySelector('.share-btn.twitter').dataset.shareUrl;
+            } else if (platform === 'linkedin') {
+                shareUrl = document.querySelector('.share-btn.linkedin').dataset.shareUrl;
+            }
+            
+            if (shareUrl) {
+                window.open(shareUrl, '_blank', 'width=600,height=400');
+            }
+        }
+        
+        function copyArticleLink() {
+            const url = window.location.href;
+            
+            // Use the Clipboard API if available
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showNotification('Link copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    fallbackCopyTextToClipboard(url);
+                });
+            } else {
+                fallbackCopyTextToClipboard(url);
+            }
+        }
+        
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showNotification('Link copied to clipboard!');
+                } else {
+                    showNotification('Failed to copy link.');
+                }
+            } catch (err) {
+                console.error('Fallback copy failed: ', err);
+                showNotification('Failed to copy link.');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        function showNotification(message) {
+            // Remove any existing notification
+            const existingNotification = document.querySelector('.copy-notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            // Create notification
+            const notification = document.createElement('div');
+            notification.className = 'copy-notification';
+            notification.innerHTML = `
+                <div style="position: fixed; top: 20px; right: 20px; background-color: var(--primary); color: white; padding: 1rem 1.5rem; border-radius: var(--radius-md); z-index: 3000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 0.9rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-check-circle"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // Newsletter subscription
+        function subscribeNewsletter(event) {
+            event.preventDefault();
+            const emailInput = event.target.querySelector('input[type="email"]');
+            const email = emailInput.value;
+            
+            // Basic validation
+            if (!email || !email.includes('@')) {
+                showNotification('Please enter a valid email address.');
+                return;
+            }
+            
+            // In a real implementation, this would connect to your newsletter service
+            showNotification(`Thank you! You've subscribed with: ${email}`);
+            emailInput.value = '';
+            
+            // Here you would typically send the email to your backend
+            console.log('Newsletter subscription:', email);
+        }
+    </script>
+</body>
+</html>

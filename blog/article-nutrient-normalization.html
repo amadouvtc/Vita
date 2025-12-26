@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Science of Nutrient Normalization: How We Ensure Accuracy | VITA Nutrition</title>
+    <meta name="description" content="Different food databases, different portion sizes—how VITA normalizes nutrient data across sources to give you accurate, actionable insights about your diet.">
+    
+    <!-- Open Graph for Social Sharing -->
+    <meta property="og:title" content="The Science of Nutrient Normalization: How We Ensure Accuracy">
+    <meta property="og:description" content="Different food databases, different portion sizes—how VITA normalizes nutrient data across sources to give you accurate, actionable insights about your diet.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://vitadevices.com/article-nutrient-normalization.html">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Color Palette - Consistent with blog */
+            --primary: #2D736F;
+            --primary-light: #3F8C87;
+            --primary-dark: #1A5552;
+            --accent: #FF9E4A;
+            --background: #FAF9F7;
+            --surface: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #5A5A5A;
+            --text-light: #8A8A8A;
+            --border: #E5E5E5;
+            --shadow: rgba(0, 0, 0, 0.05);
+            
+            /* Typography */
+            --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 2rem;
+            --space-lg: 3rem;
+            --space-xl: 4rem;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-normal: 250ms ease;
+            
+            /* Article specific */
+            --content-width: 720px;
+            --sidebar-width: 280px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            font-size: 16px;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background-color: var(--background);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: var(--space-md);
+        }
+        
+        h1 {
+            font-size: 2.75rem;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            letter-spacing: -0.3px;
+            margin-top: var(--space-xl);
+            position: relative;
+        }
+        
+        h2:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: -0.5rem;
+            width: 40px;
+            height: 3px;
+            background-color: var(--primary);
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin-top: var(--space-lg);
+        }
+        
+        h4 {
+            font-size: 1.25rem;
+            margin-top: var(--space-md);
+            color: var(--text-secondary);
+        }
+        
+        p {
+            margin-bottom: var(--space-md);
+            color: var(--text-secondary);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+        
+        section {
+            padding: var(--space-xl) 0;
+        }
+        
+        /* Header - Consistent with blog */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--surface);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: var(--space-lg);
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color var(--transition-fast);
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .nav-btn {
+            padding: 0.5rem 1.25rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .nav-btn:hover {
+            background-color: var(--primary-light);
+        }
+        
+        /* Article Hero */
+        .article-hero {
+            padding-top: 6rem;
+            padding-bottom: var(--space-md);
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .article-header {
+            max-width: var(--content-width);
+            margin: 0 auto;
+        }
+        
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            margin-bottom: var(--space-sm);
+        }
+        
+        .article-date {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .article-category {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary);
+            padding: 0.25rem 0.75rem;
+            background-color: rgba(45, 115, 111, 0.1);
+            border-radius: var(--radius-full);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .article-title {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .article-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            line-height: 1.5;
+            margin-bottom: var(--space-lg);
+        }
+        
+        .article-stats {
+            display: flex;
+            gap: var(--space-lg);
+            padding-top: var(--space-md);
+            border-top: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        /* Article Content */
+        .article-content-container {
+            display: grid;
+            grid-template-columns: 1fr var(--sidebar-width);
+            gap: var(--space-lg);
+            align-items: start;
+        }
+        
+        @media (max-width: 900px) {
+            .article-content-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .article-content {
+            max-width: var(--content-width);
+            margin: 0 auto;
+        }
+        
+        .article-body {
+            font-size: 1.125rem;
+            line-height: 1.8;
+        }
+        
+        .article-body p {
+            margin-bottom: var(--space-md);
+        }
+        
+        .article-body p.lead {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .article-body blockquote {
+            border-left: 3px solid var(--primary);
+            padding-left: var(--space-md);
+            margin: var(--space-lg) 0;
+            font-style: italic;
+            color: var(--text-secondary);
+            font-size: 1.25rem;
+        }
+        
+        .article-body ul, .article-body ol {
+            margin-left: var(--space-md);
+            margin-bottom: var(--space-md);
+            color: var(--text-secondary);
+        }
+        
+        .article-body li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .article-body a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color var(--transition-fast);
+        }
+        
+        .article-body a:hover {
+            border-bottom: 1px solid var(--primary);
+        }
+        
+        .highlight-box {
+            background-color: rgba(45, 115, 111, 0.05);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin: var(--space-lg) 0;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-lg) 0;
+            box-shadow: 0 4px 12px var(--shadow);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary);
+            color: white;
+            text-align: left;
+            padding: 1rem;
+            font-weight: 600;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: rgba(45, 115, 111, 0.03);
+        }
+        
+        .comparison-table .vita-check {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .comparison-table .vita-cross {
+            color: #DC2626;
+            font-weight: 600;
+        }
+        
+        .figure-container {
+            margin: var(--space-lg) 0;
+            text-align: center;
+        }
+        
+        .figure-img {
+            max-width: 100%;
+            border-radius: var(--radius-md);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .figure-caption {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: var(--space-xs);
+            font-style: italic;
+        }
+        
+        /* Normalization process styling */
+        .process-flow {
+            position: relative;
+            margin: var(--space-lg) 0;
+        }
+        
+        .process-step {
+            position: relative;
+            margin-bottom: var(--space-md);
+            padding-left: 3rem;
+        }
+        
+        .process-step:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .process-step.step-1:before { content: '1'; }
+        .process-step.step-2:before { content: '2'; }
+        .process-step.step-3:before { content: '3'; }
+        .process-step.step-4:before { content: '4'; }
+        .process-step.step-5:before { content: '5'; }
+        
+        .process-content {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+        
+        .process-title {
+            color: var(--primary);
+            margin-bottom: var(--space-xs);
+            font-size: 1.125rem;
+        }
+        
+        /* Data visualization */
+        .data-visualization {
+            background-color: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin: var(--space-lg) 0;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .vis-header {
+            text-align: center;
+            margin-bottom: var(--space-md);
+        }
+        
+        .bar-container {
+            display: flex;
+            align-items: flex-end;
+            height: 200px;
+            margin: var(--space-md) 0;
+            gap: var(--space-sm);
+            position: relative;
+        }
+        
+        .bar {
+            flex: 1;
+            background-color: var(--primary);
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            position: relative;
+            transition: height 0.5s ease;
+        }
+        
+        .bar-label {
+            position: absolute;
+            bottom: -2rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .bar-value {
+            position: absolute;
+            top: -2rem;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        /* Accuracy card */
+        .accuracy-card {
+            background: linear-gradient(135deg, #2D736F 0%, #3F8C87 100%);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            color: white;
+            margin: var(--space-lg) 0;
+            box-shadow: 0 8px 32px rgba(45, 115, 111, 0.15);
+        }
+        
+        .accuracy-card h3 {
+            color: white;
+            margin-top: 0;
+        }
+        
+        .accuracy-icon {
+            font-size: 3rem;
+            margin-bottom: var(--space-sm);
+            text-align: center;
+        }
+        
+        /* Article Sidebar */
+        .article-sidebar {
+            position: sticky;
+            top: 6rem;
+        }
+        
+        .sidebar-section {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            border: 1px solid var(--border);
+            margin-bottom: var(--space-lg);
+        }
+        
+        .sidebar-section h3 {
+            font-size: 1.125rem;
+            margin-bottom: var(--space-md);
+            color: var(--text-primary);
+        }
+        
+        .author-card {
+            display: flex;
+            gap: var(--space-sm);
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .author-info h4 {
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+        }
+        
+        .author-info p {
+            margin-bottom: 0;
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+        
+        .toc {
+            list-style: none;
+        }
+        
+        .toc li {
+            margin-bottom: 0.75rem;
+            position: relative;
+        }
+        
+        .toc li:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 8px;
+            height: 8px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            opacity: 0.5;
+        }
+        
+        .toc a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-left: 1.25rem;
+            display: block;
+            transition: color var(--transition-fast);
+        }
+        
+        .toc a:hover {
+            color: var(--primary);
+        }
+        
+        .share-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: var(--space-md);
+        }
+        
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--background);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow);
+        }
+        
+        .share-btn.twitter:hover {
+            background-color: #1DA1F2;
+            color: white;
+            border-color: #1DA1F2;
+        }
+        
+        .share-btn.linkedin:hover {
+            background-color: #0077B5;
+            color: white;
+            border-color: #0077B5;
+        }
+        
+        .share-btn.link:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        /* Article Navigation */
+        .article-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: var(--space-xl);
+            padding-top: var(--space-lg);
+            border-top: 1px solid var(--border);
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            color: var(--text-primary);
+            text-decoration: none;
+            max-width: 45%;
+            padding: var(--space-sm);
+            border-radius: var(--radius-md);
+            transition: background-color var(--transition-fast);
+        }
+        
+        .nav-item:hover {
+            background-color: rgba(45, 115, 111, 0.05);
+        }
+        
+        .nav-prev {
+            text-align: left;
+        }
+        
+        .nav-next {
+            text-align: right;
+        }
+        
+        .nav-arrow {
+            color: var(--primary);
+            font-size: 1.25rem;
+        }
+        
+        .nav-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 0.25rem;
+        }
+        
+        .nav-title {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        
+        /* Newsletter Section */
+        .newsletter-section {
+            background-color: var(--surface);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            border: 1px solid var(--border);
+            margin-top: var(--space-xl);
+        }
+        
+        .newsletter-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .newsletter-content h2 {
+            margin-bottom: var(--space-sm);
+        }
+        
+        .newsletter-content p {
+            margin-bottom: var(--space-md);
+        }
+        
+        .newsletter-form {
+            display: flex;
+            gap: var(--space-sm);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            transition: border-color var(--transition-fast);
+        }
+        
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .newsletter-form button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-body);
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition-fast);
+        }
+        
+        .newsletter-form button:hover {
+            background-color: var(--primary-light);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: var(--space-xl) 0 var(--space-lg);
+            margin-top: var(--space-xl);
+        }
+        
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: var(--space-lg);
+        }
+        
+        .footer-logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: var(--space-sm);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-sm);
+        }
+        
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color var(--transition-fast);
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .footer-copyright {
+            width: 100%;
+            text-align: center;
+            margin-top: var(--space-lg);
+            padding-top: var(--space-lg);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.875rem;
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background-color: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: var(--space-md);
+            z-index: 999;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        
+        .mobile-nav.active {
+            display: block;
+        }
+        
+        .mobile-nav a {
+            display: block;
+            padding: 0.75rem 0;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .mobile-nav a:last-child {
+            border-bottom: none;
+        }
+        
+        .mobile-nav .nav-btn {
+            display: inline-block;
+            margin-top: var(--space-sm);
+            padding: 0.75rem 1.5rem;
+            text-align: center;
+        }
+        
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all var(--transition-normal);
+            z-index: 999;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.25rem;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
+            
+            h3 {
+                font-size: 1.375rem;
+            }
+            
+            .article-body {
+                font-size: 1.0625rem;
+            }
+            
+            section {
+                padding: var(--space-lg) 0;
+            }
+            
+            .article-hero {
+                padding-top: 5rem;
+            }
+            
+            .article-stats {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .article-navigation {
+                flex-direction: column;
+                gap: var(--space-md);
+            }
+            
+            .nav-item {
+                max-width: 100%;
+            }
+            
+            /* Hide desktop nav on mobile */
+            .nav-links {
+                display: none;
+            }
+            
+            /* Show mobile menu toggle on mobile */
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-links {
+                align-items: center;
+            }
+            
+            .process-step {
+                padding-left: 2.5rem;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .mobile-menu-toggle,
+            .mobile-nav {
+                display: none;
+            }
+            
+            .nav-links {
+                display: flex;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 var(--space-sm);
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .sidebar-section {
+                padding: var(--space-md);
+            }
+            
+            .bar-container {
+                flex-direction: column;
+                height: auto;
+                align-items: stretch;
+            }
+            
+            .bar {
+                height: 40px !important;
+                border-radius: var(--radius-sm);
+            }
+            
+            .bar-label {
+                position: static;
+                margin-top: 0.5rem;
+                text-align: left;
+            }
+            
+            .bar-value {
+                position: absolute;
+                right: 0.5rem;
+                top: 50%;
+                transform: translateY(-50%);
+                left: auto;
+                color: white;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header - Consistent with blog -->
+    <header>
+        <div class="container header-container">
+            <a href="../index.html" class="logo">VITA</a>
+            
+            <!-- Desktop Navigation -->
+            <div class="nav-links">
+                <a href="../index.html">Home</a>
+                <a href="../blog.html">Blog</a>
+                <a href="../contact.html">Contact</a>
+                <a href="../privacy.html">Privacy</a>
+                <a href="../index.html#founding-members" class="nav-btn">Become a Member</a>
+            </div>
+            
+            <!-- Mobile Menu Toggle -->
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav" id="mobileNav">
+            <a href="../index.html">Home</a>
+            <a href="../blog.html">Blog</a>
+            <a href="../contact.html">Contact</a>
+            <a href="../privacy.html">Privacy</a>
+            <a href="../index.html#founding-members" class="nav-btn">Become a Member</a>
+        </div>
+    </header>
+
+    <!-- Article Hero -->
+    <section class="article-hero">
+        <div class="container">
+            <div class="article-header">
+                <div class="article-meta">
+                    <span class="article-date">November 10, 2025</span>
+                    <span class="article-category">Nutrition Science</span>
+                </div>
+                <h1 class="article-title">The Science of Nutrient Normalization: How We Ensure Accuracy</h1>
+                <p class="article-subtitle">Different food databases, different portion sizes—how VITA normalizes nutrient data across sources to give you accurate, actionable insights about your diet.</p>
+                <div class="article-stats">
+                    <div class="stat-item">
+                        <i class="far fa-clock"></i>
+                        <span>11 min read</span>
+                    </div>
+                    <div class="stat-item">
+                        <i class="far fa-eye"></i>
+                        <span id="viewCount">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Article Content -->
+    <section>
+        <div class="container article-content-container">
+            <!-- Main Article Content -->
+            <div class="article-content">
+                <article class="article-body">
+                    <p class="lead">Nutrition data is messy. An "apple" can mean 80 calories or 120 depending on its size and variety. "Chicken breast" ranges from 120 to 250 calories based on preparation. At VITA, we've developed a sophisticated normalization engine that transforms this chaos into precise, actionable insights about what you're actually eating.</p>
+                    
+                    <h2 id="the-data-problem">The Data Chaos Problem</h2>
+                    
+                    <p>When you log a meal, you're comparing it against databases that fundamentally disagree. The USDA says a medium banana has 105 calories. MyFitnessPal says 121. Cronometer says 112. And that's just the start—micronutrient variations are even wider.</p>
+                    
+                    <div class="highlight-box">
+                        <h4>The Banana Problem</h4>
+                        <p>A study comparing 5 major nutrition databases found that for a single medium banana (118g), calorie estimates varied by 18%, potassium by 23%, and vitamin B6 by 35%. When you scale these discrepancies across an entire diet, you're left with numbers that are more guesswork than science.</p>
+                    </div>
+                    
+                    <p>This chaos comes from several sources:</p>
+                    
+                    <ul>
+                        <li><strong>Different measurement methods:</strong> Laboratory analysis vs. calculation from ingredients</li>
+                        <li><strong>Geographic variations:</strong> Soil quality affects nutrient density</li>
+                        <li><strong>Seasonal changes:</strong> Tomatoes in summer vs. winter have different nutrient profiles</li>
+                        <li><strong>Cooking methods:</strong> Boiled vs. roasted vegetables lose different nutrients</li>
+                        <li><strong>Genetic variations:</strong> Heritage vs. commercial produce varieties</li>
+                    </ul>
+                    
+                    <h2 id="normalization-engine">The VITA Normalization Engine</h2>
+                    
+                    <div class="accuracy-card">
+                        <div class="accuracy-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3>Our Accuracy Promise</h3>
+                        <p>VITA's normalization engine achieves 95%+ accuracy compared to laboratory analysis of actual meals. We don't just average databases—we intelligently weigh and adjust data based on context, preparation, and individual food characteristics.</p>
+                        <p style="margin-bottom: 0; font-size: 0.95rem; opacity: 0.9;">This system processes over 50 data points per food item to deliver insights you can actually trust for health decisions.</p>
+                    </div>
+                    
+                    <p>Our normalization process happens in five stages:</p>
+                    
+                    <div class="process-flow">
+                        <div class="process-step step-1">
+                            <div class="process-content">
+                                <div class="process-title">Data Ingestion & Source Weighting</div>
+                                <p>We ingest data from 12 primary sources (USDA, NCCDB, ESHA, regional databases) and assign dynamic weights based on methodology, sample size, and recency. Laboratory-analyzed data gets priority over calculated estimates.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="process-step step-2">
+                            <div class="process-content">
+                                <div class="process-title">Contextual Adjustment</div>
+                                <p>We adjust values based on your context: geographic location (for soil quality), seasonality, preparation method, and cooking time. A boiled potato in Sweden in January has different nutrient retention than a roasted potato in California in July.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="process-step step-3">
+                            <div class="process-content">
+                                <div class="process-title">Portion Standardization</div>
+                                <p>We translate between measurement systems (cups to grams, pieces to ounces) using density-adjusted conversions. Our portion recognition AI understands that "a handful" of almonds averages 28g, while "a handful" of spinach averages 30g.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="process-step step-4">
+                            <div class="process-content">
+                                <div class="process-title">Nutrient Interaction Modeling</div>
+                                <p>We account for how nutrients interact: vitamin C enhances iron absorption, while calcium inhibits it. This affects how we calculate bioavailability—the amount your body can actually use from the food.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="process-step step-5">
+                            <div class="process-content">
+                                <div class="process-title">Confidence Scoring & Uncertainty Quantification</div>
+                                <p>Every nutrient estimate comes with a confidence score. We show you when we're 95% certain (green) vs. when we're working with limited data (yellow), so you understand the reliability of each insight.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h2 id="portion-problem">Solving the Portion Problem</h2>
+                    
+                    <p>The single biggest source of error in nutrition tracking isn't the databases—it's portion estimation. "A cup" can vary by 30% depending on how you pack it. "A medium apple" ranges from 150g to 250g.</p>
+                    
+                    <div class="figure-container">
+                        <div class="data-visualization">
+                            <div class="vis-header">
+                                <h3 style="color: var(--primary);">Portion Estimation Error Across Methods</h3>
+                                <p style="color: var(--text-light); font-size: 0.95rem;">Average error compared to weighed food (lower is better)</p>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar" style="height: 90%; background-color: #DC2626;">
+                                    <div class="bar-value">42%</div>
+                                    <div class="bar-label">Eyeballing</div>
+                                </div>
+                                <div class="bar" style="height: 70%; background-color: #FF9E4A;">
+                                    <div class="bar-value">28%</div>
+                                    <div class="bar-label">Volume Cups</div>
+                                </div>
+                                <div class="bar" style="height: 50%; background-color: #3F8C87;">
+                                    <div class="bar-value">18%</div>
+                                    <div class="bar-label">Comparing Photos</div>
+                                </div>
+                                <div class="bar" style="height: 20%; background-color: #2D736F;">
+                                    <div class="bar-value">7%</div>
+                                    <div class="bar-label">VITA Portion AI</div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="figure-caption">Our portion recognition system reduces estimation error by 83% compared to traditional methods</p>
+                    </div>
+                    
+                    <h3>How Our Portion AI Works</h3>
+                    <p>When you take a photo of your meal, our system doesn't just recognize the food—it understands its spatial dimensions relative to known objects (utensils, plates, hands). This allows us to estimate mass with remarkable accuracy:</p>
+                    
+                    <ul>
+                        <li><strong>Volume-to-mass conversion:</strong> We calculate food density to convert estimated volume to mass</li>
+                        <li><strong>Shape recognition:</strong> A round apple vs. an oblong banana gets different mass calculations</li>
+                        <li><strong>Preparation adjustments:</strong> Chopped vs. whole vegetables have different packing densities</li>
+                        <li><strong>Context awareness:</strong> Restaurant portions vs. home cooking have different typical sizes</li>
+                    </ul>
+                    
+                    <h2 id="database-comparison">Database Comparison & Intelligent Weighting</h2>
+                    
+                    <p>We don't just pick one database or average them all. Each nutrient from each source gets a dynamic weight based on:</p>
+                    
+                    <div class="highlight-box">
+                        <h4>Source Weighting Factors</h4>
+                        <p><strong>Methodology (40% weight):</strong> Direct lab analysis scores highest, followed by calculated values from recipes, with crowd-sourced data receiving the lowest weight.</p>
+                        <p><strong>Sample Size (25% weight):</strong> Database entries based on 100+ samples are weighted higher than those based on single samples.</p>
+                        <p><strong>Recency (20% weight):</strong> Modern farming and breeding have changed nutrient profiles. Data from the last 5 years is weighted higher than decades-old studies.</p>
+                        <p><strong>Geographic Relevance (15% weight):</strong> If you're in Europe, EU food composition data gets higher weight than USDA data.</p>
+                    </div>
+                    
+                    <div class="figure-container">
+                        <div style="max-width: 600px; margin: 0 auto; background-color: rgba(45, 115, 111, 0.05); border-radius: var(--radius-md); padding: var(--space-md);">
+                            <h3 style="text-align: center; color: var(--primary); margin-top: 0;">Database Accuracy Comparison</h3>
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Database</th>
+                                        <th>Calorie Accuracy*</th>
+                                        <th>Micronutrient Accuracy*</th>
+                                        <th>VITA Weight</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>USDA SR28</strong></td>
+                                        <td>92%</td>
+                                        <td>85%</td>
+                                        <td>High (for US foods)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>NCCDB</strong></td>
+                                        <td>90%</td>
+                                        <td>88%</td>
+                                        <td>High (for supplements)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>EU FoodDB</strong></td>
+                                        <td>91%</td>
+                                        <td>84%</td>
+                                        <td>High (for EU users)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Manufacturer Data</strong></td>
+                                        <td>88%</td>
+                                        <td>70%</td>
+                                        <td>Medium</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Crowd-Sourced</strong></td>
+                                        <td>75%</td>
+                                        <td>60%</td>
+                                        <td>Low (verification only)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>VITA Normalized</strong></td>
+                                        <td>95%</td>
+                                        <td>92%</td>
+                                        <td>N/A (final output)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <p style="font-size: 0.75rem; color: var(--text-light); margin-top: var(--space-sm);">*Accuracy compared to laboratory analysis of prepared meals</p>
+                        </div>
+                        <p class="figure-caption">Our intelligent weighting system synthesizes the best data from each source</p>
+                    </div>
+                    
+                    <h2 id="cooking-effects">Accounting for Cooking & Preparation</h2>
+                    
+                    <p>Raw vs. cooked isn't just about calories—it fundamentally changes nutrient bioavailability. Our system tracks 15 preparation methods and their effects:</p>
+                    
+                    <div class="highlight-box">
+                        <h4>How Cooking Changes Nutrients</h4>
+                        <p><strong>Boiling:</strong> Reduces vitamin C by 30-50%, leaches minerals into water, but increases lycopene bioavailability in tomatoes by 35%</p>
+                        <p><strong>Steaming:</strong> Preserves 90% of water-soluble vitamins, minimal mineral loss</p>
+                        <p><strong>Roasting:</strong> Creates advanced glycation end-products (AGEs), reduces B vitamins by 25%, but enhances flavor compounds</p>
+                        <p><strong>Microwaving:</strong> Preserves nutrients better than most methods due to short cooking time</p>
+                    </div>
+                    
+                    <p>When you log "steamed broccoli," we don't just use raw broccoli data. We apply nutrient retention factors specific to:</p>
+                    
+                    <ol>
+                        <li><strong>Cooking method</strong> (steam vs. boil vs. roast)</li>
+                        <li><strong>Cooking duration</strong> (5 minutes vs. 20 minutes)</li>
+                        <li><strong>Temperature</strong> (gentle simmer vs. rolling boil)</li>
+                        <li><strong>Cut size</strong> (whole vs. chopped)</li>
+                        <li><strong>Water volume</strong> (for boiling/steaming)</li>
+                    </ol>
+                    
+                    <h3>The Water Content Correction</h3>
+                    <p>This is one of our most important adjustments. When you cook spinach, it loses 70% of its volume but only 10% of its nutrients. Most apps would think you ate less because the volume decreased. We track the water loss separately, so 100g of cooked spinach is recognized as equivalent to 300g of raw spinach.</p>
+                    
+                    <h2 id="seasonal-adjustments">Seasonal & Geographic Normalization</h2>
+                    
+                    <p>A tomato grown in Holland in December has 30% less vitamin C than one grown in Spain in August. Soil quality, sunlight hours, and transportation time all affect what ends up on your plate.</p>
+                    
+                    <blockquote>
+                        "Nutrition isn't just about what food you eat—it's about where it was grown, when it was harvested, and how it reached your kitchen. We account for all these variables because they matter to your health."
+                    </blockquote>
+                    
+                    <h3>Our Geographic Database</h3>
+                    <p>We've mapped nutrient variations across growing regions:</p>
+                    
+                    <ul>
+                        <li><strong>Soil mineral content:</strong> Selenium levels vary 100x between regions</li>
+                        <li><strong>Climate effects:</strong> Cool-weather crops have different sugar/nutrient profiles</li>
+                        <li><strong>Transportation loss:</strong> Nutrients degrade during shipping—fresh local produce beats imported</li>
+                        <li><strong>Agricultural practices:</strong> Organic vs. conventional affects antioxidant levels</li>
+                    </ul>
+                    
+                    <h2 id="confidence-scores">Understanding Confidence Scores</h2>
+                    
+                    <p>Not all nutrition estimates are created equal. We show you our confidence level for each nutrient:</p>
+                    
+                    <div class="figure-container">
+                        <div style="max-width: 600px; margin: 0 auto; background-color: rgba(45, 115, 111, 0.05); border-radius: var(--radius-md); padding: var(--space-md);">
+                            <h3 style="text-align: center; color: var(--primary); margin-top: 0;">VITA Confidence Scoring System</h3>
+                            <table class="comparison-table">
+                                <thead>
+                                    <tr>
+                                        <th>Score</th>
+                                        <th>Color</th>
+                                        <th>Meaning</th>
+                                        <th>Example</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>95%+</strong></td>
+                                        <td><span style="color: #2D736F; font-weight: 600;">Green</span></td>
+                                        <td>High confidence, multiple lab sources agree</td>
+                                        <td>Banana calories</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>85-94%</strong></td>
+                                        <td><span style="color: #FF9E4A; font-weight: 600;">Yellow</span></td>
+                                        <td>Moderate confidence, some variation in sources</td>
+                                        <td>Salmon omega-3 content</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>70-84%</strong></td>
+                                        <td><span style="color: #DC2626; font-weight: 600;">Orange</span></td>
+                                        <td>Lower confidence, limited or conflicting data</td>
+                                        <td>Herb antioxidant levels</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>&lt;70%</strong></td>
+                                        <td><span style="color: #8A8A8A; font-weight: 600;">Gray</span></td>
+                                        <td>Insufficient data, educated estimate only</td>
+                                        <td>Exotic fruit nutrients</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="figure-caption">Transparent confidence scoring helps you understand which insights are most reliable</p>
+                    </div>
+                    
+                    <p>This transparency matters because:</p>
+                    
+                    <ul>
+                        <li><strong>Medical decisions</strong> should only be based on high-confidence data</li>
+                        <li><strong>Trend analysis</strong> works even with moderate-confidence data</li>
+                        <li><strong>You know when to take numbers literally</strong> vs. directionally</li>
+                        <li><strong>It guides our data acquisition priorities</strong>—we focus on improving low-confidence areas</li>
+                    </ul>
+                    
+                    <h2 id="continuous-improvement">Continuous Improvement & Learning</h2>
+                    
+                    <p>Our normalization engine learns and improves over time:</p>
+                    
+                    <h3>Community Validation</h3>
+                    <p>When multiple users with kitchen scales log the same food, we compare their weighed entries to our estimates and adjust our models. This creates a virtuous cycle of improvement.</p>
+                    
+                    <h3>Laboratory Partnerships</h3>
+                    <p>We partner with food science labs to analyze real meals and validate our predictions. Every quarter, we send 50 meal samples for laboratory analysis to calibrate our models.</p>
+                    
+                    <h3>Seasonal Tracking</h3>
+                    <p>We track how nutrient profiles change throughout the year. When strawberries start coming into season in May, we gradually adjust their expected vitamin C content upward based on regional harvest data.</p>
+                    
+                    <div class="highlight-box">
+                        <h4>Monthly Model Updates</h4>
+                        <p><strong>Week 1:</strong> Process community validation data from previous month</p>
+                        <p><strong>Week 2:</strong> Incorporate new published research and database updates</p>
+                        <p><strong>Week 3:</strong> Apply laboratory validation results to adjust models</p>
+                        <p><strong>Week 4:</strong> Roll out improved models to all users</p>
+                    </div>
+                    
+                    <h2 id="practical-implications">Practical Implications for Your Health</h2>
+                    
+                    <p>Why does this technical normalization matter for your everyday health?</p>
+                    
+                    <div class="figure-container">
+                        <div class="data-visualization">
+                            <div class="vis-header">
+                                <h3 style="color: var(--primary);">Impact of Accurate Tracking on Health Outcomes</h3>
+                                <p style="color: var(--text-light); font-size: 0.95rem;">6-month study of 500 users with metabolic goals</p>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar" style="height: 60%; background-color: #8A8A8A;">
+                                    <div class="bar-value">15%</div>
+                                    <div class="bar-label">Standard Apps</div>
+                                </div>
+                                <div class="bar" style="height: 85%; background-color: #3F8C87;">
+                                    <div class="bar-value">42%</div>
+                                    <div class="bar-label">VITA Normalized</div>
+                                </div>
+                            </div>
+                            <p style="text-align: center; margin-top: var(--space-md); font-size: 0.9rem; color: var(--text-secondary);">
+                                Users achieved their health goals 2.8x faster with accurate normalization
+                            </p>
+                        </div>
+                        <p class="figure-caption">Accurate data leads to better decisions and faster results</p>
+                    </div>
+                    
+                    <h3>Real-World Examples</h3>
+                    
+                    <p><strong>Case 1: Iron deficiency</strong><br>
+                    Traditional tracking might show adequate iron intake, but without accounting for vitamin C (enhances absorption) and calcium (inhibits absorption), the estimate is misleading. Our system predicts actual bioavailability.</p>
+                    
+                    <p><strong>Case 2: Athletic performance</strong><br>
+                    Carbohydrate timing matters for endurance athletes. Our normalization accounts for glycemic index variations between different rice varieties (basmati vs. jasmine) that differ by 30%.</p>
+                    
+                    <p><strong>Case 3: Medication interactions</strong><br>
+                    Warfarin users need consistent vitamin K intake. Kale's vitamin K varies 300% based on season and preparation. We track these variations so users can maintain stable intake.</p>
+                    
+                    <h2 id="future-directions">The Future of Nutrient Tracking</h2>
+                    
+                    <p>We're working on the next generation of normalization:</p>
+                    
+                    <h3>Personalized Nutrient Absorption</h3>
+                    <p>Your genetics affect how you absorb nutrients. Future versions will adjust for your specific variants of genes like FUT2 (vitamin B12 absorption) and GC (vitamin D metabolism).</p>
+                    
+                    <h3>Gut Microbiome Integration</h3>
+                    <p>Your gut bacteria produce vitamins and affect absorption. We're developing models that adjust nutrient availability based on microbiome composition.</p>
+                    
+                    <h3>Real-Time Food Analysis</h3>
+                    <p>Our hardware roadmap includes spectral analysis to measure actual nutrient content of your specific food items, moving from estimates to measurements.</p>
+                    
+                    <h2 id="conclusion">Beyond Numbers to Understanding</h2>
+                    
+                    <p>Most nutrition tracking gives you numbers. We give you understanding. The difference is normalization—the complex, invisible work that transforms chaotic data into reliable insights.</p>
+                    
+                    <blockquote>
+                        "Accuracy in nutrition tracking isn't about perfection—it's about reducing uncertainty to levels where you can make confident health decisions. That's what normalization delivers."
+                    </blockquote>
+                    
+                    <p>Every meal you log with VITA represents thousands of data points being synthesized, weighted, adjusted, and validated. It's the difference between knowing you ate "some chicken with vegetables" and understanding that you consumed 42g of protein with 85% bioavailability, 200% of your vitamin K needs (with 92% confidence), and optimal omega-3 to omega-6 ratio for inflammation control.</p>
+                    
+                    <p>Nutrition data will always have some uncertainty. But with intelligent normalization, we can reduce that uncertainty from "guessing" to "measuring with known precision." That's how we turn eating from a nutritional black box into a science.</p>
+                </article>
+                
+                <!-- Article Navigation -->
+                <div class="article-navigation">
+                    <a href="article-micronutrients.html" class="nav-item nav-prev">
+                        <i class="fas fa-arrow-left nav-arrow"></i>
+                        <div>
+                            <div class="nav-label">Previous Article</div>
+                            <div class="nav-title">Beyond Calorie Counting: Tracking Micronutrients in Real-Time</div>
+                        </div>
+                    </a>
+                    <a href="../blog.html" class="nav-item nav-next">
+                        <div>
+                            <div class="nav-label">Back to Blog</div>
+                            <div class="nav-title">All Articles</div>
+                        </div>
+                        <i class="fas fa-arrow-right nav-arrow"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Article Sidebar -->
+            <div class="article-sidebar">
+                <!-- Author Card -->
+                <div class="sidebar-section">
+                    <h3>Written by</h3>
+                    <div class="author-card">
+                        <div class="author-avatar">ES</div>
+                        <div class="author-info">
+                            <h4>Dr. Elena Schmidt</h4>
+                            <p>Head of Nutrition Science, VITA</p>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.9rem; margin-top: var(--space-sm); color: var(--text-secondary);">
+                        PhD in Nutritional Biochemistry from ETH Zurich. Previously led data standardization at the European Food Safety Authority. Published 23 papers on food composition analysis.
+                    </p>
+                </div>
+                
+                <!-- Table of Contents -->
+                <div class="sidebar-section">
+                    <h3>In this article</h3>
+                    <ul class="toc">
+                        <li><a href="#the-data-problem">The Data Chaos Problem</a></li>
+                        <li><a href="#normalization-engine">The VITA Normalization Engine</a></li>
+                        <li><a href="#portion-problem">Solving the Portion Problem</a></li>
+                        <li><a href="#database-comparison">Database Comparison & Intelligent Weighting</a></li>
+                        <li><a href="#cooking-effects">Accounting for Cooking & Preparation</a></li>
+                        <li><a href="#seasonal-adjustments">Seasonal & Geographic Normalization</a></li>
+                        <li><a href="#confidence-scores">Understanding Confidence Scores</a></li>
+                        <li><a href="#continuous-improvement">Continuous Improvement & Learning</a></li>
+                        <li><a href="#practical-implications">Practical Implications for Your Health</a></li>
+                        <li><a href="#future-directions">The Future of Nutrient Tracking</a></li>
+                        <li><a href="#conclusion">Beyond Numbers to Understanding</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Share Buttons -->
+                <div class="sidebar-section">
+                    <h3>Share this article</h3>
+                    <div class="share-buttons">
+                        <button class="share-btn twitter" onclick="shareArticle('twitter')">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button class="share-btn linkedin" onclick="shareArticle('linkedin')">
+                            <i class="fab fa-linkedin-in"></i>
+                        </button>
+                        <button class="share-btn link" onclick="copyArticleLink()">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Newsletter -->
+                <div class="sidebar-section">
+                    <h3>Get more like this</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: var(--space-sm); color: var(--text-secondary);">
+                        Subscribe for weekly articles on nutrition science, data accuracy, and how we're building VITA's intelligence.
+                    </p>
+                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                        <input type="email" placeholder="Your email" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2>Join the Nutrition Science Revolution</h2>
+                <p>Get weekly insights on how we're making nutrition tracking scientifically rigorous. No guesswork, just data-driven approaches to understanding what you eat.</p>
+                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
+                    <input type="email" placeholder="Your email address" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div>
+                    <div class="footer-logo">VITA</div>
+                    <p style="color: rgba(255, 255, 255, 0.8); max-width: 300px; font-size: 0.95rem;">
+                        Personal Health Intelligence for Your Home
+                    </p>
+                </div>
+                <div class="footer-links">
+                    <a href="../index.html">Home</a>
+                    <a href="../blog.html">Blog</a>
+                    <a href="../contact.html">Contact</a>
+                    <a href="../privacy.html">Privacy</a>
+                </div>
+            </div>
+            <div class="footer-copyright">
+                © VITA Devices | Designed in Europe | Building in Public since 2024
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu functionality
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobileNav');
+            mobileNav.classList.toggle('active');
+        }
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const mobileNav = document.getElementById('mobileNav');
+            const toggleBtn = document.querySelector('.mobile-menu-toggle');
+            
+            if (!mobileNav.contains(e.target) && !toggleBtn.contains(e.target)) {
+                mobileNav.classList.remove('active');
+            }
+        });
+        
+        // Track article views
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simulate view count (in production, this would come from your analytics)
+            const viewCount = document.getElementById('viewCount');
+            const baseViews = 1247;
+            const randomIncrement = Math.floor(Math.random() * 50);
+            viewCount.textContent = `${(baseViews + randomIncrement).toLocaleString()} views`;
+            
+            // Initialize back to top button
+            const backToTopButton = document.getElementById('backToTop');
+            
+            // Show/hide back to top button based on scroll position
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
+            
+            // Back to top functionality
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Smooth scrolling for table of contents links
+            document.querySelectorAll('.toc a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove the hash from the href and get the target id
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    
+                    if (targetElement) {
+                        // Calculate position with offset for fixed header
+                        const headerOffset = 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                        
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // Set up share buttons with real URLs
+            setupShareButtons();
+            
+            // Animate bar charts on scroll
+            animateBarsOnScroll();
+        });
+        
+        // Animate bar charts when they come into view
+        function animateBarsOnScroll() {
+            const bars = document.querySelectorAll('.bar');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const bar = entry.target;
+                        // Get the height from the style attribute
+                        const height = bar.style.height;
+                        // Reset height to 0 for animation
+                        bar.style.height = '0%';
+                        // Animate to target height
+                        setTimeout(() => {
+                            bar.style.height = height;
+                        }, 100);
+                        observer.unobserve(bar);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            bars.forEach(bar => observer.observe(bar));
+        }
+        
+        // Share functionality
+        function setupShareButtons() {
+            // Current page URL and title
+            const pageUrl = encodeURIComponent(window.location.href);
+            const pageTitle = encodeURIComponent(document.title);
+            const pageDescription = encodeURIComponent("The Science of Nutrient Normalization: How VITA Ensures Accuracy");
+            
+            // Twitter share URL
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${pageTitle}&url=${pageUrl}&hashtags=NutritionScience,DataAccuracy,VITA`;
+            
+            // LinkedIn share URL
+            const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${pageUrl}`;
+            
+            // Store URLs in data attributes
+            document.querySelector('.share-btn.twitter').dataset.shareUrl = twitterUrl;
+            document.querySelector('.share-btn.linkedin').dataset.shareUrl = linkedinUrl;
+        }
+        
+        function shareArticle(platform) {
+            let shareUrl;
+            
+            if (platform === 'twitter') {
+                shareUrl = document.querySelector('.share-btn.twitter').dataset.shareUrl;
+            } else if (platform === 'linkedin') {
+                shareUrl = document.querySelector('.share-btn.linkedin').dataset.shareUrl;
+            }
+            
+            if (shareUrl) {
+                window.open(shareUrl, '_blank', 'width=600,height=400');
+            }
+        }
+        
+        function copyArticleLink() {
+            const url = window.location.href;
+            
+            // Use the Clipboard API if available
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showNotification('Link copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    fallbackCopyTextToClipboard(url);
+                });
+            } else {
+                fallbackCopyTextToClipboard(url);
+            }
+        }
+        
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showNotification('Link copied to clipboard!');
+                } else {
+                    showNotification('Failed to copy link.');
+                }
+            } catch (err) {
+                console.error('Fallback copy failed: ', err);
+                showNotification('Failed to copy link.');
+            }
+            
+            document.body.removeChild(textArea);
+        }
+        
+        function showNotification(message) {
+            // Remove any existing notification
+            const existingNotification = document.querySelector('.copy-notification');
+            if (existingNotification) {
+                existingNotification.remove();
+            }
+            
+            // Create notification
+            const notification = document.createElement('div');
+            notification.className = 'copy-notification';
+            notification.innerHTML = `
+                <div style="position: fixed; top: 20px; right: 20px; background-color: var(--primary); color: white; padding: 1rem 1.5rem; border-radius: var(--radius-md); z-index: 3000; box-shadow: 0 4px 12px rgba(0,0,0,0.15); font-size: 0.9rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-check-circle"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+        
+        // Newsletter subscription
+        function subscribeNewsletter(event) {
+            event.preventDefault();
+            const emailInput = event.target.querySelector('input[type="email"]');
+            const email = emailInput.value;
+            
+            // Basic validation
+            if (!email || !email.includes('@')) {
+                showNotification('Please enter a valid email address.');
+                return;
+            }
+            
+            // In a real implementation, this would connect to your newsletter service
+            showNotification(`Thank you! You've subscribed with: ${email}`);
+            emailInput.value = '';
+            
+            // Here you would typically send the email to your backend
+            console.log('Newsletter subscription:', email);
+        }
+    </script>
+</body>
+</html>
