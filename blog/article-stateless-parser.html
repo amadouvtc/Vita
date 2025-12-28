@@ -988,7 +988,7 @@
             <!-- Main Article Content -->
             <div class="article-content">
                 <article class="article-body">
-                    <p class="lead">Voice assistants today have a fundamental privacy problem: they remember everything. Amazon's Alexa, Google Assistant, and Apple's Siri all store your voice data on their servers to "improve their service." We built VITA differently—with a stateless parser that understands you in the moment, then forgets immediately.</p>
+                    <p class="lead">Voice assistants today have a fundamental privacy problem: they remember everything. Amazon's Alexa, Google Assistant, and Apple's Siri all store your voice data on their servers to "improve their service." We built VITA differently,with a stateless parser that understands you in the moment, then forgets immediately.</p>
                     
                     <h2 id="problem">The Problem with Stateful AI</h2>
                     
@@ -996,7 +996,7 @@
                     
                     <div class="highlight-box">
                         <h4>The Memory Problem</h4>
-                        <p>Most voice AI systems maintain "state"—they remember your previous interactions to provide context. "What's the weather today?" followed by "What about tomorrow?" works because the system remembers you asked about weather. This convenience comes at a cost: permanent storage of your voice data in corporate databases.</p>
+                        <p>Most voice AI systems maintain "state",they remember your previous interactions to provide context. "What's the weather today?" followed by "What about tomorrow?" works because the system remembers you asked about weather. This convenience comes at a cost: permanent storage of your voice data in corporate databases.</p>
                     </div>
                     
                     <p>This creates several issues:</p>
@@ -1016,7 +1016,7 @@
                         "Think of it like a translator who only exists for the moment you need translation. They help you understand a foreign menu, then immediately forget the interaction ever happened. No notes, no recordings, no memory."
                     </blockquote>
                     
-                    <p>The key innovation isn't that we process voice locally—many systems do that now. The breakthrough is that we've designed an AI architecture that provides intelligent, contextual responses without maintaining conversation history.</p>
+                    <p>The key innovation isn't that we process voice locally,many systems do that now. The breakthrough is that we've designed an AI architecture that provides intelligent, contextual responses without maintaining conversation history.</p>
                     
                     <div class="figure-container">
                         <div class="diagram-container">
@@ -1159,7 +1159,7 @@
                     <p>Companies often start collecting data for one purpose ("improve voice recognition") then expand usage ("personalized ads," "health insights"). With stateless parsing, this expansion is impossible by design.</p>
                     
                     <h4>3. True Deletion</h4>
-                    <p>With traditional systems, "deleting your data" means removing pointers to stored recordings. With VITA, deletion happens by default—the data never exists in a retrievable form.</p>
+                    <p>With traditional systems, "deleting your data" means removing pointers to stored recordings. With VITA, deletion happens by default,the data never exists in a retrievable form.</p>
                     
                     <h4>4. Protection Against Insider Threats</h4>
                     <p>Even if a VITA employee wanted to access your conversations, they couldn't. The architecture prevents it at a fundamental level.</p>
@@ -1174,7 +1174,7 @@
                         <li><strong>Proactive Suggestions:</strong> We can't say "You usually eat lunch now" because we don't track patterns in the cloud</li>
                     </ul>
                     
-                    <p>These aren't bugs—they're privacy features. We believe you should trade convenience for surveillance consciously, not by default.</p>
+                    <p>These aren't bugs,they're privacy features. We believe you should trade convenience for surveillance consciously, not by default.</p>
                     
                     <h2 id="future">The Future of Private AI</h2>
                     
@@ -1191,7 +1191,7 @@
                         <p>We follow what we call "Privacy by Architecture, Not Policy." Many companies promise privacy through policies ("we won't look at your data"). We guarantee it through architecture ("we can't look at your data even if we wanted to").</p>
                     </div>
                     
-                    <p>The stateless parser is more than a technical innovation—it's a statement about what technology should be: tools that serve you without surveilling you, that understand you without knowing you, that help you without holding your data hostage.</p>
+                    <p>The stateless parser is more than a technical innovation,it's a statement about what technology should be: tools that serve you without surveilling you, that understand you without knowing you, that help you without holding your data hostage.</p>
                     
                     <p>In a world where every conversation with technology becomes a permanent record, we're building technology that has the courtesy to forget.</p>
                 </article>
@@ -1262,18 +1262,6 @@
                         </button>
                     </div>
                 </div>
-                
-                <!-- Newsletter -->
-                <div class="sidebar-section">
-                    <h3>Get more like this</h3>
-                    <p style="font-size: 0.9rem; margin-bottom: var(--space-sm); color: var(--text-secondary);">
-                        Subscribe for weekly articles on AI privacy, technical architecture, and building VITA in public.
-                    </p>
-                    <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-                        <input type="email" placeholder="Your email" required>
-                        <button type="submit">Subscribe</button>
-                    </form>
-                </div>
             </div>
         </div>
     </section>
@@ -1284,16 +1272,20 @@
     </button>
 
     <!-- Newsletter Section -->
-    <section class="newsletter-section">
+    <section id="newsletter-section" style="padding: var(--space-xl) 0; background-color: var(--surface); border-top: 1px solid var(--border);">
         <div class="container">
-            <div class="newsletter-content">
-                <h2>Join the Privacy-First AI Movement</h2>
-                <p>Get weekly insights on building ethical AI technology. No spam, just thoughtful articles about privacy-by-design architecture.</p>
-                <form class="newsletter-form" onsubmit="subscribeNewsletter(event)">
-                    <input type="email" placeholder="Your email address" required>
-                    <button type="submit">Subscribe</button>
-                </form>
-            </div>
+            <div style="max-width: var(--content-width); margin: 0 auto; text-align: center;">
+                <h2 style="margin-top: 0;">Join the Sovereign Health Movement</h2>
+                <p style="margin-bottom: var(--space-lg);">Get weekly insights on building ethical health technology. No spam, just thoughtful articles about privacy-first design.</p>
+                
+                <div style="width:100%;height:500px;" 
+                    data-fillout-id="cyVGt8d5z8us" 
+                    data-fillout-embed-type="standard" 
+                    data-fillout-inherit-parameters 
+                    data-fillout-dynamic-resize>
+                </div>
+                <script src="https://server.fillout.com/embed/v1/"></script>
+                </div>
         </div>
     </section>
 
