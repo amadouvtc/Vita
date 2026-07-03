@@ -118,10 +118,10 @@
             top: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background-color: rgba(9, 13, 12, 0.8);
+            backdrop-filter: blur(12px);
             z-index: 1000;
-            padding: 1rem 0;
+            padding: 1.25rem 0;
             border-bottom: 1px solid var(--border);
         }
         
@@ -137,17 +137,20 @@
             font-size: 1.75rem;
             color: var(--primary);
             text-decoration: none;
+            letter-spacing: -0.5px;
         }
         
         .nav-links {
             display: flex;
-            gap: var(--space-lg);
+            gap: 2rem;
+            align-items: center;
         }
         
         .nav-links a {
             color: var(--text-primary);
             text-decoration: none;
             font-weight: 500;
+            font-size: 0.95rem;
             transition: color var(--transition-fast);
         }
         
@@ -155,12 +158,38 @@
             color: var(--primary);
         }
         
+        .nav-links .nav-btn {
+            padding: 0.5rem 1.25rem;
+            background-color: var(--primary);
+            color: #0c0f0e;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            box-shadow: none;
+            text-decoration: none;
+        }
+        
+        .nav-links .nav-btn:hover {
+            background-color: var(--primary-light);
+        }
+        
+        /* Mobile Navigation Toggle */
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1100;
+            padding: 0.5rem;
+        }
+        
         /* Hero Section */
         .contact-hero {
             padding-top: 8rem;
             padding-bottom: var(--space-lg);
             text-align: center;
-            background: linear-gradient(135deg, #E8F4F3 0%, #D4E8E6 100%);
+            background: linear-gradient(135deg, var(--surface) 0%, var(--background) 100%);
         }
         
         .contact-hero h1 {
@@ -322,6 +351,44 @@
         
         /* Responsive Styles */
         @media (max-width: 768px) {
+            .mobile-nav-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background-color: rgba(9, 13, 12, 0.95);
+                backdrop-filter: blur(20px);
+                border-left: 1px solid var(--border);
+                flex-direction: column;
+                justify-content: center;
+                gap: 2rem;
+                padding: 3rem;
+                transition: right 0.3s ease-in-out;
+                z-index: 1050;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links a {
+                font-size: 1.2rem;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .nav-links .nav-btn {
+                width: 100%;
+                text-align: center;
+                padding: 0.75rem;
+            }
+
             h1 {
                 font-size: 2rem;
             }
@@ -349,10 +416,6 @@
                 flex-direction: column;
                 gap: var(--space-sm);
             }
-            
-            .nav-links {
-                display: none; /* Could implement mobile menu if needed */
-            }
         }
         
         @media (max-width: 480px) {
@@ -371,15 +434,18 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
     <header>
         <div class="container header-container">
             <a href="index.html" class="logo">VITA</a>
+            <button class="mobile-nav-toggle" aria-label="Toggle Menu">
+                <i class="fas fa-bars"></i>
+            </button>
             <div class="nav-links">
                 <a href="index.html">Home</a>
                 <a href="blog.html">Blog</a>
                 <a href="contact.html" style="color: var(--primary); font-weight: 600;">Contact</a>
                 <a href="privacy.html">Privacy</a>
+                <a href="index.html#membership" class="nav-btn">Get App</a>
             </div>
         </div>
     </header>
@@ -493,6 +559,39 @@
     <script>
         // Ensure Tally form loads properly
         document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const mobileToggle = document.querySelector('.mobile-nav-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    navLinks.classList.toggle('active');
+                    const icon = mobileToggle.querySelector('i');
+                    if (navLinks.classList.contains('active')) {
+                        icon.className = 'fas fa-times';
+                    } else {
+                        icon.className = 'fas fa-bars';
+                    }
+                });
+                
+                // Close menu if clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
+                        navLinks.classList.remove('active');
+                        mobileToggle.querySelector('i').className = 'fas fa-bars';
+                    }
+                });
+                
+                // Close mobile nav when clicking a link
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('active');
+                        mobileToggle.querySelector('i').className = 'fas fa-bars';
+                    });
+                });
+            }
+
             // If Tally script hasn't loaded, reload embeds
             if (typeof Tally !== 'undefined') {
                 Tally.loadEmbeds();
