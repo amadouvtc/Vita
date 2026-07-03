@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Implementing the Stateless Parser Cloud Concept | VITA Blog</title>
-    <meta name="description" content="Setting up our stateless cloud parsing endpoints and benchmarking response times compared to a fully local execution.">
+    <title>{title} | VITA Blog</title>
+    <meta name="description" content="{excerpt}">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -140,6 +140,18 @@
         
         .nav-btn:hover {
             background-color: var(--primary-light);
+        }
+
+        /* Mobile Navigation Toggle */
+        .mobile-nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1100;
+            padding: 0.5rem;
         }
         
         /* Layout Grid */
@@ -286,12 +298,55 @@
                 padding-top: 5rem;
             }
         }
+
+        @media (max-width: 768px) {
+            .mobile-nav-toggle {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background-color: rgba(9, 13, 12, 0.95);
+                backdrop-filter: blur(20px);
+                border-left: 1px solid var(--border);
+                flex-direction: column;
+                justify-content: center;
+                gap: 2rem;
+                padding: 3rem;
+                transition: right 0.3s ease-in-out;
+                z-index: 1050;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links a {
+                font-size: 1.2rem;
+                width: 100%;
+                text-align: center;
+            }
+            
+            .nav-links .nav-btn {
+                width: 100%;
+                text-align: center;
+                padding: 0.75rem;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="container header-container">
             <a href="../index.html" class="logo">VITA</a>
+            <button class="mobile-nav-toggle" aria-label="Toggle Menu">
+                <i class="fas fa-bars"></i>
+            </button>
             <div class="nav-links">
                 <a href="../index.html">Home</a>
                 <a href="../blog.html" class="active">Blog</a>
@@ -351,5 +406,42 @@
             <p>&copy; 2026 VITA. All rights reserved. Designed in Europe.</p>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile Menu Toggle
+            const mobileToggle = document.querySelector('.mobile-nav-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            if (mobileToggle && navLinks) {
+                mobileToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    navLinks.classList.toggle('active');
+                    const icon = mobileToggle.querySelector('i');
+                    if (navLinks.classList.contains('active')) {
+                        icon.className = 'fas fa-times';
+                    } else {
+                        icon.className = 'fas fa-bars';
+                    }
+                });
+                
+                // Close menu if clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
+                        navLinks.classList.remove('active');
+                        mobileToggle.querySelector('i').className = 'fas fa-bars';
+                    }
+                });
+                
+                // Close mobile nav when clicking a link
+                navLinks.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('active');
+                        mobileToggle.querySelector('i').className = 'fas fa-bars';
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 </html>
