@@ -1109,14 +1109,14 @@
                         <i class="fas fa-microphone"></i>
                     </div>
                     <h3>Local Speech-to-Text</h3>
-                    <p>Whisper Tiny runs locally on your phone's Neural Engine. Say "I had a cup of coffee and two boiled eggs" and watch it transcribe instantly with zero lag.</p>
+                    <p>Whisper Tiny runs locally on your phone. In the future, we will transition to native on-device OS speech APIs, removing Whisper entirely to ensure 100% free local execution.</p>
                 </div>
                 <div class="card">
                     <div class="card-icon">
                         <i class="fas fa-brain"></i>
                     </div>
                     <h3>On-Device Qwen LLM</h3>
-                    <p>We compile Qwen 2.5 1.5B via optimized <code>llama.cpp</code> mobile JNI wrappers. The LLM extracts intents and portions offline on your smartphone's GPU.</p>
+                    <p>Currently using an optimized Qwen 2.5 1.5B model. Our roadmap includes retraining and distilling a custom **Mistral 3B** model to fit within tight mobile RAM constraints.</p>
                 </div>
                 <div class="card">
                     <div class="card-icon">
@@ -1132,33 +1132,52 @@
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section style="background-color: var(--surface);">
-        <div class="container">
             <div class="section-title">
                 <h2>VITA App Capabilities</h2>
+                <p class="section-subtitle">We lift the mental load of nutrition, grocery shopping, and fitness tracking by doing all the planning for you.</p>
             </div>
             <div class="grid-3">
                 <div class="card">
                     <div class="card-icon">
-                        <i class="fas fa-utensils"></i>
+                        <i class="fas fa-comments"></i>
                     </div>
-                    <h3>Intelligent Logging</h3>
-                    <p>Log complex meals using natural spoken language. VITA automatically splits and indexes food items, estimating serving sizes with SQLite full-text search.</p>
+                    <h3>Communicative Voice UI</h3>
+                    <p>Speak in a natural, conversational tone. VITA understands your commands, queries, and logs, acting as an interactive assistant rather than a static form.</p>
                 </div>
                 <div class="card">
                     <div class="card-icon">
                         <i class="fas fa-heartbeat"></i>
                     </div>
                     <h3>Daily Budgets</h3>
-                    <p>Track 27 essential nutrients, calories, and water consumption. Watch progress bars scale in real-time as local databases process logs.</p>
+                    <p>Track 27 essential nutrients, calorie budgets, and weight logs in real-time. Watch progress bars update instantly inside local databases.</p>
                 </div>
                 <div class="card">
                     <div class="card-icon">
-                        <i class="fas fa-sliders-h"></i>
+                        <i class="fas fa-clock"></i>
                     </div>
-                    <h3>Personal Goals</h3>
-                    <p>Define physical targets, weight goals, and allergy settings. All metrics are calculated locally inside <code>libuser_profile</code>.</p>
+                    <h3>Wearable Integration</h3>
+                    <p>Log workouts or meals hands-free directly from your smartwatch or wearables at the gym. No screen-tapping or phone-unlocking needed.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-capsules"></i>
+                    </div>
+                    <h3>Supplement Recommendations</h3>
+                    <p>Automatically identifies gaps in your micro-nutrients and recommends specific vitamins or supplements from our trusted partners.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3>Weekly Groceries Delivery</h3>
+                    <p>Once partner market integrations launch, VITA coordinates with grocery delivery systems to drop ingredients at your door automatically.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h3>Lifting Cognitive Load</h3>
+                    <p>By automating logging, meal recommendations, and grocery delivery, VITA handles the planning and logistics so you can focus on living.</p>
                 </div>
             </div>
         </div>
@@ -1199,13 +1218,37 @@
             <div class="accordion">
                 <div class="accordion-item active">
                     <div class="accordion-header">
-                        <h4>Multi-Tier Intent Classification</h4>
+                        <h4>Intent Classification vs. Orchestration</h4>
                         <div class="accordion-icon">
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
                     <div class="accordion-content">
-                        <p>To optimize execution and conserve battery, the app features a multi-tier routing architecture. We trained a lightweight BERT intent classifier (ONNX format) that consumes minimal power. Simple queries (e.g. "Show my log") bypass the heavy LLM completely, resolving in under 50ms.</p>
+                        <p>Previously, we planned to use the LLM as the main orchestrator to read inputs and decide intents. Now, a lightweight BERT (or French equivalent) ONNX intent classifier runs first. It determines the intent instantly (under 50ms), saving battery. The LLM is used solely to convert text to structured JSON (entity extraction).</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h4>Local JEPA Training (On-Device Innovation)</h4>
+                        <div class="accordion-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="accordion-content">
+                        <p>VITA's key innovation is training a Joint Embedding Predictive Architecture (JEPA) model locally on users' devices. Every month, the aggregated, anonymous weights are uploaded to our secure cloud to improve the global predictive model. The user has nothing to configure, and all data remains private.</p>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h4>RAM Cost & Scaling Efficiencies</h4>
+                        <div class="accordion-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Our main struggle with hardware chips (Raspberry Pi/Radxa/Orange Pi) was the rising cost of RAM. Building dedicated hardware with sufficient memory was prohibitively expensive. Shifting to mobile leverages the high-performance RAM that users already own in their smartphones, allowing us to offer the app for a $5 one-time fee.</p>
                     </div>
                 </div>
                 

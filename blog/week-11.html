@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hardware Realities and Cost Calculations | VITA Blog</title>
-    <meta name="description" content="The numbers don't lie. Analyzing the bill of materials (BOM), assembly logistics, and why a hardware device is the wrong path.">
+    <title>Hardware Realities and RAM Cost Struggles | VITA Blog</title>
+    <meta name="description" content="The numbers don't lie. Why the rising cost of RAM on SBC chips killed the custom hardware box and made mobile the smarter path.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -311,12 +311,12 @@
                         <span class="article-category">Product Strategy</span>
                         <span class="article-date">March 16, 2026</span>
                     </div>
-                    <h1>Week 11: Hardware Realities and Cost Calculations</h1>
+                    <h1>Week 11: Hardware Realities and RAM Cost Struggles</h1>
                     <div class="article-body">
                         
-            <p>This week, we held a critical alignment meeting regarding VITA's product direction. We finalized our Bill of Materials (BOM) for the kitchen device prototype. When adding up the cost of an Orange Pi 5 board, custom microphone array, power adapter, speaker, metallic chassis, and LCD display, our unit manufacturing cost came to $145.</p>
-            <p>In hardware, a $145 cost of goods sold (COGS) means we would have to retail the device for at least $249 to cover assembly, testing, distribution, support, and shipping. Asking users to buy a $249 device for nutrition tracking is a massive barrier to entry.</p>
-            <p>Furthermore, managing inventory, shipping logistics, and hardware defects is incredibly risky for a small team. We realized we were focusing too much on hardware manufacturing instead of our core value: private, local-first health intelligence. We need to rethink how we deliver VITA to our users.</p>
+            <p>This week, we held a critical alignment meeting regarding VITA's product direction. We finalized our Bill of Materials (BOM) for the kitchen device prototype. When adding up the cost of components, a massive barrier emerged: **the rising cost of RAM**.</p>
+            <p>To run speech-to-text models and local large language models offline, the device required a minimum of 8GB of high-performance RAM. Due to supply chain constraints, the cost of RAM chips had spiked, making single-board computers (SBCs) with high RAM capacity prohibitively expensive. A $145 manufacturing cost meant a $249 retail price, which was too high for a kitchen utility.</p>
+            <p>This RAM cost bottleneck forced us to rethink the hardware box. Leveraging the powerful processors and high-performance RAM already sitting in your smartphone removes this cost barrier entirely, allowing us to distribute VITA cheaply without sacrificing local processing.</p>
         
                     </div>
                 </article>

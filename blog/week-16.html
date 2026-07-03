@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Breakthrough: On-Device Speech and Inference on Phones | VITA Blog</title>
-    <meta name="description" content="Our tests confirm it: modern mobile processors can run Whisper Tiny and Qwen 2.5 1.5B locally, fully offline, in under 1 second.">
+    <meta name="description" content="We successfully run Whisper and Qwen on device, and outline our target to retrain Mistral 3B and adopt native speech APIs.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -314,9 +314,10 @@
                     <h1>Week 16: Breakthrough: On-Device Speech and Inference on Phones</h1>
                     <div class="article-body">
                         
-            <p>This was a breakthrough week. We set up an instrumented test environment on a physical Android phone to benchmark local AI model execution. We compiled <code>whisper.cpp</code> and <code>llama.cpp</code> for the Android arm64-v8a architecture.</p>
-            <p>We loaded Whisper Tiny for transcription and Qwen 2.5 1.5B (quantized to 4-bit GGUF format) for intent orchestration. We ran an end-to-end voice query fully offline in airplane mode. The result was stunning.</p>
-            <p>The phone recorded audio, transcribed it via local Whisper, parsed it through the local LLM, queried the local SQLite database, and printed the result in 950 milliseconds! It is faster, cheaper, and more reliable than our cloud-hybrid model or our Raspberry Pi prototypes. We proved that we can run a complete, high-end AI assistant entirely on the phone, offline, with 100% data privacy.</p>
+            <p>This was a breakthrough week. We set up an instrumented test environment on a physical Android phone to benchmark local AI model execution. We compiled Whisper Tiny and Qwen 2.5 1.5B (using llama.cpp) for the mobile CPU and NPU architecture.</p>
+            <p>The phone recorded audio, transcribed it via Whisper, and parsed it through Qwen in under 1 second fully offline. However, this success is just our first milestone. We've outlined two major goals for our future production releases:</p>
+            <p>1. **Retraining Mistral 3B:** While Qwen 1.5B is fast, a distilled **Mistral 3B** model would offer far superior reasoning. We plan to retrain and compress Mistral 3B to fit into low RAM limits on older smartphones.</p>
+            <p>2. **On-Device OS Speech APIs:** Currently, we deploy Whisper locally. In the future, we will transition directly to the phone's built-in native speech APIs (Apple Speech / Android Speech). This removes external speech libraries completely, saving battery and ensuring execution remains 100% free for the user.</p>
         
                     </div>
                 </article>

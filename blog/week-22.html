@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Training the Intent Classifier for Phone Deployment | VITA Blog</title>
-    <meta name="description" content="Training a lightweight BERT model and exporting it to ONNX to route user commands instantly on-device.">
+    <meta name="description" content="Ditching the LLM orchestrator for a lightweight BERT classifier to route intents instantly, keeping the LLM focused on entity extraction.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -314,9 +314,9 @@
                     <h1>Week 22: Training the Intent Classifier for Phone Deployment</h1>
                     <div class="article-body">
                         
-            <p>To make the app run even faster, we developed a multi-tier routing architecture. Running the full Qwen LLM for every simple input is unnecessary and drains the phone's battery. This week, we built and trained a lightweight BERT intent classifier.</p>
-            <p>We trained the model on thousands of sample commands categorized into distinct intents: querying nutrition info, logging meals, updating user profiles, or general chitchat. We exported the trained model to ONNX format (only 12MB in size).</p>
-            <p>We integrated the ONNX runtime inside our mobile project. Now, when the user speaks, the tiny intent classifier runs first. If they say something simple like "Show my calorie progress," the app routes the command immediately using lightweight code, skipping the LLM entirely. This saves battery and cuts response latency to less than 50 milliseconds.</p>
+            <p>In our initial architecture plan, we intended to use a large language model (LLM) as the core orchestrator. The LLM was supposed to read the raw input, classify the user's intent, and then route execution to the database nodes. This week, we realized that was a massive waste of mobile GPU compute and battery.</p>
+            <p>Instead, we built a multi-tier routing architecture. We trained a lightweight **BERT classifier** (and its French equivalent, CamemBERT) and exported it to ONNX format (only 12MB). The classifier runs first, identifying the intent in under 50ms with virtually zero battery drain.</p>
+            <p>Once the intent is determined, the heavy LLM's only job is to act as a structured parser to translate text into formatted JSON (entity extraction). This decouples the orchestration task, significantly speeds up response times, and keeps the user interface incredibly responsive.</p>
         
                     </div>
                 </article>

@@ -314,7 +314,7 @@
                     <h1>Week 12: Pivoting to a Hybrid Cloud Architecture</h1>
                     <div class="article-body">
                         
-            <p>To eliminate the expensive Orange Pi 5 processor from our device specs, we designed a hybrid architecture. What if we use a cheap, low-cost microcontroller (like an ESP32 or a basic Raspberry Pi Zero) for the physical device, and offload the heavy LLM parsing to a cloud server?</p>
+            <p>To eliminate the expensive high-RAM processor from our device specs, we temporarily designed a hybrid architecture. What if we use a cheap, low-cost microcontroller (like an ESP32 or a basic Raspberry Pi Zero) for the physical device, and offload the heavy LLM parsing to a cloud server?</p>
             <p>But wait: how do we do that without compromising our promise of data privacy? We designed the concept of a **Stateless Cloud Parser**. Under this design, the user's database remains on their local hardware. When they speak, the voice command is transcribed and sent to our server as an anonymized string.</p>
             <p>Our server parses the text, extracts the intent and entities, and returns the structured JSON back to the device. The server immediately discards the data; it does not log the text, IP, or user profile. The local device then saves the log to its local SQLite file. This hybrid approach allows us to use cheap hardware while maintaining high-quality parsing.</p>
         
