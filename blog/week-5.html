@@ -371,6 +371,48 @@
                         
             <p>The core user interface of VITA is voice. We want the user to simply say: "I just ate a bowl of yogurt with honey," and have it instantly logged. This requires an accurate, offline Speech-to-Text (STT) model. We chose OpenAI's Whisper model because of its state-of-the-art accuracy.</p>
             <p>We compiled <code>whisper.cpp</code> on the Raspberry Pi 4 to utilize hardware-specific optimizations. We loaded the Whisper Tiny model (the smallest model with decent accuracy) and ran our first transcription tests. The results were disheartening.</p>
+            
+            <div style="margin: 2rem 0; text-align: center;">
+                <svg viewBox="0 0 700 300" width="100%" height="auto" style="background-color: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: 0 10px 30px var(--shadow);">
+                    <!-- Title -->
+                    <text x="350" y="35" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="16" text-anchor="middle">Whisper Tiny Transcription Latency (3s Clip)</text>
+                    
+                    <!-- Y-Axis lines and grids -->
+                    <line x1="180" y1="60" x2="180" y2="240" stroke="var(--border)" stroke-width="1"/>
+                    <line x1="180" y1="240" x2="650" y2="240" stroke="var(--border)" stroke-width="2"/>
+                    
+                    <!-- Gridlines -->
+                    <line x1="300" y1="60" x2="300" y2="240" stroke="var(--border)" stroke-width="1" stroke-dasharray="2,4"/>
+                    <text x="300" y="260" fill="var(--text-light)" font-family="sans-serif" font-size="11" text-anchor="middle">5s</text>
+
+                    <line x1="420" y1="60" x2="420" y2="240" stroke="var(--border)" stroke-width="1" stroke-dasharray="2,4"/>
+                    <text x="420" y="260" fill="var(--text-light)" font-family="sans-serif" font-size="11" text-anchor="middle">10s</text>
+
+                    <line x1="540" y1="60" x2="540" y2="240" stroke="var(--border)" stroke-width="1" stroke-dasharray="2,4"/>
+                    <text x="540" y="260" fill="var(--text-light)" font-family="sans-serif" font-size="11" text-anchor="middle">15s</text>
+
+                    <!-- Bar 1: Raspberry Pi 4 (FP32) -->
+                    <text x="170" y="95" fill="var(--text-secondary)" font-family="sans-serif" font-size="12" text-anchor="end">Raspberry Pi 4 (FP32)</text>
+                    <rect x="180" y="80" width="360" height="25" rx="4" fill="#ef4444"/>
+                    <text x="550" y="97" fill="#ef4444" font-weight="bold" font-family="monospace" font-size="12">15.0s</text>
+
+                    <!-- Bar 2: Raspberry Pi 4 (INT4) -->
+                    <text x="170" y="145" fill="var(--text-secondary)" font-family="sans-serif" font-size="12" text-anchor="end">Raspberry Pi 4 (INT4)</text>
+                    <rect x="180" y="130" width="192" height="25" rx="4" fill="var(--accent)"/>
+                    <text x="382" y="147" fill="var(--accent)" font-weight="bold" font-family="monospace" font-size="12">8.0s</text>
+
+                    <!-- Bar 3: Orange Pi 5 (NPU) -->
+                    <text x="170" y="195" fill="var(--text-secondary)" font-family="sans-serif" font-size="12" text-anchor="end">Orange Pi 5 (NPU)</text>
+                    <rect x="180" y="180" width="19.2" height="25" rx="4" fill="var(--primary)"/>
+                    <text x="210" y="197" fill="var(--primary)" font-weight="bold" font-family="monospace" font-size="12">0.8s</text>
+                    
+                    <!-- Note on acceptable latency -->
+                    <line x1="228" y1="60" x2="228" y2="240" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4"/>
+                    <text x="234" y="75" fill="#10b981" font-family="sans-serif" font-size="11" font-weight="bold">Target UX Limit (2.0s)</text>
+                </svg>
+                <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem; font-style: italic;">Benchmark chart comparing transcription latency of Whisper Tiny on various edge platforms. The Orange Pi 5 NPU achieves near-instantaneous execution compared to CPU runs.</p>
+            </div>
+
             <p>A simple 3-second audio recording took over 15 seconds to transcribe. The Pi's CPU was pinned at 100%, and the temperature spiked immediately. A 15-second delay is completely unacceptable for a seamless user experience. We tried quantizing the model to 4-bit integers, which brought it down to 8 seconds, but it was still too slow and degraded accuracy. We must look for faster hardware chips.</p>
         
                     </div>

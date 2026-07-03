@@ -371,7 +371,42 @@
                         
             <p>This is it. Six months after bootstrapping VITA on a Raspberry Pi 4, we have compiled our first release-candidate APK. We are opening our closed beta registration today, and we'd like to share our future product roadmap and monetization strategies.</p>
             <p>Our goal is to remove all cognitive and mental load from nutrition and fitness tracking. VITA is a **communicative voice assistant**. You speak to it naturally, and it handles the rest. In the future, you won't even need to open the app—you can speak to your **wearables** at the gym to log workouts and activities hands-free.</p>
-            <p>We have also laid out two key innovations for scaling and monetization:
+            <p>We have also laid out two key innovations for scaling and monetization:</p>
+            
+            <div style="margin: 2rem 0; text-align: center;">
+                <svg viewBox="0 0 650 250" width="100%" height="auto" style="background-color: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: 0 10px 30px var(--shadow);">
+                    <!-- Title -->
+                    <text x="325" y="30" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="15" text-anchor="middle">On-Device JEPA Training & Monthly Cloud Sync</text>
+
+                    <!-- Node 1: Mobile Device (Local JEPA Training) -->
+                    <rect x="50" y="70" width="160" height="120" rx="8" fill="#16201d" stroke="var(--primary)" stroke-width="1.5"/>
+                    <text x="130" y="95" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="12" text-anchor="middle">User Smart Phone</text>
+                    <rect x="65" y="115" width="130" height="25" rx="4" fill="rgba(16, 185, 129, 0.15)" stroke="var(--primary)" stroke-width="1"/>
+                    <text x="130" y="131" fill="var(--primary)" font-family="monospace" font-size="10" text-anchor="middle">Local JEPA Training</text>
+                    <rect x="65" y="148" width="130" height="25" rx="4" fill="rgba(16, 185, 129, 0.05)" stroke="var(--border)" stroke-width="1"/>
+                    <text x="130" y="164" fill="var(--text-secondary)" font-family="monospace" font-size="9" text-anchor="middle">Private SQLite Data</text>
+
+                    <!-- Up Arrow (Aggregated Weights Upload) -->
+                    <path d="M 230,110 L 400,110" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="4,4" fill="none"/>
+                    <polygon points="400,110 390,105 390,115" fill="var(--accent)"/>
+                    <text x="315" y="100" fill="var(--accent)" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">1. Anonymous Weights Sync</text>
+
+                    <!-- Down Arrow (Consolidated Model Update) -->
+                    <path d="M 400,140 L 230,140" stroke="#3b82f6" stroke-width="2.5" fill="none"/>
+                    <polygon points="230,140 240,145 240,135" fill="#3b82f6"/>
+                    <text x="315" y="160" fill="#60a5fa" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">2. Consolidated Model Update</text>
+
+                    <!-- Node 2: Secure Cloud Server (Global Aggregation) -->
+                    <rect x="420" y="70" width="180" height="120" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+                    <text x="510" y="95" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="12" text-anchor="middle">VITA Secure Cloud</text>
+                    <rect x="435" y="115" width="150" height="58" rx="4" fill="rgba(59, 130, 246, 0.15)" stroke="#3b82f6" stroke-width="1"/>
+                    <text x="510" y="132" fill="#93c5fd" font-family="monospace" font-size="10" text-anchor="middle">Secure Aggregation</text>
+                    <text x="510" y="148" fill="var(--text-light)" font-family="sans-serif" font-size="9" text-anchor="middle">Zero User Logging</text>
+                    <text x="510" y="160" fill="var(--text-light)" font-family="sans-serif" font-size="9" text-anchor="middle">(Diff-Privacy Applied)</text>
+                </svg>
+                <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem; font-style: italic;">The privacy-preserving federated learning lifecycle: VITA trains a local JEPA model on-device and aggregates anonymous weights monthly to refine predictions without compromising data ownership.</p>
+            </div>
+
             <ul>
                 <li>**Local JEPA Training:** We will train a Joint Embedding Predictive Architecture (JEPA) model directly on users' phones. Each month, the app will upload aggregated, anonymous weights to our cloud to improve the global predictive model, maintaining total data sovereignty.</li>
                 <li>**Monetization via Partnerships:** To keep the core app fee at a low $5 one-time purchase, we will recommend supplements from trusted partners based on your micronutrient gaps. We will also partner with local grocery stores to automate weekly deliveries based on your meal schedules, taking a transaction cut.</li>

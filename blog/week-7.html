@@ -370,6 +370,12 @@
                     <div class="article-body">
                         
             <p>This week we received and set up our Orange Pi 5 board. The Orange Pi 5 features the Rockchip RK3588 processor, which boasts an integrated NPU delivering 6 TOPS of compute power. This is an order of magnitude faster than anything we've tested so far.</p>
+            
+            <div style="margin: 2rem 0; text-align: center;">
+                <img src="../assets/images/orange_pi_board.png" alt="Orange Pi 5 Development Board" style="max-width: 100%; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: 0 10px 30px var(--shadow);">
+                <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem; font-style: italic;">The high-performance Orange Pi 5 board used for edge AI model testing. It features the RK3588 NPU for fast deep-learning inference.</p>
+            </div>
+
             <p>We compiled the RKNN (Rockchip Neural Network) toolchain and converted Whisper to the RKNN format. The results were impressive: transcribing our test audio clip on the Orange Pi 5 took less than 800 milliseconds! The processing is near-instantaneous and thermal output is low.</p>
             <p>However, this success highlighted another problem. Building and selling a custom physical device around an Orange Pi 5 board is incredibly expensive. Hardware sourcing, assembly, audio codecs, custom casework, power supplies, and regulatory certifications (FCC/CE) would make the VITA hardware unit retail for at least $250. Is this price point viable for our users?</p>
         

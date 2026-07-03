@@ -371,6 +371,62 @@
                         
             <p>In our initial architecture plan, we intended to use a large language model (LLM) as the core orchestrator. The LLM was supposed to read the raw input, classify the user's intent, and then route execution to the database nodes. This week, we realized that was a massive waste of mobile GPU compute and battery.</p>
             <p>Instead, we built a multi-tier routing architecture. We trained a lightweight **BERT classifier** (and its French equivalent, CamemBERT) and exported it to ONNX format (only 12MB). The classifier runs first, identifying the intent in under 50ms with virtually zero battery drain.</p>
+            
+            <div style="margin: 2rem 0; text-align: center;">
+                <svg viewBox="0 0 650 250" width="100%" height="auto" style="background-color: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: 0 10px 30px var(--shadow);">
+                    <!-- Title -->
+                    <text x="325" y="30" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="15" text-anchor="middle">Multi-Tier Intent Routing Flow (ONNX + LLM)</text>
+
+                    <!-- Node 1: Input -->
+                    <rect x="20" y="90" width="110" height="50" rx="8" fill="#16201d" stroke="var(--border)" stroke-width="1"/>
+                    <text x="75" y="112" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="11" text-anchor="middle">User Input</text>
+                    <text x="75" y="128" fill="var(--text-light)" font-family="monospace" font-size="9" text-anchor="middle">"I ate yogurt"</text>
+
+                    <!-- Arrow 1 -->
+                    <path d="M 130,115 L 160,115" stroke="var(--border)" stroke-width="1.5" fill="none"/>
+                    <polygon points="160,115 153,111 153,119" fill="var(--text-secondary)"/>
+
+                    <!-- Node 2: ONNX Classifier -->
+                    <rect x="160" y="90" width="130" height="50" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+                    <text x="225" y="112" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="11" text-anchor="middle">ONNX Classifier</text>
+                    <text x="225" y="128" fill="#60a5fa" font-family="monospace" font-size="9" text-anchor="middle">BERT/CamemBERT (50ms)</text>
+
+                    <!-- Arrows from Classifier -->
+                    <!-- Route 1 (To LLM) -->
+                    <path d="M 290,105 L 350,75" stroke="var(--border)" stroke-width="1.5" fill="none"/>
+                    <polygon points="350,75 341,73 345,80" fill="var(--text-secondary)"/>
+                    <text x="320" y="85" fill="var(--text-light)" font-family="sans-serif" font-size="9" text-anchor="middle">Food Log</text>
+
+                    <!-- Route 2 (Direct Query) -->
+                    <path d="M 290,125 L 350,155" stroke="var(--border)" stroke-width="1.5" fill="none"/>
+                    <polygon points="350,155 345,150 341,157" fill="var(--text-secondary)"/>
+                    <text x="320" y="152" fill="var(--text-light)" font-family="sans-serif" font-size="9" text-anchor="middle">Stats check</text>
+
+                    <!-- Node 3: LLM Parsing -->
+                    <rect x="350" y="50" width="120" height="50" rx="8" fill="#2d1a0c" stroke="var(--accent)" stroke-width="1.5"/>
+                    <text x="410" y="72" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="11" text-anchor="middle">Local LLM</text>
+                    <text x="410" y="88" fill="var(--accent)" font-family="monospace" font-size="9" text-anchor="middle">Qwen 1.5B (JSON extraction)</text>
+
+                    <!-- Node 4: SQLite Database -->
+                    <rect x="510" y="90" width="110" height="50" rx="8" fill="#16201d" stroke="var(--primary)" stroke-width="1.5"/>
+                    <text x="565" y="112" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="11" text-anchor="middle">SQLite Database</text>
+                    <text x="565" y="128" fill="var(--primary)" font-family="monospace" font-size="9" text-anchor="middle">Local Storage</text>
+
+                    <!-- Connect Node 3 -> Database -->
+                    <path d="M 470,75 L 510,105" stroke="var(--border)" stroke-width="1.5" fill="none"/>
+                    <polygon points="510,105 501,103 505,110" fill="var(--text-secondary)"/>
+
+                    <!-- Connect Route 2 directly to Database -->
+                    <rect x="350" y="135" width="120" height="50" rx="8" fill="#16201d" stroke="var(--border)" stroke-width="1"/>
+                    <text x="410" y="157" fill="#ffffff" font-family="sans-serif" font-size="11" text-anchor="middle">Direct Query Node</text>
+                    <text x="410" y="173" fill="var(--text-light)" font-family="monospace" font-size="9" text-anchor="middle">SQL Select (2ms)</text>
+
+                    <path d="M 470,160 L 510,130" stroke="var(--border)" stroke-width="1.5" fill="none"/>
+                    <polygon points="510,130 505,125 501,132" fill="var(--text-secondary)"/>
+                </svg>
+                <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem; font-style: italic;">The multi-tier orchestration pipeline: a lightweight ONNX BERT classifier handles intent routing instantly, skipping the LLM for simple queries to optimize battery life.</p>
+            </div>
+
             <p>Once the intent is determined, the heavy LLM's only job is to act as a structured parser to translate text into formatted JSON (entity extraction). This decouples the orchestration task, significantly speeds up response times, and keeps the user interface incredibly responsive.</p>
         
                     </div>

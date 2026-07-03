@@ -370,6 +370,46 @@
                     <div class="article-body">
                         
             <p>This week we worked on the JNI (Java Native Interface) bridge. To call our optimized C++ libraries (<code>libciqual_api</code> and <code>libuser_profile</code>) from Kotlin, we need to compile them using the Android NDK (Native Development Kit).</p>
+            
+            <div style="margin: 2rem 0; text-align: center;">
+                <svg viewBox="0 0 600 240" width="100%" height="auto" style="background-color: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: 0 10px 30px var(--shadow);">
+                    <!-- Title -->
+                    <text x="300" y="35" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="15" text-anchor="middle">Android JNI Architecture Bridge</text>
+
+                    <!-- Column 1: Kotlin JVM -->
+                    <rect x="30" y="70" width="140" height="120" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+                    <text x="100" y="95" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="12" text-anchor="middle">Kotlin (JVM)</text>
+                    <rect x="45" y="115" width="110" height="25" rx="4" fill="rgba(59, 82, 246, 0.15)" stroke="#3b82f6" stroke-width="1"/>
+                    <text x="100" y="132" fill="#93c5fd" font-family="monospace" font-size="10" text-anchor="middle">Gateway Service</text>
+                    <rect x="45" y="150" width="110" height="25" rx="4" fill="rgba(59, 82, 246, 0.15)" stroke="#3b82f6" stroke-width="1"/>
+                    <text x="100" y="167" fill="#93c5fd" font-family="monospace" font-size="10" text-anchor="middle">System.load()</text>
+
+                    <!-- Connector Kotlin -> JNI -->
+                    <path d="M 170,130 L 230,130" stroke="var(--border)" stroke-width="2" fill="none"/>
+                    <polygon points="230,130 222,126 222,134" fill="var(--text-secondary)"/>
+
+                    <!-- Column 2: JNI Wrapper -->
+                    <rect x="230" y="70" width="140" height="120" rx="8" fill="#16201d" stroke="var(--primary)" stroke-width="1.5"/>
+                    <text x="300" y="95" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="12" text-anchor="middle">JNI Bridge (C++)</text>
+                    <rect x="245" y="115" width="110" height="50" rx="4" fill="rgba(16, 185, 129, 0.15)" stroke="var(--primary)" stroke-width="1"/>
+                    <text x="300" y="135" fill="var(--primary)" font-family="monospace" font-size="10" text-anchor="middle">ciqual_jni.cpp</text>
+                    <text x="300" y="152" fill="var(--text-light)" font-family="monospace" font-size="9" text-anchor="middle">Data Translation</text>
+
+                    <!-- Connector JNI -> C++ Core -->
+                    <path d="M 370,130 L 430,130" stroke="var(--border)" stroke-width="2" fill="none"/>
+                    <polygon points="430,130 422,126 422,134" fill="var(--text-secondary)"/>
+
+                    <!-- Column 3: C++ Core -->
+                    <rect x="430" y="70" width="140" height="120" rx="8" fill="#2d1a0c" stroke="var(--accent)" stroke-width="1.5"/>
+                    <text x="500" y="95" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="12" text-anchor="middle">C++ Core API</text>
+                    <rect x="445" y="115" width="110" height="25" rx="4" fill="rgba(245, 158, 11, 0.15)" stroke="var(--accent)" stroke-width="1"/>
+                    <text x="500" y="132" fill="var(--accent)" font-family="monospace" font-size="10" text-anchor="middle">libciqual_api</text>
+                    <rect x="445" y="150" width="110" height="25" rx="4" fill="rgba(245, 158, 11, 0.15)" stroke="var(--accent)" stroke-width="1"/>
+                    <text x="500" y="167" fill="var(--accent)" font-family="monospace" font-size="10" text-anchor="middle">libuser_profile</text>
+                </svg>
+                <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem; font-style: italic;">The architectural layout of VITA's native bridge, connecting high-level Android Kotlin controllers to low-level C++ engines via the NDK JNI boundary.</p>
+            </div>
+
             <p>We configured CMake inside our Android gradle structure. We wrote JNI wrapper files in C++ (<code>ciqual_jni.cpp</code>) that map Kotlin method calls to our C ABI. We handled standard conversions between Kotlin strings and C++ <code>const char*</code> arrays safely, making sure to avoid memory leaks.</p>
             <p>We compiled the shared libraries (<code>.so</code> files) for the target Android architectures (specifically <code>arm64-v8a</code> for modern physical phones and <code>x86_64</code> for emulator testing). The compilation succeeded, and we successfully loaded the native libraries in Kotlin using <code>System.loadLibrary()</code>.</p>
         

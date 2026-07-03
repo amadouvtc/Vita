@@ -371,6 +371,46 @@
                         
             <p>This week, we held a critical alignment meeting regarding VITA's product direction. We finalized our Bill of Materials (BOM) for the kitchen device prototype. When adding up the cost of components, a massive barrier emerged: **the rising cost of RAM**.</p>
             <p>To run speech-to-text models and local large language models offline, the device required a minimum of 8GB of high-performance RAM. Due to supply chain constraints, the cost of RAM chips had spiked, making single-board computers (SBCs) with high RAM capacity prohibitively expensive. A $145 manufacturing cost meant a $249 retail price, which was too high for a kitchen utility.</p>
+            
+            <div style="margin: 2rem 0; text-align: center;">
+                <svg viewBox="0 0 600 320" width="100%" height="auto" style="background-color: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: 0 10px 30px var(--shadow);">
+                    <!-- Title -->
+                    <text x="300" y="35" fill="#ffffff" font-weight="bold" font-family="sans-serif" font-size="16" text-anchor="middle">VITA Hardware Bill of Materials (BOM) Cost</text>
+                    
+                    <!-- Table Header -->
+                    <rect x="30" y="60" width="540" height="30" fill="#16201d" rx="4"/>
+                    <text x="45" y="80" fill="var(--primary)" font-weight="bold" font-family="sans-serif" font-size="12">Component / Item Description</text>
+                    <text x="555" y="80" fill="var(--primary)" font-weight="bold" font-family="sans-serif" font-size="12" text-anchor="end">Estimated Cost (USD)</text>
+
+                    <!-- Rows -->
+                    <text x="45" y="120" fill="var(--text-secondary)" font-family="sans-serif" font-size="12">Orange Pi 5 (8GB RAM / NPU Accelerated Board)</text>
+                    <text x="555" y="120" fill="white" font-family="monospace" font-size="12" text-anchor="end">$110.00</text>
+                    <line x1="30" y1="132" x2="570" y2="132" stroke="var(--border)" stroke-width="0.5"/>
+
+                    <text x="45" y="152" fill="var(--text-secondary)" font-family="sans-serif" font-size="12">Circular 6-Microphone Array Board</text>
+                    <text x="555" y="152" fill="white" font-family="monospace" font-size="12" text-anchor="end">$25.00</text>
+                    <line x1="30" y1="164" x2="570" y2="164" stroke="var(--border)" stroke-width="0.5"/>
+
+                    <text x="45" y="184" fill="var(--text-secondary)" font-family="sans-serif" font-size="12">Custom Anodized Aluminum Enclosure & Passive Heatsinks</text>
+                    <text x="555" y="184" fill="white" font-family="monospace" font-size="12" text-anchor="end">$30.00</text>
+                    <line x1="30" y1="196" x2="570" y2="196" stroke="var(--border)" stroke-width="0.5"/>
+
+                    <text x="45" y="216" fill="var(--text-secondary)" font-family="sans-serif" font-size="12">Stereo Speakers & I2S DAC Audio Expansion HAT</text>
+                    <text x="555" y="216" fill="white" font-family="monospace" font-size="12" text-anchor="end">$20.00</text>
+                    <line x1="30" y1="228" x2="570" y2="228" stroke="var(--border)" stroke-width="0.5"/>
+
+                    <text x="45" y="248" fill="var(--text-secondary)" font-family="sans-serif" font-size="12">Assembly, QA Calibration & Packaging Material</text>
+                    <text x="555" y="248" fill="white" font-family="monospace" font-size="12" text-anchor="end">$30.00</text>
+                    <line x1="30" y1="260" x2="570" y2="260" stroke="var(--border)" stroke-width="0.5"/>
+
+                    <!-- Total Row -->
+                    <rect x="30" y="270" width="540" height="35" fill="rgba(16, 185, 129, 0.05)" rx="4"/>
+                    <text x="45" y="292" fill="white" font-weight="bold" font-family="sans-serif" font-size="13">Total Cost of Goods Sold (COGS)</text>
+                    <text x="555" y="292" fill="var(--primary)" font-weight="bold" font-family="monospace" font-size="14" text-anchor="end">$215.00</text>
+                </svg>
+                <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem; font-style: italic;">Detailed Cost of Goods Sold (COGS) analysis showing how component pricing spikes, particularly on high-RAM SBC boards, made custom hardware non-viable.</p>
+            </div>
+
             <p>This RAM cost bottleneck forced us to rethink the hardware box. Leveraging the powerful processors and high-performance RAM already sitting in your smartphone removes this cost barrier entirely, allowing us to distribute VITA cheaply without sacrificing local processing.</p>
         
                     </div>
