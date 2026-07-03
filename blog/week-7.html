@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototyping on the Orange Pi 5 | VITA Blog</title>
+    <meta name="description" content="Evaluating the RK3588 processor on the Orange Pi 5. Excellent NPU performance, but massive manufacturing and distribution questions arise.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #10b981; /* bright emerald green */
+            --primary-light: #34d399;
+            --primary-dark: #059669;
+            --accent: #f59e0b; /* amber */
+            --background: #090d0c; /* dark warm green-gray */
+            --surface: #111816; /* deep surface */
+            --surface-hover: #16201d;
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-light: #6b7280;
+            --border: rgba(255, 255, 255, 0.08);
+            --shadow: rgba(0, 0, 0, 0.4);
+            --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
+            --font-body: 'Inter', -apple-system, sans-serif;
+            --radius-md: 12px;
+            --radius-lg: 20px;
+            --transition-normal: 250ms ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-body);
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.7;
+            padding-top: 6rem;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1.2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            line-height: 1.2;
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+            margin-top: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        
+        p {
+            margin-bottom: 1.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        /* Header - Glassmorphic */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(9, 13, 12, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            padding: 1.25rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.6rem;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color var(--transition-normal);
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .nav-links a.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .nav-btn {
+            padding: 0.6rem 1.25rem;
+            background-color: var(--primary);
+            color: #0c0f0e !important;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color var(--transition-normal);
+        }
+        
+        .nav-btn:hover {
+            background-color: var(--primary-light);
+        }
+        
+        /* Layout Grid */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+        
+        /* Article Area */
+        article {
+            background-color: var(--surface);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+        
+        .article-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .article-category {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.25rem 0.75rem;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 100px;
+        }
+        
+        .article-date {
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+        
+        .article-body {
+            font-size: 1.05rem;
+        }
+        
+        .article-body code {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: var(--accent);
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            transition: gap var(--transition-normal);
+        }
+        
+        .back-link:hover {
+            gap: 0.75rem;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .sidebar-widget {
+            background-color: var(--surface);
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+        
+        .sidebar-widget h3 {
+            font-size: 1.15rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+        
+        .subscribe-form input {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: white;
+            margin-bottom: 0.75rem;
+        }
+        
+        .subscribe-form button {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary);
+            color: #0c0f0e;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color var(--transition-normal);
+        }
+        
+        .subscribe-form button:hover {
+            background-color: var(--primary-light);
+        }
+        
+        /* Footer */
+        footer {
+            background: #060807;
+            padding: 3rem 0;
+            border-top: 1px solid var(--border);
+            margin-top: 5rem;
+            text-align: center;
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+        
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin: 0 1rem;
+        }
+        
+        footer a:hover {
+            color: var(--primary);
+        }
+        
+        @media (max-width: 900px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+            body {
+                padding-top: 5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="../index.html" class="logo">VITA</a>
+            <div class="nav-links">
+                <a href="../index.html">Home</a>
+                <a href="../blog.html" class="active">Blog</a>
+                <a href="../contact.html">Contact</a>
+                <a href="../privacy.html">Privacy</a>
+                <a href="../index.html#membership" class="nav-btn">Get the App</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="layout-grid">
+            <main>
+                <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
+                <article>
+                    <div class="article-meta">
+                        <span class="article-category">Hardware Architecture</span>
+                        <span class="article-date">February 16, 2026</span>
+                    </div>
+                    <h1>Week 7: Prototyping on the Orange Pi 5</h1>
+                    <div class="article-body">
+                        
+            <p>This week we received and set up our Orange Pi 5 board. The Orange Pi 5 features the Rockchip RK3588 processor, which boasts an integrated NPU delivering 6 TOPS of compute power. This is an order of magnitude faster than anything we've tested so far.</p>
+            <p>We compiled the RKNN (Rockchip Neural Network) toolchain and converted Whisper to the RKNN format. The results were impressive: transcribing our test audio clip on the Orange Pi 5 took less than 800 milliseconds! The processing is near-instantaneous and thermal output is low.</p>
+            <p>However, this success highlighted another problem. Building and selling a custom physical device around an Orange Pi 5 board is incredibly expensive. Hardware sourcing, assembly, audio codecs, custom casework, power supplies, and regulatory certifications (FCC/CE) would make the VITA hardware unit retail for at least $250. Is this price point viable for our users?</p>
+        
+                    </div>
+                </article>
+            </main>
+
+            <aside class="sidebar">
+                <div class="sidebar-widget">
+                    <h3>Follow Our Journey</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Get technical updates about VITA delivered directly to your inbox every week.</p>
+                    <form class="subscribe-form" onsubmit="event.preventDefault(); alert('Subscribed successfully!');">
+                        <input type="email" placeholder="Your email address" required>
+                        <button type="submit">Subscribe</button>
+                    </form>
+                </div>
+                <div class="sidebar-widget">
+                    <h3>VITA App</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Run Speech-to-Text and LLMs locally on your phone. Offline, private, $5 one-time purchase.</p>
+                    <a href="../index.html#membership" style="color: var(--primary); font-weight:600; text-decoration:none;">Learn more &rarr;</a>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p style="margin-bottom: 1rem;">
+                <a href="../index.html">Home</a>
+                <a href="../blog.html">Blog</a>
+                <a href="../contact.html">Contact</a>
+                <a href="../privacy.html">Privacy</a>
+            </p>
+            <p>&copy; 2026 VITA. All rights reserved. Designed in Europe.</p>
+        </div>
+    </footer>
+</body>
+</html>

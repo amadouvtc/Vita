@@ -16,18 +16,18 @@
     
     <style>
         :root {
-            /* Color Palette - Simplified */
-            --primary: #2D736F;
-            --primary-light: #3F8C87;
-            --primary-dark: #1A5552;
-            --accent: #FF9E4A;
-            --background: #FAF9F7;
-            --surface: #FFFFFF;
-            --text-primary: #1A1A1A;
-            --text-secondary: #5A5A5A;
-            --text-light: #8A8A8A;
-            --border: #E5E5E5;
-            --shadow: rgba(0, 0, 0, 0.05);
+            /* Color Palette - Premium Dark Theme */
+            --primary: #10b981; /* vibrant emerald green */
+            --primary-light: #34d399;
+            --primary-dark: #059669;
+            --accent: #f59e0b; /* warm amber */
+            --background: #090d0c; /* dark warm green-gray */
+            --surface: #111816; /* deep surface */
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-light: #6b7280;
+            --border: rgba(255, 255, 255, 0.08);
+            --shadow: rgba(0, 0, 0, 0.4);
             
             /* Typography */
             --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
@@ -41,9 +41,9 @@
             --space-xl: 4rem;
             
             /* Border Radius */
-            --radius-sm: 4px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 20px;
             
             /* Transitions */
             --transition-fast: 150ms ease;
@@ -159,7 +159,8 @@
         .nav-btn {
             padding: 0.5rem 1.25rem;
             background-color: var(--primary);
-            color: white;
+            color: #0c0f0e;
+            font-weight: 600;
             border-radius: var(--radius-sm);
             font-size: 0.9rem;
             transition: background-color var(--transition-fast);
@@ -402,6 +403,8 @@
         
         .newsletter-form input {
             padding: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
             font-family: var(--font-body);
@@ -417,7 +420,7 @@
         .newsletter-form button {
             padding: 0.75rem;
             background-color: var(--primary);
-            color: white;
+            color: #0c0f0e;
             border: none;
             border-radius: var(--radius-sm);
             font-family: var(--font-body);
@@ -896,74 +899,264 @@
         // Blog Data
         const blogPosts = [
             {
-                id: 1,
-                title: "Why We're Building VITA: The Case for Data Sovereignty",
-                excerpt: "In a world where health data is monetized by tech giants, we're building VITA to put control back in your hands. This is our manifesto for true data sovereignty in personal health.",
-                date: "December 22, 2025",
-                category: "Vision",
-                readTime: "8 min read",
-                link: "blog/article-data-sovereignty.html",
-                archiveKey: "December 2025"
+                id: 26,
+                title: "Week 26: Ready for Closed Beta: Local AI in Your Pocket",
+                excerpt: "VITA reaches feature parity! Preparing our first private beta testing builds for Android arm64. Offline local-first health is here.",
+                date: "June 29, 2026",
+                category: "Product Strategy",
+                readTime: "6 min read",
+                link: "blog/week-26.html",
+                archiveKey: "June 2026"
             },
             {
-                id: 2,
-                title: "The 'Stateless Parser' Explained: How We Use AI Without Knowing Who You Are",
-                excerpt: "Our unique approach to voice AI: understand your commands without storing your conversations. A deep dive into our stateless parser architecture that prioritizes privacy above all.",
-                date: "December 15, 2025",
-                category: "AI Architecture",
-                readTime: "12 min read",
-                link: "blog/article-stateless-parser.html",
-                archiveKey: "December 2025"
-            },
-            {
-                id: 3,
-                title: "Why Local Storage is the Future of Personal Health",
-                excerpt: "Cloud storage has failed personal health data. We explain why local-first architecture isn't just more private—it's technically superior for personalized health insights.",
-                date: "December 8, 2025",
-                category: "Technology",
-                readTime: "10 min read",
-                link: "blog/article-local-storage.html",
-                archiveKey: "December 2025"
-            },
-            {
-                id: 4,
-                title: "Meet the ETL Pipeline: How VITA Turns Speech into Science",
-                excerpt: "From 'I ate an apple' to precise nutrient tracking: our ETL pipeline transforms natural language into structured health data without compromising your privacy.",
-                date: "December 1, 2025",
-                category: "Data Science",
-                readTime: "14 min read",
-                link: "blog/article-etl-pipeline.html",
-                archiveKey: "December 2025"
-            },
-            {
-                id: 5,
-                title: "Beyond Calorie Counting: Tracking Micronutrients in Real-Time",
-                excerpt: "Calories tell only part of the story. We're building VITA to track 27 essential micronutrients in real-time, giving you a complete picture of your nutritional health.",
-                date: "November 24, 2025",
-                category: "Nutrition Science",
-                readTime: "9 min read",
-                link: "blog/article-micronutrients.html",
-                archiveKey: "November 2025"
-            },
-            {
-                id: 6,
-                title: "The 'May 2027' Promise: Our Hardware Roadmap and Refund Guarantee",
-                excerpt: "Transparency about our timeline, manufacturing challenges, and why we stand behind our May 31, 2027 refund guarantee. Building hardware is hard; we're being honest about it.",
-                date: "November 17, 2025",
-                category: "Company",
+                id: 25,
+                title: "Week 25: Hardening the End-to-End Daily Budget Flow",
+                excerpt: "Linking our static nutrition API and user profile module in the JNI layer to enable real-time calorie budget tracking.",
+                date: "June 23, 2026",
+                category: "Software Architecture",
                 readTime: "7 min read",
-                link: "blog/article-may-2027-promise.html",
-                archiveKey: "November 2025"
+                link: "blog/week-25.html",
+                archiveKey: "June 2026"
+            },
+            {
+                id: 24,
+                title: "Week 24: Writing the Phone Test Readiness Report",
+                excerpt: "Conducting a comprehensive audit of our mobile-ui module and documenting remaining development steps for physical testing.",
+                date: "June 16, 2026",
+                category: "Mobile Engineering",
+                readTime: "8 min read",
+                link: "blog/week-24.html",
+                archiveKey: "June 2026"
+            },
+            {
+                id: 23,
+                title: "Week 23: Solving Serving Size Normalization",
+                excerpt: "Resolving a critical bug in the C++ API: scaling database nutrient values accurately with user-inputted portion sizes.",
+                date: "June 9, 2026",
+                category: "Software Architecture",
+                readTime: "6 min read",
+                link: "blog/week-23.html",
+                archiveKey: "June 2026"
+            },
+            {
+                id: 22,
+                title: "Week 22: Training the Intent Classifier for Phone Deployment",
+                excerpt: "Training a lightweight BERT model and exporting it to ONNX to route user commands instantly on-device.",
+                date: "June 2, 2026",
+                category: "AI Engineering",
+                readTime: "7 min read",
+                link: "blog/week-22.html",
+                archiveKey: "June 2026"
+            },
+            {
+                id: 21,
+                title: "Week 21: Hardening the ETL Parsing Pipeline on Mobile",
+                excerpt: "Optimizing our local string parser. Handling complex conversational speech inputs and converting them into structured SQLite inserts.",
+                date: "May 26, 2026",
+                category: "Data Science",
+                readTime: "6 min read",
+                link: "blog/week-21.html",
+                archiveKey: "May 2026"
+            },
+            {
+                id: 20,
+                title: "Week 20: Implementing STT and TTS Audio Bridges",
+                excerpt: "Capturing microphone data on Android, feeding it to local Whisper transcribers, and piping output back through the TTS engine.",
+                date: "May 19, 2026",
+                category: "Mobile Engineering",
+                readTime: "7 min read",
+                link: "blog/week-20.html",
+                archiveKey: "May 2026"
+            },
+            {
+                id: 19,
+                title: "Week 19: Bringing llama.cpp to Mobile via JNI",
+                excerpt: "Replacing Kotlin placeholder stubs with real llama.cpp library calls and configuring GGUF model storage policies.",
+                date: "May 12, 2026",
+                category: "AI Engineering",
+                readTime: "8 min read",
+                link: "blog/week-19.html",
+                archiveKey: "May 2026"
+            },
+            {
+                id: 18,
+                title: "Week 18: Android JNI Plumbing with CMake",
+                excerpt: "Setting up the Android NDK and writing JNI wrappers in C++ to map Kotlin classes to our core C ABI libraries.",
+                date: "May 4, 2026",
+                category: "Mobile Engineering",
+                readTime: "7 min read",
+                link: "blog/week-18.html",
+                archiveKey: "May 2026"
+            },
+            {
+                id: 17,
+                title: "Week 17: The Big Pivot: A $5 One-Time Purchase Local-First App",
+                excerpt: "Announcing the final product definition: VITA is now a fully local mobile app. We are ditching the $250 device price for a $5 one-time purchase.",
+                date: "April 27, 2026",
+                category: "Product Strategy",
+                readTime: "6 min read",
+                link: "blog/week-17.html",
+                archiveKey: "April 2026"
+            },
+            {
+                id: 16,
+                title: "Week 16: Breakthrough: On-Device Speech and Inference on Phones",
+                excerpt: "Our tests confirm it: modern mobile processors can run Whisper Tiny and Qwen 2.5 1.5B locally, fully offline, in under 1 second.",
+                date: "April 20, 2026",
+                category: "AI Engineering",
+                readTime: "8 min read",
+                link: "blog/week-16.html",
+                archiveKey: "April 2026"
+            },
+            {
+                id: 15,
+                title: "Week 15: Bootstrapping the Mobile-UI Repository",
+                excerpt: "Initializing the Kotlin Android repository under mobile-ui/ and defining our gateway architecture contracts.",
+                date: "April 13, 2026",
+                category: "Mobile Engineering",
+                readTime: "6 min read",
+                link: "blog/week-15.html",
+                archiveKey: "April 2026"
+            },
+            {
+                id: 14,
+                title: "Week 14: Why Have a Device at All? The Pivotal Question",
+                excerpt: "A fundamental shift in perspective. If we want privacy, offline capability, and low cost, the solution isn't on a shelf—it's already in the user's pocket.",
+                date: "April 7, 2026",
+                category: "Product Strategy",
+                readTime: "5 min read",
+                link: "blog/week-14.html",
+                archiveKey: "April 2026"
+            },
+            {
+                id: 13,
+                title: "Week 13: Implementing the Stateless Parser Cloud Concept",
+                excerpt: "Setting up our stateless cloud parsing endpoints and benchmarking response times compared to a fully local execution.",
+                date: "March 30, 2026",
+                category: "AI Engineering",
+                readTime: "7 min read",
+                link: "blog/week-13.html",
+                archiveKey: "March 2026"
+            },
+            {
+                id: 12,
+                title: "Week 12: Pivoting to a Hybrid Cloud Architecture",
+                excerpt: "How we designed a hybrid architecture: keeping databases local on a cheaper hardware unit, while querying a stateless cloud parser for LLM tasks.",
+                date: "March 23, 2026",
+                category: "Software Architecture",
+                readTime: "6 min read",
+                link: "blog/week-12.html",
+                archiveKey: "March 2026"
+            },
+            {
+                id: 11,
+                title: "Week 11: Hardware Realities and Cost Calculations",
+                excerpt: "The numbers don't lie. Analyzing the bill of materials (BOM), assembly logistics, and why a hardware device is the wrong path.",
+                date: "March 16, 2026",
+                category: "Product Strategy",
+                readTime: "5 min read",
+                link: "blog/week-11.html",
+                archiveKey: "March 2026"
+            },
+            {
+                id: 10,
+                title: "Week 10: Designing the User Profile Module (libuser_profile)",
+                excerpt: "Creating the profile module in C++ to manage user biometrics, target nutrient budgets, and historical meal logs.",
+                date: "March 9, 2026",
+                category: "Software Architecture",
+                readTime: "7 min read",
+                link: "blog/week-10.html",
+                archiveKey: "March 2026"
+            },
+            {
+                id: 9,
+                title: "Week 9: Developing the Natural-Language Orchestrator",
+                excerpt: "Implementing the C ABI orchestrator (liborchestrator) to handle intent parsing and route natural language inputs to correct engines.",
+                date: "March 2, 2026",
+                category: "AI Engineering",
+                readTime: "7 min read",
+                link: "blog/week-9.html",
+                archiveKey: "March 2026"
+            },
+            {
+                id: 8,
+                title: "Week 8: Building the C++ C ABI Core for Nutrition Queries",
+                excerpt: "Writing libciqual_api in C++ to execute raw SQLite queries directly, wrapped in a thread-safe C ABI with query caching.",
+                date: "February 23, 2026",
+                category: "Software Architecture",
+                readTime: "6 min read",
+                link: "blog/week-8.html",
+                archiveKey: "February 2026"
             },
             {
                 id: 7,
-                title: "The Science of Nutrient Normalization: How We Ensure Accuracy",
-                excerpt: "Different food databases, different portion sizes—how VITA normalizes nutrient data across sources to give you accurate, actionable insights about your diet.",
-                date: "November 10, 2025",
+                title: "Week 7: Prototyping on the Orange Pi 5",
+                excerpt: "Evaluating the RK3588 processor on the Orange Pi 5. Excellent NPU performance, but massive manufacturing and distribution questions arise.",
+                date: "February 16, 2026",
+                category: "Hardware Architecture",
+                readTime: "8 min read",
+                link: "blog/week-7.html",
+                archiveKey: "February 2026"
+            },
+            {
+                id: 6,
+                title: "Week 6: Exploring Radxa Boards for NPU Acceleration",
+                excerpt: "Searching for alternative SBCs with dedicated Neural Processing Units. Our testing with Radxa boards and deep-learning toolchains.",
+                date: "February 9, 2026",
+                category: "Hardware Architecture",
+                readTime: "6 min read",
+                link: "blog/week-6.html",
+                archiveKey: "February 2026"
+            },
+            {
+                id: 5,
+                title: "Week 5: Testing Whisper STT on Raspberry Pi 4",
+                excerpt: "We hit our first major technical bottleneck. Running OpenAI's Whisper STT model locally on a Raspberry Pi 4 results in unacceptable latency.",
+                date: "February 2, 2026",
+                category: "AI Engineering",
+                readTime: "7 min read",
+                link: "blog/week-5.html",
+                archiveKey: "February 2026"
+            },
+            {
+                id: 4,
+                title: "Week 4: Building the CIQUAL XML SQLite Importer",
+                excerpt: "Writing our Python ETL importer script to parse the raw database files, set up FTS5 full-text indexing, and perform integrity checks.",
+                date: "January 26, 2026",
+                category: "Data Science",
+                readTime: "8 min read",
+                link: "blog/week-4.html",
+                archiveKey: "January 2026"
+            },
+            {
+                id: 3,
+                title: "Week 3: Designing the Database Schema for CIQUAL",
+                excerpt: "How we mapped the French CIQUAL food composition database to an optimized, offline SQLite schema suitable for low-power embedded devices.",
+                date: "January 19, 2026",
                 category: "Nutrition Science",
-                readTime: "11 min read",
-                link: "blog/article-nutrient-normalization.html",
-                archiveKey: "November 2025"
+                readTime: "7 min read",
+                link: "blog/week-3.html",
+                archiveKey: "January 2026"
+            },
+            {
+                id: 2,
+                title: "Week 2: Setting up the Raspberry Pi 4 for Local AI",
+                excerpt: "Getting our hands dirty with the hardware: flashing OS images, testing audio capture with ALSA, and running baseline audio performance metrics on the Pi.",
+                date: "January 12, 2026",
+                category: "Hardware Architecture",
+                readTime: "6 min read",
+                link: "blog/week-2.html",
+                archiveKey: "January 2026"
+            },
+            {
+                id: 1,
+                title: "Week 1: Initiating VITA: The Vision for a Personal Health Device",
+                excerpt: "We are bootstrapping VITA: an offline personal kitchen assistant device. Why we decided to build physical hardware and our initial planning with the Raspberry Pi 4.",
+                date: "January 5, 2026",
+                category: "Vision",
+                readTime: "5 min read",
+                link: "blog/week-1.html",
+                archiveKey: "January 2026"
             }
         ];
 
@@ -1029,12 +1222,17 @@
             const icons = {
                 'Vision': 'eye',
                 'AI Architecture': 'brain',
+                'AI Engineering': 'brain',
                 'Technology': 'server',
                 'Data Science': 'chart-line',
                 'Nutrition Science': 'utensils',
-                'Company': 'building'
+                'Company': 'building',
+                'Hardware Architecture': 'microchip',
+                'Software Architecture': 'code',
+                'Mobile Engineering': 'mobile-screen-button',
+                'Product Strategy': 'compass'
             };
-            return icons[category] || 'file-alt';
+            return icons[category] || 'file-lines';
         }
 
         function generateArchive() {
