@@ -370,7 +370,7 @@
                     <div class="article-body">
                         
             <p>In our initial architecture plan, we intended to use a large language model (LLM) as the core orchestrator. The LLM was supposed to read the raw input, classify the user's intent, and then route execution to the database nodes. This week, we realized that was a massive waste of mobile GPU compute and battery.</p>
-            <p>Instead, we built a multi-tier routing architecture. We trained a lightweight **BERT classifier** (and its French equivalent, CamemBERT) and exported it to ONNX format (only 12MB). The classifier runs first, identifying the intent in under 50ms with virtually zero battery drain.</p>
+            <p>Instead, we built a multi-tier routing architecture. We trained a lightweight **BERT classifier** (specifically, the French **CamemBERT** model) and exported it to ONNX format (only 12MB). The classifier runs first, identifying the intent in under 50ms with virtually zero battery drain.</p>
             
             <div style="margin: 2rem 0; text-align: center;">
                 <svg viewBox="0 0 650 250" width="100%" height="auto" style="background-color: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: 0 10px 30px var(--shadow);">
@@ -427,7 +427,7 @@
                 <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem; font-style: italic;">The multi-tier orchestration pipeline: a lightweight ONNX BERT classifier handles intent routing instantly, skipping the LLM for simple queries to optimize battery life.</p>
             </div>
 
-            <p>Once the intent is determined, the heavy LLM's only job is to act as a structured parser to translate text into formatted JSON (entity extraction). This decouples the orchestration task, significantly speeds up response times, and keeps the user interface incredibly responsive.</p>
+            <p>Once the intent is determined, the heavy LLM's only job is to act as a structured parser to translate text into formatted JSON (entity extraction). By using CamemBERT and focusing our LLM tasks on Mistral, we establish a sovereign European AI architecture. This keeps VITA independent of overseas cloud providers, ensures complete local data handling, and makes the app fully compliant with GDPR regulations.</p>
         
                     </div>
                 </article>

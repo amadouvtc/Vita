@@ -1277,7 +1277,7 @@
                         </div>
                     </div>
                     <div class="accordion-content">
-                        <p>Previously, we planned to use the LLM as the main orchestrator to read inputs and decide intents. Now, a lightweight BERT (or French equivalent) ONNX intent classifier runs first. It determines the intent instantly (under 50ms), saving battery. The LLM is used solely to convert text to structured JSON (entity extraction).</p>
+                        <p>Previously, we planned to use the LLM as the main orchestrator to read inputs and decide intents. Now, a lightweight <strong>CamemBERT/BERT</strong> intent classifier running as a native ONNX model runs first. It determines the intent instantly (under 50ms), saving battery. The local <strong>Mistral</strong> LLM is used solely to convert text to structured JSON (entity extraction).</p>
                     </div>
                 </div>
                 
@@ -1289,7 +1289,19 @@
                         </div>
                     </div>
                     <div class="accordion-content">
-                        <p>VITA's key innovation is training a Joint Embedding Predictive Architecture (JEPA) model locally on users' devices. Every month, the aggregated, anonymous weights are uploaded to our secure cloud to improve the global predictive model. The user has nothing to configure, and all data remains private.</p>
+                        <p>VITA's key innovation is training a Joint Embedding Predictive Architecture (JEPA) model locally on users' devices. Every month, the aggregated, anonymous weights are uploaded to our secure cloud to improve the global predictive model. By training this JEPA model on top of sovereign European foundations (Mistral, CamemBERT, and CIQUAL), VITA establishes a private AI architecture fully aligned with strict EU regulations (GDPR), paving the way for public funding eligibility and scaling.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <h4>Sovereign European AI Stack & GDPR</h4>
+                        <div class="accordion-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="accordion-content">
+                        <p>VITA is built on a fully sovereign European technology stack: leveraging the French <strong>CamemBERT</strong> intent classifier, the French national <strong>CIQUAL</strong> database, and local <strong>Mistral</strong> models. By processing data 100% locally and matching strict European regulatory frameworks (GDPR), VITA secures user privacy, decouples from foreign cloud dependencies, and positions itself for institutional European funding and market access.</p>
                     </div>
                 </div>
                 
