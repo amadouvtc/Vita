@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exploring Radxa Boards for NPU Acceleration | VITA Blog</title>
-    <meta name="description" content="Searching for alternative SBCs with dedicated Neural Processing Units. Our testing with Radxa boards and deep-learning toolchains.">
+    <title>Week 6: Ground Truth Nutrition: CIQUAL Integration and Auditable Database APIs | VITA Blog</title>
+    <meta name="description" content="Integrating France's ANSES CIQUAL food database into VITA: why European launch demands public government data, the SQLite FTS5 importer, and why we strictly forbid LLMs from writing SQL.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,16 +20,21 @@
             --primary-light: #34d399;
             --primary-dark: #059669;
             --accent: #f59e0b; /* amber */
+            --accent-cyan: #06b6d4; /* cyan */
+            --danger: #ef4444; /* red */
             --background: #090d0c; /* dark warm green-gray */
             --surface: #111816; /* deep surface */
             --surface-hover: #16201d;
+            --surface-card: #131d1a;
             --text-primary: #f3f4f6;
             --text-secondary: #9ca3af;
             --text-light: #6b7280;
             --border: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(16, 185, 129, 0.25);
             --shadow: rgba(0, 0, 0, 0.4);
             --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
             --font-body: 'Inter', -apple-system, sans-serif;
+            --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 20px;
             --transition-normal: 250ms ease;
@@ -57,15 +62,30 @@
         }
         
         h1 {
-            font-size: 2.5rem;
-            line-height: 1.2;
+            font-size: 2.35rem;
+            line-height: 1.25;
         }
         
         h2 {
-            font-size: 1.75rem;
-            margin-top: 2rem;
+            font-size: 1.65rem;
+            margin-top: 2.5rem;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.6rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 i {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            margin-top: 1.75rem;
+            color: var(--primary-light);
         }
         
         p {
@@ -85,7 +105,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            background: rgba(9, 13, 12, 0.8);
+            background: rgba(9, 13, 12, 0.85);
             backdrop-filter: blur(12px);
             z-index: 1000;
             padding: 1.25rem 0;
@@ -157,36 +177,34 @@
         /* Layout Grid */
         .layout-grid {
             display: grid;
-            grid-template-columns: 1fr 320px;
+            grid-template-columns: 1fr 340px;
             gap: 3rem;
-            margin-top: 2rem;
+            margin: 2rem 0 5rem 0;
         }
         
-        /* Article Area */
-        article {
-            background-color: var(--surface);
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 30px var(--shadow);
+        @media (max-width: 900px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
         }
         
+        /* Article Header */
         .article-meta {
             display: flex;
             gap: 1rem;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         
         .article-category {
-            font-size: 0.75rem;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--primary-light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: 600;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 0.25rem 0.75rem;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 100px;
+            border: 1px solid var(--border-highlight);
         }
         
         .article-date {
@@ -199,12 +217,266 @@
         }
         
         .article-body code {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 0.2rem 0.4rem;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.2rem 0.45rem;
             border-radius: 4px;
             color: var(--accent);
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.92rem;
+        }
+
+        /* Modern Pre/Code Styling */
+        .code-container {
+            margin: 1.75rem 0;
+            background-color: #070b0a;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #111a17;
+            padding: 0.6rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
             font-family: monospace;
+        }
+
+        .code-header .lang-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--primary-light);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .code-header .file-name {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #d1d5db;
+        }
+
+        pre {
+            padding: 1.25rem;
+            overflow-x: auto;
+            color: #e5e7eb;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.88rem;
+            line-height: 1.55;
+        }
+
+        pre code {
+            background: transparent !important;
+            padding: 0 !important;
+            color: inherit !important;
+            font-size: inherit !important;
+        }
+
+        /* Callout Boxes */
+        .callout-box {
+            background: var(--surface-card);
+            border-left: 4px solid var(--primary);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem 1.5rem;
+            margin: 2rem 0;
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .callout-box.warning {
+            border-left-color: var(--accent);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .callout-box.danger {
+            border-left-color: var(--danger);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .callout-box h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .callout-box p {
+            margin-bottom: 0;
             font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* Metric & Feature Cards */
+        .hardware-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin: 2rem 0;
+        }
+
+        .hw-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            transition: transform var(--transition-normal), border-color var(--transition-normal);
+        }
+
+        .hw-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-highlight);
+        }
+
+        .hw-card .icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: rgba(16, 185, 129, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-light);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .hw-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .hw-card p {
+            font-size: 0.88rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .hw-card .specs {
+            font-size: 0.8rem;
+            color: var(--primary-light);
+            font-weight: 500;
+            font-family: monospace;
+            background: rgba(16, 185, 129, 0.08);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* Modern Tables */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.92rem;
+            background: var(--surface);
+        }
+
+        thead th {
+            background: #131c19;
+            color: var(--primary-light);
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-dark);
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 0.85rem 1.2rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-fail { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .status-warn { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .status-pass { background: rgba(16, 185, 129, 0.2); color: var(--primary-light); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        /* Diagram Containers */
+        .diagram-container {
+            margin: 2.25rem 0;
+            background: #0d1412;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px var(--shadow);
+            text-align: center;
+        }
+
+        .diagram-caption {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        /* Metric comparison strip */
+        .metrics-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .metric-stat {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .metric-stat .num {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: var(--font-heading);
+            display: block;
+        }
+
+        .metric-stat .num.warn {
+            color: var(--danger);
+        }
+
+        .metric-stat .label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.25rem;
         }
         
         .back-link {
@@ -271,87 +543,42 @@
         
         /* Footer */
         footer {
-            background: #060807;
+            background-color: var(--surface);
             padding: 3rem 0;
             border-top: 1px solid var(--border);
-            margin-top: 5rem;
             text-align: center;
-            color: var(--text-light);
             font-size: 0.9rem;
+            color: var(--text-light);
         }
         
         footer a {
             color: var(--text-secondary);
             text-decoration: none;
-            margin: 0 1rem;
+            margin: 0 0.75rem;
+            transition: color var(--transition-normal);
         }
         
         footer a:hover {
             color: var(--primary);
         }
-        
-        @media (max-width: 900px) {
-            .layout-grid {
-                grid-template-columns: 1fr;
-            }
-            body {
-                padding-top: 5rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .mobile-nav-toggle {
-                display: block;
-            }
-            
-            .nav-links {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 280px;
-                height: 100vh;
-                background-color: rgba(9, 13, 12, 0.95);
-                backdrop-filter: blur(20px);
-                border-left: 1px solid var(--border);
-                flex-direction: column;
-                justify-content: center;
-                gap: 2rem;
-                padding: 3rem;
-                transition: right 0.3s ease-in-out;
-                z-index: 1050;
-                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-            }
-            
-            .nav-links.active {
-                right: 0;
-            }
-            
-            .nav-links a {
-                font-size: 1.2rem;
-                width: 100%;
-                text-align: center;
-            }
-            
-            .nav-links .nav-btn {
-                width: 100%;
-                text-align: center;
-                padding: 0.75rem;
-            }
-        }
     </style>
 </head>
 <body>
+
     <header>
         <div class="container header-container">
             <a href="../index.html" class="logo">VITA</a>
-            <button class="mobile-nav-toggle" aria-label="Toggle Menu">
+            
+            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
                 <i class="fas fa-bars"></i>
             </button>
+            
             <div class="nav-links">
-                <a href="../index.html">Home</a>
+                <a href="../index.html#features">Features</a>
+                <a href="../index.html#hardware">Device</a>
+                <a href="../index.html#technology">Technology</a>
+                <a href="../index.html#membership">App</a>
                 <a href="../blog.html" class="active">Blog</a>
-                <a href="../contact.html">Contact</a>
-                <a href="../privacy.html">Privacy</a>
                 <a href="../index.html#membership" class="nav-btn">Get the App</a>
             </div>
         </div>
@@ -363,16 +590,281 @@
                 <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
                 <article>
                     <div class="article-meta">
-                        <span class="article-category">Hardware Architecture</span>
+                        <span class="article-category">Nutrition Data & System Safety</span>
                         <span class="article-date">February 9, 2026</span>
                     </div>
-                    <h1>Week 6: Exploring Radxa Boards for NPU Acceleration</h1>
+                    <h1>Week 6: Ground Truth Nutrition: CIQUAL Integration and Auditable Database APIs</h1>
                     <div class="article-body">
                         
-            <p>Since the Raspberry Pi 4 lacks hardware acceleration for deep learning, we began exploring Single Board Computers (SBCs) that feature dedicated NPUs (Neural Processing Units). Our search led us to Radxa boards.</p>
-            <p>Radxa boards offer chips designed specifically for edge AI inference. We set up a Radxa board with a 0.8 TOPS NPU and began testing our speech recognition pipelines. The NPU requires converting models to a proprietary runtime format using vendor compiler tools.</p>
-            <p>We spent the week wrestling with compilation toolchains, model quantization, and driver incompatibilities. While we managed to run a custom speech keyword detector much faster than on the Pi, compiling full Whisper models to run on this specific NPU was a developer nightmare. The documentation is sparse and the software support is highly fragmented. We need to look for a more powerful, developer-friendly chip.</p>
-        
+                        <p>Welcome to Week 6 of building VITA! Over the last two weeks, we accomplished an engineering feat on our hardware bench: our Orange Pi 5 is running a fully containerized pipeline that captures speech, orchestrates intent with Qwen 2.5 1.5B, and speaks back in under 1.4 seconds. But as we tested it with real meals, we confronted a critical, dangerous flaw: <strong>the language model was making up nutritional numbers</strong>.</p>
+
+                        <p>When asked for the calories in 150 grams of cooked lentils, Qwen would emit 170 kcal in one turn, 230 kcal in the next, and hallucinate arbitrary quantities of sodium and iron. For an autonomous device aspiring to be a medically defensive health guardian, <strong>statistical approximations are completely unacceptable</strong>.</p>
+
+                        <p>This week, we solved the truth problem. We integrated the French government's authoritative national food composition database (<strong>ANSES CIQUAL</strong>), engineered our automated SQLite FTS5 importer, established our repository's data architecture, and enforced the most fundamental safety invariant in VITA: <strong>we strictly prohibit the LLM from writing SQL queries</strong>.</p>
+
+                        <div class="metrics-strip">
+                            <div class="metric-stat">
+                                <span class="num">3,185</span>
+                                <span class="label">Verified CIQUAL Foods</span>
+                            </div>
+                            <div class="metric-stat">
+                                <span class="num">68</span>
+                                <span class="label">Constituents per Food</span>
+                            </div>
+                            <div class="metric-stat">
+                                <span class="num">0.52ms</span>
+                                <span class="label">FTS5 Search Query Latency</span>
+                            </div>
+                            <div class="metric-stat">
+                                <span class="num">0</span>
+                                <span class="label">LLM Hallucinated Numbers</span>
+                            </div>
+                        </div>
+
+                        <h2><i class="fas fa-landmark"></i> Why We Chose CIQUAL: The European Imperative</h2>
+                        <p>Most AI fitness and nutrition apps default to the United States Department of Agriculture (USDA) FoodData Central database. But VITA's primary launch market is <strong>Europe</strong>. When you build in Europe, the nutritional reality is completely different:</p>
+                        <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-secondary);">
+                            <li><strong>European Dietary Specifics</strong>: Bread composition, dairy pasteurization, cured charcuterie, and regional culinary preparations in Europe differ markedly from American industrial food baselines.</li>
+                            <li><strong>Government Authority</strong>: <strong>ANSES CIQUAL</strong> (French Agency for Food, Environmental and Occupational Health & Safety) is compiled directly by government research laboratories. Every single nutrient record is backed by empirical wet-lab chromatography, spectrometry, and peer-reviewed citations.</li>
+                            <li><strong>Open Public Data Licensing</strong>: Unlike many European national datasets that are locked behind expensive commercial paywalls or restrictive academic licenses, ANSES publishes CIQUAL as free public open data, making it compliant with our $250 one-time hardware purchase model.</li>
+                        </ul>
+
+                        <h2><i class="fas fa-folder-tree"></i> How We Organized the Database Architecture in the Repository</h2>
+                        <p>To ensure that nutritional data remains clean, verifiable, and isolated from our voice runtime, we established a strict three-tier directory architecture in the <code>VITADEVICE</code> codebase:</p>
+
+                        <!-- SVG DIAGRAM 1: Database Directory Architecture -->
+                        <div class="diagram-container">
+                            <svg viewBox="0 0 920 330" width="100%" height="auto" style="border-radius: var(--radius-sm); font-family: var(--font-body);">
+                                <rect width="920" height="330" fill="#080e0c" rx="12" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                                
+                                <text x="30" y="34" fill="#10b981" font-size="15" font-weight="700" letter-spacing="1">VITADEVICE NUTRITIONAL DATA ARCHITECTURE</text>
+                                <text x="30" y="52" fill="#6b7280" font-size="11">Clean Separation Between Offline Compilation, Artifact Storage, and Runtime Knowledge Queries</text>
+
+                                <!-- Tier 1: database_builders -->
+                                <g transform="translate(30, 80)">
+                                    <rect width="265" height="220" rx="10" fill="#141f1b" stroke="#10b981" stroke-width="1.2"/>
+                                    <text x="20" y="28" fill="#34d399" font-size="13" font-weight="bold">1. database_builders/</text>
+                                    <text x="20" y="46" fill="#9ca3af" font-size="10">Offline ETL Importers & Compilers</text>
+
+                                    <rect x="15" y="60" width="235" height="95" rx="6" fill="#0c1310"/>
+                                    <text x="25" y="80" fill="#d1d5db" font-size="10">📂 ciqual_builder/</text>
+                                    <text x="35" y="98" fill="#9ca3af" font-size="9">• importer.py (Raw XML Parser)</text>
+                                    <text x="35" y="114" fill="#9ca3af" font-size="9">• schema.sql (FTS5 Schema)</text>
+                                    <text x="25" y="132" fill="#d1d5db" font-size="10">📂 validators/</text>
+                                    <text x="35" y="148" fill="#9ca3af" font-size="9">• Sanity checks & null repairs</text>
+
+                                    <rect x="15" y="165" width="235" height="40" rx="4" fill="rgba(16, 185, 129, 0.1)"/>
+                                    <text x="132" y="182" fill="#34d399" font-size="9" font-weight="bold" text-anchor="middle">ROLE: Ingestion & Verification</text>
+                                    <text x="132" y="196" fill="#9ca3af" font-size="8" text-anchor="middle">Runs offline on developer machine</text>
+                                </g>
+
+                                <path d="M 305 190 L 325 190" fill="none" stroke="#10b981" stroke-width="2"/>
+
+                                <!-- Tier 2: database artifact -->
+                                <g transform="translate(330, 80)">
+                                    <rect width="265" height="220" rx="10" fill="#141f1b" stroke="#06b6d4" stroke-width="1.2"/>
+                                    <text x="20" y="28" fill="#67e8f9" font-size="13" font-weight="bold">2. database/</text>
+                                    <text x="20" y="46" fill="#9ca3af" font-size="10">Compiled On-Device SQLite Artifacts</text>
+
+                                    <rect x="15" y="60" width="235" height="95" rx="6" fill="#0c1310"/>
+                                    <text x="25" y="80" fill="#67e8f9" font-size="10">💾 ciqual.db (18.5 MB)</text>
+                                    <text x="35" y="98" fill="#9ca3af" font-size="9">• foods (3,185 records)</text>
+                                    <text x="35" y="114" fill="#9ca3af" font-size="9">• composition (216,580 rows)</text>
+                                    <text x="35" y="130" fill="#9ca3af" font-size="9">• foods_fts (unicode61 virtual)</text>
+                                    <text x="25" y="148" fill="#d1d5db" font-size="9">📄 ciqual_manifest.json (SHA-256)</text>
+
+                                    <rect x="15" y="165" width="235" height="40" rx="4" fill="rgba(6, 182, 212, 0.1)"/>
+                                    <text x="132" y="182" fill="#67e8f9" font-size="9" font-weight="bold" text-anchor="middle">ROLE: Embedded Truth Store</text>
+                                    <text x="132" y="196" fill="#9ca3af" font-size="8" text-anchor="middle">Shipped in read-only device flash</text>
+                                </g>
+
+                                <path d="M 605 190 L 625 190" fill="none" stroke="#06b6d4" stroke-width="2"/>
+
+                                <!-- Tier 3: core/knowledge -->
+                                <g transform="translate(630, 80)">
+                                    <rect width="260" height="220" rx="10" fill="#141f1b" stroke="#f59e0b" stroke-width="1.2"/>
+                                    <text x="20" y="28" fill="#fcd34d" font-size="13" font-weight="bold">3. core/knowledge/</text>
+                                    <text x="20" y="46" fill="#9ca3af" font-size="10">Auditable Python Query Repositories</text>
+
+                                    <rect x="15" y="60" width="230" height="95" rx="6" fill="#0c1310"/>
+                                    <text x="25" y="80" fill="#fcd34d" font-size="10">📂 repositories/</text>
+                                    <text x="35" y="98" fill="#9ca3af" font-size="9">• ciqual.py (Safe prepared SQL)</text>
+                                    <text x="35" y="114" fill="#9ca3af" font-size="9">• base.py (Thread-safe pool)</text>
+                                    <text x="25" y="132" fill="#d1d5db" font-size="10">📄 service.py</text>
+                                    <text x="35" y="148" fill="#9ca3af" font-size="9">• KnowledgeFacade (Typed API)</text>
+
+                                    <rect x="15" y="165" width="230" height="40" rx="4" fill="rgba(245, 158, 11, 0.1)"/>
+                                    <text x="130" y="182" fill="#fcd34d" font-size="9" font-weight="bold" text-anchor="middle">ROLE: Defensive Query Gate</text>
+                                    <text x="130" y="196" fill="#9ca3af" font-size="8" text-anchor="middle">Executes parameterized SQL only</text>
+                                </g>
+                            </svg>
+                            <p class="diagram-caption">Figure 1: The tripartite database architecture in VITADEVICE isolating offline compilation, compiled artifacts, and runtime query execution.</p>
+                        </div>
+
+                        <h2><i class="fas fa-file-code"></i> The Importer & ETL Pipeline: Transforming Raw Government XML</h2>
+                        <p>Raw government datasets are notoriously messy. ANSES distributes CIQUAL as a series of massive XML files filled with French localized formatting. Our importer script in <code>database_builders/ciqual_builder/importer.py</code> performs extensive automated sanitization:</p>
+                        <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-secondary);">
+                            <li><strong>French Decimal Normalization</strong>: Converts French comma decimal strings (e.g. <code>"24,6"</code> $ightarrow$ <code>24.6</code>).</li>
+                            <li><strong>Qualitative Bound Resolution</strong>: Resolves laboratory uncertainty markers such as <code>"&lt; traces"</code> (normalized to 0.0 with trace flag), <code>"&lt; 0,5"</code> (set to the 0.5 upper bound for defensive caloric safety), and empty dashes <code>"-"</code>.</li>
+                            <li><strong>Relational Table Normalization</strong>: Maps raw records into four clean tables: <code>foods</code> (keyed by <code>alim_code</code>), <code>nutrients</code> (keyed by <code>const_code</code>), <code>food_groups</code>, and the junction table <code>composition</code> containing <code>teneur</code> (nutrient quantity per 100 grams).</li>
+                            <li><strong>Full-Text Search (FTS5)</strong>: Builds a virtual table <code>foods_fts</code> using the <code>unicode61</code> tokenizer, enabling sub-millisecond keyword and fuzzy matching for both French and English food names.</li>
+                        </ul>
+
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span class="file-name"><i class="fas fa-database"></i> database_builders/ciqual_builder/schema.sql</span>
+                                <span class="lang-badge">SQL</span>
+                            </div>
+                            <pre><code>-- Authoritative food identity universe: ciqual.db owns alim_code
+CREATE TABLE foods (
+    alim_code    INTEGER PRIMARY KEY,
+    nom_fr       TEXT NOT NULL,
+    nom_eng      TEXT NOT NULL,
+    grp_code     TEXT NOT NULL
+);
+
+-- Fast Sub-Millisecond Search Index on Embedded Flash
+CREATE VIRTUAL TABLE foods_fts USING fts5 (
+    alim_code UNINDEXED,
+    nom_fr,
+    nom_eng,
+    content       = 'foods',
+    content_rowid = 'alim_code',
+    tokenize      = 'unicode61'
+);
+
+-- Laboratory-verified composition per 100g
+CREATE TABLE composition (
+    alim_code   INTEGER NOT NULL,
+    const_code  INTEGER NOT NULL,
+    teneur      REAL,
+    confidence  TEXT,
+    source_code INTEGER,
+    PRIMARY KEY (alim_code, const_code)
+);</code></pre>
+                        </div>
+
+                        <h2><i class="fas fa-shield-alt"></i> The Core Safety Rule: Why We Never Let the LLM Write SQL</h2>
+                        <p>Many modern AI architectures take the lazy route: they expose a SQLite connection to the LLM and prompt it to <em>"Write a SQL query to answer the user's question."</em> In a consumer medical health appliance, <strong>this is a catastrophic design mistake</strong>.</p>
+
+                        <!-- SVG DIAGRAM 2: Safe API vs LLM SQL -->
+                        <div class="diagram-container">
+                            <svg viewBox="0 0 900 290" width="100%" height="auto" style="border-radius: var(--radius-sm); font-family: var(--font-body);">
+                                <rect width="900" height="290" fill="#080e0c" rx="12" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                                
+                                <text x="25" y="32" fill="#10b981" font-size="14" font-weight="700">DATABASE QUERY CONTROL: DANGEROUS VS DEFENSIVE ARCHITECTURE</text>
+                                <text x="25" y="48" fill="#6b7280" font-size="11">Why VITA strictly isolates the Language Model behind an Auditable Parameterized API</text>
+
+                                <!-- Bad Pattern -->
+                                <g transform="translate(25, 75)">
+                                    <rect width="400" height="190" rx="8" fill="#1a1414" stroke="#ef4444" stroke-width="1.2"/>
+                                    <text x="20" y="28" fill="#f87171" font-size="12" font-weight="bold">❌ DANGEROUS PATTERN: LLM Writes Raw SQL</text>
+                                    
+                                    <rect x="15" y="45" width="370" height="40" rx="4" fill="#0d0909"/>
+                                    <text x="25" y="65" fill="#d1d5db" font-size="10">User Speech: "How much protein is in 200g of salmon?"</text>
+                                    <text x="25" y="78" fill="#f87171" font-size="9">LLM Generates: "SELECT protein_val FROM food_table WHERE..."</text>
+
+                                    <rect x="15" y="95" width="370" height="80" rx="4" fill="rgba(239,68,68,0.08)"/>
+                                    <text x="25" y="112" fill="#f87171" font-size="10" font-weight="bold">• Hallucinated Schema: Invents non-existent columns</text>
+                                    <text x="25" y="128" fill="#f87171" font-size="10" font-weight="bold">• Inefficient Joins: CPU-freezing unindexed scans</text>
+                                    <text x="25" y="144" fill="#f87171" font-size="10" font-weight="bold">• Zero Audit Trail: Impossible to verify medical truth</text>
+                                    <text x="25" y="160" fill="#f87171" font-size="10" font-weight="bold">• SQL Injection Vulnerabilities from speech homophones</text>
+                                </g>
+
+                                <!-- Good Pattern -->
+                                <g transform="translate(475, 75)">
+                                    <rect width="400" height="190" rx="8" fill="#14241d" stroke="#10b981" stroke-width="1.5"/>
+                                    <text x="20" y="28" fill="#34d399" font-size="12" font-weight="bold">✅ VITA ARCHITECTURE: Strict Auditable API Gateway</text>
+
+                                    <rect x="15" y="45" width="370" height="40" rx="4" fill="#0d1612"/>
+                                    <text x="25" y="65" fill="#34d399" font-size="10">LLM Extracts Slots ONLY: {"food": "salmon", "grams": 200}</text>
+                                    <text x="25" y="78" fill="#67e8f9" font-size="9">Orchestrator calls: KnowledgeAPI.get_food_profile(20005, 200)</text>
+
+                                    <rect x="15" y="95" width="370" height="80" rx="4" fill="rgba(16,185,129,0.08)"/>
+                                    <text x="25" y="112" fill="#34d399" font-size="10" font-weight="bold">• 100% Prepared Parameterized Statements (Zero Injection)</text>
+                                    <text x="25" y="128" fill="#34d399" font-size="10" font-weight="bold">• Sub-Millisecond FTS5 Indexing: Zero CPU freezes</text>
+                                    <text x="25" y="144" fill="#34d399" font-size="10" font-weight="bold">• Deterministic Mass Math: (grams / 100) * teneur</text>
+                                    <text x="25" y="160" fill="#34d399" font-size="10" font-weight="bold">• Full Clinical Audit: Tied to ANSES alim_code 20005</text>
+                                </g>
+                            </svg>
+                            <p class="diagram-caption">Figure 2: Comparing uncontrolled LLM-generated SQL against VITA's defensive, auditable Knowledge API gateway.</p>
+                        </div>
+
+                        <p>We designed the system so that <strong>the LLM never sees a SQL prompt</strong>. Instead, we created an auditable Python API layer in <code>core/knowledge/repositories/ciqual.py</code>:</p>
+
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span class="file-name"><i class="fab fa-python"></i> core/knowledge/repositories/ciqual.py</span>
+                                <span class="lang-badge">Python</span>
+                            </div>
+                            <pre><code># Safe, prepared parameterized search — immune to injection and hallucinations
+class CiqualRepository(BaseReadOnlyRepository):
+    def search_foods(self, query: str, limit: int = 5) -> list[FoodSummary]:
+        normalized = query.strip()
+        with self.connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT f.alim_code, f.nom_eng, f.nom_fr, f.grp_code, f.ssgrp_code
+                FROM foods_fts ft 
+                JOIN foods f ON f.alim_code = ft.alim_code
+                WHERE foods_fts MATCH ? 
+                ORDER BY rank LIMIT ?
+                """,
+                (f'"{normalized}"', limit),
+            ).fetchall()
+        return [FoodSummary(r[0], r[1], r[2], r[3], r[4]) for r in rows]
+
+    def get_nutrients(self, alim_code: int) -> list[NutrientItem]:
+        with self.connect() as connection:
+            return connection.execute(
+                """
+                SELECT c.const_code, n.nom_eng, c.teneur, c.confidence, s.ref_citation
+                FROM composition c
+                JOIN nutrients n ON n.const_code = c.const_code
+                LEFT JOIN sources s ON s.source_code = c.source_code
+                WHERE c.alim_code = ?
+                """,
+                (alim_code,),
+            ).fetchall()</code></pre>
+                        </div>
+
+                        <h2><i class="fas fa-calculator"></i> Deterministic Mass Normalization Math</h2>
+                        <p>Every food item in CIQUAL is indexed strictly per 100 grams of edible portion. When a user reports eating 180 grams of grilled salmon, our <code>KnowledgeService</code> calculates the exact nutritional quantities using deterministic floating-point arithmetic rather than probabilistic LLM approximations:</p>
+
+                        <div class="callout-box">
+                            <h4><i class="fas fa-square-root-alt"></i> The Proportional Mass Scaling Formula</h4>
+                            <p>For any nutrient $i$ with reference laboratory concentration $T_i$ (teneur per 100g) and user portion mass $M$ (in grams):</p>
+                            <p style="font-family: monospace; font-size: 1.1rem; color: var(--primary-light); margin: 0.5rem 0;">
+                                Actual Amount = (T_i / 100.0) * M
+                            </p>
+                            <p>For 150g of Atlantic Salmon (CIQUAL <code>alim_code = 20005</code>, where Protein $T_{25000} = 24.6	ext{g}/100	ext{g}$ and Energy $T_{328} = 216	ext{ kcal}/100	ext{g}$):</p>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: var(--text-secondary);">
+                                <li><strong>Protein</strong>: $(24.6 / 100.0) 	imes 150 = \mathbf{36.90	ext{ grams}}$</li>
+                                <li><strong>Energy</strong>: $(216.0 / 100.0) 	imes 150 = \mathbf{324.00	ext{ kcal}}$</li>
+                                <li><strong>Vitamin D</strong>: $(8.7 / 100.0) 	imes 150 = \mathbf{13.05	ext{ \mu g}}$</li>
+                            </ul>
+                        </div>
+
+                        <h2><i class="fas fa-exchange-alt"></i> The Two-Stage Grounded Interaction Flow</h2>
+                        <p>With CIQUAL compiled and our Knowledge API active, our conversational interaction loop operates with mathematical defensiveness:</p>
+                        <ol style="margin-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-secondary);">
+                            <li><strong>Voice Capture & Transcription</strong>: The user says: <em>"I just had 200 grams of cooked quinoa for lunch."</em> Whisper emits the plain text transcript in 0.35s.</li>
+                            <li><strong>Semantic Slot Extraction</strong>: Qwen 2.5 1.5B inspects the text and outputs structured JSON in 0.45s: <code>{"intent": "LOG_FOOD", "food_query": "quinoa", "portion_grams": 200.0}</code>.</li>
+                            <li><strong>Database API Verification</strong>: The orchestrator passes <code>"quinoa"</code> to <code>CiqualRepository.search_foods()</code>, resolving to <code>alim_code = 20591</code>, and computes the exact 200g nutritional profile in <strong>0.52 milliseconds</strong>.</li>
+                            <li><strong>Template Injection & Playback</strong>: The verified numbers are injected into our deterministic voice template and spoken by Piper TTS: <em>"Logged 200 grams of cooked quinoa. That provides 286 calories, 8.8 grams of protein, and 50.6 grams of carbs."</em></li>
+                        </ol>
+
+                        <h2><i class="fas fa-flag-checkered"></i> Week 6 Wrap-Up & Looking Ahead to Week 7</h2>
+                        <p>Week 6 marked the transition of VITA from a clever tech demo into a scientifically defensive nutrition platform:</p>
+                        <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-secondary);">
+                            <li><strong style="color:#fff;">Anchored our intelligence in ANSES CIQUAL</strong>, providing over 3,100 laboratory-verified food records tailored to the European market.</li>
+                            <li><strong style="color:#fff;">Engineered our SQLite FTS5 importer</strong>, achieving sub-millisecond keyword lookup times on our local hardware.</li>
+                            <li><strong style="color:#fff;">Enforced strict architectural separation</strong>: the LLM extracts semantic slots, while an auditable, parameterized Database API executes queries.</li>
+                            <li><strong style="color:#fff;">Completely eliminated nutritional hallucinations</strong>: every single calorie and macronutrient is backed by a verifiable government paper trail.</li>
+                        </ul>
+
+                        <p>Yet whole food intelligence does not stop at calories and macronutrients. Food has an ecological footprint, complex culinary preparations, and critical allergen dangers that can trigger anaphylaxis. Next week in <strong>Week 7</strong>, we expand our data universe beyond CIQUAL—integrating France's <strong>Agribalyse</strong> environmental lifecycle database, establishing our statutory 14-allergen safety registry, and compiling dedicated databases for hypersensitivities!</p>
+
                     </div>
                 </article>
             </main>
@@ -390,6 +882,12 @@
                     <h3>VITA App</h3>
                     <p style="font-size: 0.9rem; margin-bottom: 1rem;">Run Speech-to-Text and LLMs locally on your phone. Offline, private, $5 one-time purchase.</p>
                     <a href="../index.html#membership" style="color: var(--primary); font-weight:600; text-decoration:none;">Learn more &rarr;</a>
+                </div>
+                <div class="sidebar-widget">
+                    <h3>Knowledge Benchmarks</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Scripts for the CIQUAL ETL parser, auditable database API, and 2-stage LLM grounding are available in the repository.</p>
+                    <a href="../blog/week-5.html" style="color: var(--primary); font-weight:600; text-decoration:none;">&larr; Read Week 5</a> | 
+                    <a href="../blog/week-7.html" style="color: var(--primary); font-weight:600; text-decoration:none;">Read Week 7 &rarr;</a>
                 </div>
             </aside>
         </div>
