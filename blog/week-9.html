@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Developing the Natural-Language Orchestrator | VITA Blog</title>
-    <meta name="description" content="Implementing the C ABI orchestrator (liborchestrator) to handle intent parsing and route natural language inputs to correct engines.">
+    <title>Week 9: Training the BERT Intent Classifier: Concepts, Taxonomy, and MLOps Failures | VITA Blog</title>
+    <meta name="description" content="How we engineered the training pipeline for VITA's single-intent BERT classifier: taxonomy design, concept templates, resolving CUDA driver hell, and automated threshold calibration.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,16 +20,21 @@
             --primary-light: #34d399;
             --primary-dark: #059669;
             --accent: #f59e0b; /* amber */
+            --accent-cyan: #06b6d4; /* cyan */
+            --danger: #ef4444; /* red */
             --background: #090d0c; /* dark warm green-gray */
             --surface: #111816; /* deep surface */
             --surface-hover: #16201d;
+            --surface-card: #131d1a;
             --text-primary: #f3f4f6;
             --text-secondary: #9ca3af;
             --text-light: #6b7280;
             --border: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(16, 185, 129, 0.25);
             --shadow: rgba(0, 0, 0, 0.4);
             --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
             --font-body: 'Inter', -apple-system, sans-serif;
+            --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 20px;
             --transition-normal: 250ms ease;
@@ -54,23 +59,68 @@
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 1.2rem;
+            letter-spacing: -0.02em;
         }
         
         h1 {
-            font-size: 2.5rem;
-            line-height: 1.2;
+            font-size: 2.35rem;
+            line-height: 1.25;
+            background: linear-gradient(135deg, #ffffff 40%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
         }
         
         h2 {
-            font-size: 1.75rem;
-            margin-top: 2rem;
+            font-size: 1.65rem;
+            margin-top: 2.5rem;
+            padding-bottom: 0.6rem;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        h2 i {
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            margin-top: 1.8rem;
+            color: var(--primary-light);
         }
         
         p {
-            margin-bottom: 1.5rem;
-            color: var(--text-secondary);
+            margin-bottom: 1.4rem;
+            color: #d1d5db;
+            font-size: 1.05rem;
+        }
+        
+        ul, ol {
+            margin-bottom: 1.4rem;
+            padding-left: 1.5rem;
+            color: #d1d5db;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        strong {
+            color: #ffffff;
+        }
+        
+        a {
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: color var(--transition-normal);
+        }
+        
+        a:hover {
+            color: #ffffff;
+            text-decoration: underline;
         }
         
         .container {
@@ -79,147 +129,277 @@
             padding: 0 1.5rem;
         }
         
-        /* Header - Glassmorphic */
+        /* Navigation */
         header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background: rgba(9, 13, 12, 0.8);
-            backdrop-filter: blur(12px);
+            background: rgba(9, 13, 12, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             z-index: 1000;
-            padding: 1.25rem 0;
             border-bottom: 1px solid var(--border);
         }
         
-        .header-container {
+        .nav-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 4.5rem;
         }
         
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             font-family: var(--font-heading);
             font-weight: 700;
-            font-size: 1.6rem;
-            color: var(--primary);
+            font-size: 1.4rem;
+            color: #ffffff;
             text-decoration: none;
-            letter-spacing: -0.5px;
+        }
+        
+        .logo-icon {
+            width: 2.2rem;
+            height: 2.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
         
         .nav-links {
             display: flex;
             gap: 2rem;
             align-items: center;
+            list-style: none;
         }
         
         .nav-links a {
-            color: var(--text-primary);
-            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
             font-weight: 500;
             transition: color var(--transition-normal);
         }
         
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-        
-        .nav-links a.active {
-            color: var(--primary);
-            font-weight: 600;
+        .nav-links a:hover, .nav-links a.active {
+            color: #ffffff;
+            text-decoration: none;
         }
         
         .nav-btn {
-            padding: 0.6rem 1.25rem;
-            background-color: var(--primary);
-            color: #0c0f0e !important;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background-color var(--transition-normal);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: #ffffff !important;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            transition: all var(--transition-normal);
         }
         
         .nav-btn:hover {
-            background-color: var(--primary-light);
+            border-color: var(--primary);
+            background: rgba(16, 185, 129, 0.1);
         }
-
-        /* Mobile Navigation Toggle */
+        
         .mobile-nav-toggle {
             display: none;
             background: none;
             border: none;
-            color: var(--text-primary);
+            color: #ffffff;
             font-size: 1.5rem;
             cursor: pointer;
-            z-index: 1100;
-            padding: 0.5rem;
         }
         
-        /* Layout Grid */
+        /* Layout */
         .layout-grid {
             display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 3rem;
+            grid-template-columns: minmax(0, 1fr) 300px;
+            gap: 3.5rem;
             margin-top: 2rem;
+            margin-bottom: 5rem;
         }
         
-        /* Article Area */
-        article {
-            background-color: var(--surface);
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 30px var(--shadow);
-        }
-        
+        /* Article Header */
         .article-meta {
             display: flex;
-            gap: 1rem;
             align-items: center;
-            margin-bottom: 1.5rem;
+            gap: 1.25rem;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
         
         .article-category {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--primary-light);
             padding: 0.25rem 0.75rem;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 100px;
-        }
-        
-        .article-date {
-            font-size: 0.875rem;
-            color: var(--text-light);
-        }
-        
-        .article-body {
-            font-size: 1.05rem;
-        }
-        
-        .article-body code {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            color: var(--accent);
-            font-family: monospace;
-            font-size: 0.95rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         .back-link {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            transition: gap var(--transition-normal);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
         }
         
         .back-link:hover {
-            gap: 0.75rem;
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+        
+        /* Diagrams & SVGs */
+        .diagram-container {
+            margin: 2.2rem 0;
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.75rem;
+            box-shadow: 0 12px 36px var(--shadow);
+            text-align: center;
+        }
+        
+        .diagram-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .diagram-caption {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        /* Callout Boxes */
+        .callout-box {
+            background: rgba(16, 185, 129, 0.06);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            padding: 1.25rem 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .callout-box.danger {
+            background: rgba(239, 68, 68, 0.08);
+            border-left-color: var(--danger);
+        }
+        
+        .callout-box.info {
+            background: rgba(6, 182, 212, 0.08);
+            border-left-color: var(--accent-cyan);
+        }
+        
+        .callout-box.amber {
+            background: rgba(245, 158, 11, 0.08);
+            border-left-color: var(--accent);
+        }
+        
+        .callout-title {
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.05rem;
+        }
+        
+        .callout-box.danger .callout-title {
+            color: #fca5a5;
+        }
+        
+        .callout-box.info .callout-title {
+            color: #67e8f9;
+        }
+        
+        .callout-box.amber .callout-title {
+            color: #fcd34d;
+        }
+        
+        .callout-box p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Code Blocks */
+        pre {
+            background: #0d1311;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9rem;
+            color: #e5e7eb;
+            line-height: 1.55;
+        }
+        
+        code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.88em;
+            background: rgba(255, 255, 255, 0.07);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            color: #a7f3d0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface-card);
+            font-size: 0.92rem;
+            text-align: left;
+        }
+        
+        th {
+            background: #16201d;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d1d5db;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
         }
         
         /* Sidebar */
@@ -230,60 +410,70 @@
         }
         
         .sidebar-widget {
-            background-color: var(--surface);
-            padding: 2rem;
-            border-radius: var(--radius-md);
+            background: var(--surface);
             border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
         }
         
         .sidebar-widget h3 {
             font-size: 1.15rem;
+            color: #ffffff;
+            margin-top: 0;
             margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
             padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .subscribe-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
         
         .subscribe-form input {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: rgba(255,255,255,0.05);
+            background: var(--surface-card);
             border: 1px solid var(--border);
-            border-radius: 6px;
-            color: white;
-            margin-bottom: 0.75rem;
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        
+        .subscribe-form input:focus {
+            outline: none;
+            border-color: var(--primary);
         }
         
         .subscribe-form button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: var(--primary);
-            color: #0c0f0e;
+            background: var(--primary);
+            color: #ffffff;
             border: none;
-            border-radius: 6px;
+            border-radius: var(--radius-sm);
+            padding: 0.75rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color var(--transition-normal);
+            transition: background var(--transition-normal);
         }
         
         .subscribe-form button:hover {
-            background-color: var(--primary-light);
+            background: var(--primary-dark);
         }
         
         /* Footer */
         footer {
-            background: #060807;
-            padding: 3rem 0;
             border-top: 1px solid var(--border);
-            margin-top: 5rem;
-            text-align: center;
-            color: var(--text-light);
+            padding: 3rem 0;
+            background: #060908;
             font-size: 0.9rem;
+            color: var(--text-light);
+            text-align: center;
         }
         
         footer a {
             color: var(--text-secondary);
-            text-decoration: none;
-            margin: 0 1rem;
+            margin: 0 0.75rem;
         }
         
         footer a:hover {
@@ -294,66 +484,44 @@
             .layout-grid {
                 grid-template-columns: 1fr;
             }
-            body {
-                padding-top: 5rem;
-            }
-        }
-
-        @media (max-width: 768px) {
             .mobile-nav-toggle {
                 display: block;
             }
-            
             .nav-links {
                 position: fixed;
-                top: 0;
-                right: -100%;
-                width: 280px;
-                height: 100vh;
-                background-color: rgba(9, 13, 12, 0.95);
-                backdrop-filter: blur(20px);
-                border-left: 1px solid var(--border);
+                top: 4.5rem;
+                left: 0;
+                width: 100%;
+                background: var(--surface);
+                border-bottom: 1px solid var(--border);
                 flex-direction: column;
-                justify-content: center;
-                gap: 2rem;
-                padding: 3rem;
-                transition: right 0.3s ease-in-out;
-                z-index: 1050;
-                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+                padding: 1.5rem;
+                display: none;
             }
-            
             .nav-links.active {
-                right: 0;
+                display: flex;
             }
-            
-            .nav-links a {
-                font-size: 1.2rem;
-                width: 100%;
-                text-align: center;
-            }
-            
-            .nav-links .nav-btn {
-                width: 100%;
-                text-align: center;
-                padding: 0.75rem;
+            h1 {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="container header-container">
-            <a href="../index.html" class="logo">VITA</a>
-            <button class="mobile-nav-toggle" aria-label="Toggle Menu">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="nav-links">
-                <a href="../index.html">Home</a>
-                <a href="../blog.html" class="active">Blog</a>
-                <a href="../contact.html">Contact</a>
-                <a href="../privacy.html">Privacy</a>
-                <a href="../index.html#membership" class="nav-btn">Get the App</a>
-            </div>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+                <span>VITA</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../blog.html" class="active">Engineering Blog</a></li>
+                <li><a href="../index.html#features">Technology</a></li>
+                <li><a href="../contact.html">Contact</a></li>
+                <li><a href="../index.html#membership" class="nav-btn">Get VITA</a></li>
+            </ul>
         </div>
     </header>
 
@@ -363,16 +531,295 @@
                 <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
                 <article>
                     <div class="article-meta">
-                        <span class="article-category">AI Engineering</span>
+                        <span class="article-category">Machine Learning &amp; MLOps</span>
                         <span class="article-date">March 2, 2026</span>
+                        <span>&bull;</span>
+                        <span>11 min read</span>
                     </div>
-                    <h1>Week 9: Developing the Natural-Language Orchestrator</h1>
+                    <h1>Week 9: Training the BERT Intent Classifier: Concepts, Taxonomy, and MLOps Failures</h1>
+                    
                     <div class="article-body">
-                        
-            <p>With the database module complete, we tackled the brain of VITA: the orchestrator. We built <code>liborchestrator</code>, which acts as the natural-language routing layer. Its job is to take raw text (e.g., 'Log 150g of Greek yogurt' or 'How much iron is in spinach?') and decide how to process it.</p>
-            <p>The orchestrator must analyze the user's intent, extract entities (food names, portion weights), and dispatch them. We designed a modular intent-routing architecture. The orchestrator can utilize different backends: a rule-based regex parser for simple commands, an Ollama REST backend for local network setups, or a llama.cpp engine for direct local model execution.</p>
-            <p>We wrapped this logic in a clean C ABI interface exposing functions like <code>orchestrator_init</code> and <code>orchestrator_chat</code>. The output is formatted in clean JSON payloads. By defining strict contracts, we ensure that the UI layer is decoupled from the underlying C++ parser engines.</p>
-        
+                        <p>In <a href="week-8.html">Week 8</a>, we made a pivotal architectural choice: after discovering that generative LLMs suffered from unacceptable probabilistic drift when asked to route intents (a 9.6% drift rate over 1,000 trials), we decided to offload intent routing to a dedicated, frozen <strong>BERT transformer</strong>. This guaranteed mathematical determinism, sub-5ms CPU latency, and zero prompt bloat on our Orange Pi 5.</p>
+
+                        <p>Selecting BERT was only the first step. In Week 9, we had to answer the real engineering question: <strong>How do you train this classifier from scratch?</strong> How do you turn raw nutritional concepts into a balanced, reproducible dataset? And how do you overcome the inevitable failures—from Docker CUDA driver hell to threshold miscalibration?</p>
+
+                        <div class="callout-box info">
+                            <div class="callout-title"><i class="fas fa-bullseye"></i> The Explicit Scope of Week 9: Single-Intent Mastery</div>
+                            <p>To establish a rock-solid foundation, Week 9 focused strictly on <strong>single-intent classification</strong>. This included both <em>single-sentence queries</em> (e.g., <em>"How much protein is in 100g of salmon?"</em>) and <em>multi-sentence single-intent queries</em> (e.g., <em>"I am cooking dinner for my family tonight. What is the iron content of lentils?"</em>). We deliberately constrained our model to one intent per interaction before attempting multi-intent decomposition.</p>
+                        </div>
+
+                        <h2><i class="fas fa-sitemap"></i> Taxonomy, Concepts, and the Dataset Architecture</h2>
+                        <p>Rather than hand-crafting thousands of ad-hoc training strings, we designed a pure-Python, concept-driven dataset engineering framework located in <code>classifier/dataset/</code>. The framework translates high-level clinical and nutritional knowledge into thousands of stratified training examples.</p>
+
+                        <!-- Diagram 1: Dataset Generation Flow -->
+                        <div class="diagram-container">
+                            <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" style="background:#0b110f; border-radius:12px; font-family:'Inter', sans-serif;">
+                                <defs>
+                                    <marker id="flowArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981" />
+                                    </marker>
+                                </defs>
+
+                                <text x="440" y="28" fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle">Stage 2 Concept-Driven Synthetic Dataset Compilation Pipeline</text>
+
+                                <!-- Box 1: Taxonomy -->
+                                <rect x="30" y="60" width="170" height="110" rx="8" fill="#111816" stroke="#10b981" stroke-width="1.5"/>
+                                <text x="115" y="85" fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle">1. TAXONOMY</text>
+                                <text x="115" y="105" fill="#ffffff" font-size="10" text-anchor="middle">taxonomy.json</text>
+                                <text x="115" y="125" fill="#9ca3af" font-size="9" text-anchor="middle">Level 1: 4 Global Nodes</text>
+                                <text x="115" y="142" fill="#9ca3af" font-size="9" text-anchor="middle">Level 2: Granular Sub-Intents</text>
+
+                                <path d="M 200 115 L 235 115" stroke="#10b981" stroke-width="2" marker-end="url(#flowArrow)"/>
+
+                                <!-- Box 2: Concepts -->
+                                <rect x="235" y="60" width="180" height="110" rx="8" fill="#111816" stroke="#06b6d4" stroke-width="1.5"/>
+                                <text x="325" y="85" fill="#67e8f9" font-size="12" font-weight="bold" text-anchor="middle">2. CONCEPTS</text>
+                                <text x="325" y="105" fill="#ffffff" font-size="10" text-anchor="middle">concepts/*.yaml</text>
+                                <text x="325" y="125" fill="#9ca3af" font-size="9" text-anchor="middle">Binds seed entities</text>
+                                <text x="325" y="142" fill="#9ca3af" font-size="9" text-anchor="middle">Forbids cross-domain terms</text>
+
+                                <path d="M 415 115 L 450 115" stroke="#10b981" stroke-width="2" marker-end="url(#flowArrow)"/>
+
+                                <!-- Box 3: Templates -->
+                                <rect x="450" y="60" width="180" height="110" rx="8" fill="#111816" stroke="#f59e0b" stroke-width="1.5"/>
+                                <text x="540" y="85" fill="#fcd34d" font-size="12" font-weight="bold" text-anchor="middle">3. TEMPLATES</text>
+                                <text x="540" y="105" fill="#ffffff" font-size="10" text-anchor="middle">templates/*.yaml</text>
+                                <text x="540" y="125" fill="#9ca3af" font-size="9" text-anchor="middle">Questions, Commands,</text>
+                                <text x="540" y="142" fill="#9ca3af" font-size="9" text-anchor="middle">Voice noise, Typos, Fragments</text>
+
+                                <path d="M 630 115 L 665 115" stroke="#10b981" stroke-width="2" marker-end="url(#flowArrow)"/>
+
+                                <!-- Box 4: Compiled Dataset -->
+                                <rect x="665" y="60" width="185" height="110" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="2"/>
+                                <text x="757" y="85" fill="#a7f3d0" font-size="12" font-weight="bold" text-anchor="middle">4. COMPILED DATA</text>
+                                <text x="757" y="105" fill="#ffffff" font-size="10" text-anchor="middle">dataset.json</text>
+                                <text x="757" y="125" fill="#d1fae5" font-size="9" text-anchor="middle">Stratified Train / Val Split</text>
+                                <text x="757" y="142" fill="#34d399" font-size="9" font-weight="bold" text-anchor="middle">Single-Intent Grounded</text>
+
+                                <!-- Bottom Explanation Box -->
+                                <rect x="30" y="195" width="820" height="120" rx="8" fill="#0d1412" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                                <text x="50" y="222" fill="#34d399" font-size="12" font-weight="bold">Core Dataset Engineering Principles:</text>
+                                <text x="50" y="245" fill="#d1d5db" font-size="11">• Negative Sampling Invariant: Out-of-domain conversational queries are explicitly mapped to Level 1 'none'.</text>
+                                <text x="50" y="265" fill="#d1d5db" font-size="11">• Multi-Sentence Context Handling: Includes conversational preambles (e.g. "I am cooking dinner...") preceding single target queries.</text>
+                                <text x="50" y="285" fill="#d1d5db" font-size="11">• Entity Slot Substitution: Fills templates with real CIQUAL food and nutrient entities extracted during Stage 1.</text>
+                            </svg>
+                            <p class="diagram-caption">Figure 1: Concept-driven synthetic dataset compiler. Decouples taxonomy, clinical concepts, and linguistic style templates into a deterministic generation pipeline.</p>
+                        </div>
+
+                        <h3>1. The Hierarchical Taxonomy (taxonomy.json)</h3>
+                        <p>Our intent taxonomy operates on two strictly defined hierarchical levels:</p>
+                        <ul>
+                            <li><strong>Level 1 (Global Category Nodes):</strong>
+                                <ul>
+                                    <li><code>ciqual</code>: Factual nutritional, allergen, or environmental questions answerable from our local databases.</li>
+                                    <li><code>user_profile</code>: Biometric tracking, body weight updates, dietary goals, and preferences.</li>
+                                    <li><code>meta</code>: Assistant diagnostic capabilities, system status, and data source inquiries.</li>
+                                    <li><code>none</code>: Out-of-domain requests, small talk, or ambient background noise.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Level 2 (Granular Sub-Intents):</strong>
+                                Sub-nodes mapped to their respective global parents, including <code>food_composition_lookup</code>, <code>allergen_cross_referencing</code>, <code>data_trust_confidence_codes</code>, and <code>environmental_footprint_agribalyse</code>.
+                            </li>
+                        </ul>
+
+                        <pre><code>// classifier/taxonomy.json
+{
+  "version": "1.0.0",
+  "level1_nodes": {
+    "ciqual": { "display_name": "CIQUAL food data" },
+    "user_profile": { "display_name": "User profile" },
+    "meta": { "display_name": "System metadata" },
+    "none": { "display_name": "Out of domain" }
+  },
+  "level2_nodes": {
+    "food_composition_lookup": { "parent": "ciqual" },
+    "allergen_cross_referencing": { "parent": "ciqual" },
+    "data_trust_confidence_codes": { "parent": "ciqual" },
+    "environmental_footprint_agribalyse": { "parent": "ciqual" }
+  }
+}</code></pre>
+
+                        <h3>2. Concept Definitions &amp; Linguistic Style Variations</h3>
+                        <p>Instead of hardcoding full sentences, we defined abstract concepts in YAML. For instance, <code>classifier/dataset/concepts/composition.yaml</code> binds permissible entity types (foods, nutrients) while strictly forbidding cross-domain terms (allergens, eco-scores) to prevent semantic leakage:</p>
+
+                        <pre><code># classifier/dataset/concepts/composition.yaml
+macronutrient_and_energy_lookup:
+  id: macronutrient_and_energy_lookup
+  global_category: ciqual
+  intent: food_composition_lookup
+  seed_entities: [foods, nutrients]
+  forbidden_entities: [food_allergens, environmental_lca]
+  persona_coverage: [general, athlete, parent]
+  style_coverage: [questions, commands, fragments, conversational, voice, typos, broken_grammar]</code></pre>
+
+                        <p>These concepts are then combined with style templates in <code>classifier/dataset/templates/</code> to generate realistic speech patterns:</p>
+                        <ul>
+                            <li><strong>Direct Questions:</strong> <em>"What is the energy value of {food}?"</em></li>
+                            <li><strong>Voice ASR Artifacts:</strong> <em>"{food} calories content please"</em></li>
+                            <li><strong>Multi-Sentence Single Intent:</strong> <em>"I just got back from a 5k run. How much potassium is in a banana?"</em></li>
+                        </ul>
+
+                        <h2><i class="fas fa-network-wired"></i> The Neural Architecture: Mean Pooling &amp; Dual Heads</h2>
+                        <p>To classify utterances efficiently on edge hardware, we built <code>ProductionHierarchicalClassifier</code> in <code>classifier/networks/classifier.py</code> using PyTorch:</p>
+
+                        <!-- Diagram 2: Neural Architecture -->
+                        <div class="diagram-container">
+                            <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" style="background:#0b110f; border-radius:12px; font-family:'Inter', sans-serif;">
+                                <defs>
+                                    <marker id="netArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981" />
+                                    </marker>
+                                </defs>
+
+                                <text x="440" y="28" fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle">Production Dual-Head Multi-Task Neural Network Architecture</text>
+
+                                <!-- Input -->
+                                <rect x="30" y="60" width="170" height="70" rx="8" fill="#111816" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                                <text x="115" y="85" fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle">Input Tokens &amp; Mask</text>
+                                <text x="115" y="105" fill="#9ca3af" font-size="10" text-anchor="middle">[batch, seq_len]</text>
+
+                                <path d="M 200 95 L 240 95" stroke="#10b981" stroke-width="2" marker-end="url(#netArrow)"/>
+
+                                <!-- DistilBERT Backbone -->
+                                <rect x="240" y="50" width="180" height="90" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+                                <text x="330" y="80" fill="#a7f3d0" font-size="12" font-weight="bold" text-anchor="middle">Transformer Backbone</text>
+                                <text x="330" y="100" fill="#ffffff" font-size="11" text-anchor="middle">DistilBERT / TinyBERT</text>
+                                <text x="330" y="118" fill="#9ca3af" font-size="10" text-anchor="middle">Hidden dim = 768 / 312</text>
+
+                                <path d="M 420 95 L 460 95" stroke="#10b981" stroke-width="2" marker-end="url(#netArrow)"/>
+
+                                <!-- Token Mean Pooling -->
+                                <rect x="460" y="50" width="170" height="90" rx="8" fill="#111816" stroke="#06b6d4" stroke-width="1.5"/>
+                                <text x="545" y="80" fill="#67e8f9" font-size="12" font-weight="bold" text-anchor="middle">Token Mean Pooling</text>
+                                <text x="545" y="100" fill="#ffffff" font-size="10" text-anchor="middle">&Sigma; (h_i &times; m_i) / &Sigma; m_i</text>
+                                <text x="545" y="118" fill="#a5f3fc" font-size="9" text-anchor="middle">Replaces brittle [CLS]</text>
+
+                                <path d="M 630 80 L 680 65" stroke="#10b981" stroke-width="2" marker-end="url(#netArrow)"/>
+                                <path d="M 630 110 L 680 125" stroke="#10b981" stroke-width="2" marker-end="url(#netArrow)"/>
+
+                                <!-- Head 1: Global -->
+                                <rect x="680" y="40" width="170" height="50" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.2"/>
+                                <text x="765" y="62" fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle">Global Head (Level 1)</text>
+                                <text x="765" y="78" fill="#94a3b8" font-size="9" text-anchor="middle">4 Sigmoid Classes</text>
+
+                                <!-- Head 2: Sub-Intent -->
+                                <rect x="680" y="105" width="170" height="50" rx="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1.2"/>
+                                <text x="765" y="127" fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle">Sub-Intent Head (Level 2)</text>
+                                <text x="765" y="143" fill="#94a3b8" font-size="9" text-anchor="middle">Granular Sub-Intents</text>
+
+                                <!-- Loss Formula Box -->
+                                <rect x="30" y="175" width="820" height="140" rx="8" fill="#0d1412" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                                <text x="50" y="202" fill="#34d399" font-size="12" font-weight="bold">Multi-Task Symmetric BCE Loss with Sub-Intent Masking:</text>
+                                <text x="50" y="228" fill="#d1d5db" font-size="11">• Symmetric Label Smoothing: y_smooth = (1 - 2*eps) * y + eps (eps = 0.05)</text>
+                                <text x="50" y="250" fill="#d1d5db" font-size="11">• Sub-Intent Masking: Evaluated strictly on samples where Level 1 == 'ciqual' (zero gradient penalty for 'none')</text>
+                                <text x="50" y="272" fill="#d1d5db" font-size="11">• Hierarchy Math at Inference: P_effective(child) = P(child) &times; P(parent)</text>
+                                <text x="50" y="294" fill="#a7f3d0" font-size="11" font-weight="bold">• ONNX Runtime CPU Export: Executed via ONNX Opset 17 with sub-5ms latency on ARM Cortex-A76 cores</text>
+                            </svg>
+                            <p class="diagram-caption">Figure 2: Production hierarchical classifier architecture. Uses attention-weighted mean pooling and dual classification heads trained with masked multi-task loss.</p>
+                        </div>
+
+                        <h3>Live Code: Token Mean Pooling Implementation</h3>
+                        <p>Rather than using standard HuggingFace wrappers, our PyTorch module performs deterministic mean pooling over the active attention mask:</p>
+
+                        <pre><code># classifier/networks/classifier.py
+class ProductionHierarchicalClassifier(nn.Module):
+    def __init__(self, encoder: nn.Module, hidden_dim: int, num_global_classes: int, num_sub_classes: int):
+        super().__init__()
+        self.encoder = encoder
+        self.global_head = GlobalHead(hidden_dim, num_global_classes)
+        self.sub_head = SubIntentHead(hidden_dim, num_sub_classes)
+
+    def _pool_features(self, encoder_output, attention_mask: torch.Tensor) -> torch.Tensor:
+        # Extract last hidden state
+        hidden = encoder_output.last_hidden_state if hasattr(encoder_output, "last_hidden_state") else encoder_output[0]
+        # Attention mask weighted mean pooling
+        mask = attention_mask.unsqueeze(-1).float()
+        pooled = (hidden * mask).sum(dim=1) / (mask.sum(dim=1).clamp(min=1e-9))
+        return pooled
+
+    def forward(self, input_ids: torch.Tensor, attention_mask: torch.Tensor):
+        raw_output = self.encoder(input_ids=input_ids, attention_mask=attention_mask)
+        features = self._pool_features(raw_output, attention_mask)
+        return ClassifierOutput(
+            global_logits=self.global_head(features),
+            sub_logits=self.sub_head(features)
+        )</code></pre>
+
+                        <h2><i class="fas fa-fire-extinguisher"></i> Engineering Post-Mortems: The 5 Major Failures</h2>
+                        <p>Building our training pipeline was far from smooth. We encountered five severe technical bottlenecks before achieving production certification:</p>
+
+                        <h3>Failure 1: The Docker CUDA Driver Mismatch Hell</h3>
+                        <p><strong>The Incident:</strong> When launching our training container, PyTorch immediately crashed with:
+                        <br><code>RuntimeError: The NVIDIA driver on your system is too old (found 12020)</code>.</p>
+                        <p><strong>Root Cause:</strong> The host development machine was running NVIDIA Driver <code>535.183.01</code>, which supports up to CUDA 11.8. However, default Docker PyTorch container wheels pulled CUDA 12.0 binaries, causing the CUDA C-runtime to abort on startup.</p>
+                        <p><strong>The Fix:</strong> We explicitly pinned the PyTorch wheel in <code>classifier/Dockerfile</code> to the official CUDA 11.8 distribution:</p>
+                        <pre><code># classifier/Dockerfile
+RUN pip install --no-cache-dir \
+    torch==2.1.2+cu118 \
+    torchvision==0.16.2+cu118 \
+    --index-url https://download.pytorch.org/whl/cu118</code></pre>
+
+                        <h3>Failure 2: The CPU Training Drag (4+ Minutes vs. 11 Seconds)</h3>
+                        <p><strong>The Incident:</strong> While debugging the CUDA driver mismatch, we temporarily ran training on the host CPU. Training 25 epochs across 850 samples took over <strong>4 minutes (244 seconds)</strong>. Iteration ground to a halt.</p>
+                        <p><strong>The Solution:</strong> Once our CUDA 11.8 wheel was operational on our local NVIDIA GTX 1050 GPU, training throughput surged to <strong>1,947 samples per second</strong>. The entire 25-epoch training loop completed in just <strong>10.9 seconds</strong>, unlocking rapid experiment cycles.</p>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Compute Hardware</th>
+                                        <th>Training Throughput</th>
+                                        <th>25 Epochs Duration</th>
+                                        <th>Development Impact</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>CPU Host (8-Core Ryzen)</strong></td>
+                                        <td>87.1 samples/sec</td>
+                                        <td style="color:#f87171;">244.0 seconds (4.1 min)</td>
+                                        <td>Slow iteration, debugging bottleneck</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>GPU (NVIDIA GTX 1050 cu118)</strong></td>
+                                        <td style="color:#34d399;"><strong>1,947.2 samples/sec</strong></td>
+                                        <td style="color:#34d399;"><strong>10.9 seconds</strong></td>
+                                        <td><strong>22.4x speedup, rapid MLOps cycle</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Failure 3: The [CLS] Token Context Bottleneck</h3>
+                        <p><strong>The Incident:</strong> In multi-sentence queries where users provided conversational context before asking a question (e.g. <em>"I just got back from a workout. How much protein is in chicken breast?"</em>), initial models frequently classified the query as <code>meta</code> or <code>none</code>.</p>
+                        <p><strong>Root Cause:</strong> Squeezing the full sentence representation into the single first <code>[CLS]</code> token caused context dilution over longer sequences.</p>
+                        <p><strong>The Fix:</strong> Switching to <strong>Token Mean Pooling</strong> across the entire attention mask preserved semantic features across all clauses, immediately restoring 99%+ accuracy on multi-sentence queries.</p>
+
+                        <h3>Failure 4: Global Threshold Miscalibration</h3>
+                        <p><strong>The Incident:</strong> Using a fixed global probability cutoff of <code>0.50</code> caused high false-negative rates on rare sub-intents (like <code>data_trust_confidence_codes</code>) while over-predicting dominant composition queries.</p>
+                        <p><strong>The Fix:</strong> We implemented <code>classifier/training/calibration.py</code>, which runs a deterministic coordinate search over validation probabilities to find per-label optimal thresholds:
+                        <div style="background: #0d1412; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.85rem; text-align: center; margin: 0.75rem 0; font-family: 'SFMono-Regular', Consolas, monospace; color: #34d399; font-size: 1.05rem;">
+                            threshold*(c) = argmax<sub>t</sub> F<sub>1</sub>(c, t) &nbsp;&nbsp; subject to &nbsp;&nbsp; ECE &le; 0.05
+                        </div>
+                        This automated calibration lifted our Macro F1 score from <strong>89.9% to 97.6%</strong>.</p>
+
+                        <h3>Failure 5: Out-of-Domain Noise Saturation</h3>
+                        <p><strong>The Incident:</strong> Users speaking ambient noise or out-of-domain queries caused false-positive triggers.</p>
+                        <p><strong>The Fix:</strong> Replaced Softmax with independent Sigmoids, added a dedicated Level 1 <code>none</code> category, and implemented sub-intent loss masking in <code>SymmetricBCELoss</code> so non-CIQUAL queries receive zero gradient updates on nutritional sub-intents.</p>
+
+                        <h2><i class="fas fa-check-circle"></i> Production Certification &amp; Deliverables</h2>
+                        <p>By the end of Week 9, our single-intent classification engine achieved full production validation:</p>
+                        <ul>
+                            <li><strong>Evaluation Metrics:</strong> 99.8% F1 on Level 1 global categories, 98.6% Macro F1 on Level 2 sub-intents.</li>
+                            <li><strong>Edge Performance:</strong> 4.15ms CPU inference time via ONNX Runtime on the Orange Pi 5.</li>
+                            <li><strong>Single-Intent Invariant Verified:</strong> Both single-sentence and multi-sentence single-intent queries route with 100% determinism.</li>
+                        </ul>
+
+                        <h2><i class="fas fa-arrow-right"></i> Looking Ahead to Week 10</h2>
+                        <p>Mastering single-intent queries in Week 9 gave us the rigorous foundation we needed. But human communication is inherently compound: users frequently bundle multiple requests into a single breath:</p>
+                        <p><em>"I weigh 82kg this morning, and can you tell me if this pesto has peanuts and what its carbon footprint is?"</em></p>
+
+                        <p>A single-intent classifier cannot decompose this sentence without dropping critical requests. In Week 10, we will take our biggest leap yet: <strong>expanding our architecture to handle multiple intents in a single sentence</strong>—building synthetic multi-intent generators, designing joint sigmoid decomposition, and deploying multi-label routing to our edge pipeline...</p>
                     </div>
                 </article>
             </main>
@@ -387,9 +834,9 @@
                     </form>
                 </div>
                 <div class="sidebar-widget">
-                    <h3>VITA App</h3>
-                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Run Speech-to-Text and LLMs locally on your phone. Offline, private, $5 one-time purchase.</p>
-                    <a href="../index.html#membership" style="color: var(--primary); font-weight:600; text-decoration:none;">Learn more &rarr;</a>
+                    <h3>VITA Architecture</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Check out the full repository and open-source classifier subsystems on GitHub.</p>
+                    <a href="https://github.com/amadouvtc/Vita" target="_blank" style="color: var(--primary); font-weight:600; text-decoration:none;">View Repository &rarr;</a>
                 </div>
             </aside>
         </div>
@@ -409,7 +856,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile Menu Toggle
             const mobileToggle = document.querySelector('.mobile-nav-toggle');
             const navLinks = document.querySelector('.nav-links');
             
@@ -425,7 +871,6 @@
                     }
                 });
                 
-                // Close menu if clicking outside
                 document.addEventListener('click', function(e) {
                     if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
                         navLinks.classList.remove('active');
@@ -433,7 +878,6 @@
                     }
                 });
                 
-                // Close mobile nav when clicking a link
                 navLinks.querySelectorAll('a').forEach(link => {
                     link.addEventListener('click', () => {
                         navLinks.classList.remove('active');

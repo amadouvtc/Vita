@@ -650,7 +650,7 @@
                         <p><strong>Why we tried it:</strong> A pre-trained Transformer text encoder (TinyBERT / DistilBERT) understands semantics, synonyms, and conversational variations natively.</p>
                         <p><strong>Why it failed:</strong> We encountered two severe mathematical bottlenecks:</p>
                         <ul>
-                            <li><strong>Softmax Mutual Exclusivity:</strong> Softmax forces all output probabilities to sum to 1.0 ($\sum_{i} p_i = 1.0$). This has a dangerous side effect: if a user speaks complete nonsense or an out-of-domain query (e.g. <em>"Tell me a joke about quantum physics"</em>), Softmax is mathematically forced to assign 100% of the probability mass across the available internal labels, forcing a high-confidence false positive!</li>
+                            <li><strong>Softmax Mutual Exclusivity:</strong> Softmax forces all output probabilities to sum to 1.0 (<code>&Sigma; p<sub>i</sub> = 1.0</code>). This has a dangerous side effect: if a user speaks complete nonsense or an out-of-domain query (e.g. <em>"Tell me a joke about quantum physics"</em>), Softmax is mathematically forced to assign 100% of the probability mass across the available internal labels, forcing a high-confidence false positive!</li>
                             <li><strong>The [CLS] Token Bottleneck:</strong> Squeezing an entire sentence's contextual meaning solely into the first <code>[CLS]</code> token representation proved brittle on multi-clause sentences.</li>
                         </ul>
 
@@ -659,18 +659,26 @@
 
                         <ol>
                             <li><strong>Token Mean Pooling:</strong> Instead of discarding token representations and relying solely on <code>[CLS]</code>, we pool across all active tokens weighted by the attention mask:
-                            $$\mathbf{h}_{\text{pooled}} = \frac{\sum_{i=1}^{L} \mathbf{h}_i \cdot m_i}{\sum_{i=1}^{L} m_i}$$
-                            where $m_i \in \{0, 1\}$ is the attention mask. This creates a dense, semantically rich sentence embedding.</li>
+                            <div style="background: #0d1412; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.85rem; text-align: center; margin: 0.75rem 0; font-family: 'SFMono-Regular', Consolas, monospace; color: #34d399; font-size: 1.05rem;">
+                                h<sub>pooled</sub> = &Sigma; (h<sub>i</sub> &times; m<sub>i</sub>) / &Sigma; m<sub>i</sub>
+                            </div>
+                            where <code>m<sub>i</sub> &isin; {0, 1}</code> is the attention mask. This creates a dense, semantically rich sentence embedding.</li>
                             <li><strong>Independent Sigmoid Multi-Label Heads:</strong> We completely discarded Softmax in favor of independent Sigmoids:
-                            $$\hat{y}_c = \sigma(\mathbf{w}_c^T \mathbf{z} + b_c) = \frac{1}{1 + e^{-(\mathbf{w}_c^T \mathbf{z} + b_c)}}$$
-                            Every intent receives an independent score between $0.0$ and $1.0$. If a user enters out-of-domain noise, all heads naturally output near $0.0$. When a valid intent is present, it fires cleanly above its calibrated threshold.</li>
+                            <div style="background: #0d1412; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.85rem; text-align: center; margin: 0.75rem 0; font-family: 'SFMono-Regular', Consolas, monospace; color: #34d399; font-size: 1.05rem;">
+                                y&#770;<sub>c</sub> = &sigma;(w<sub>c</sub><sup>T</sup> z + b<sub>c</sub>) = 1 / (1 + e<sup>-(w<sub>c</sub><sup>T</sup> z + b<sub>c</sub>)</sup>)
+                            </div>
+                            Every intent receives an independent score between 0.0 and 1.0. If a user enters out-of-domain noise, all heads naturally output near 0.0. When a valid intent is present, it fires cleanly above its calibrated threshold.</li>
                         </ol>
 
                         <p>We trained the model with a <strong>Multi-Task Binary Cross-Entropy Loss with Label Smoothing</strong> across Level 1 global categories and Level 2 sub-intents:</p>
-                        $$\mathcal{L}_{\text{joint}} = 0.3 \cdot \text{BCE}_{\text{smooth}}(\hat{\mathbf{y}}_{\text{global}}, \mathbf{y}_{\text{global}}) + 0.7 \cdot \text{BCE}_{\text{smooth}}(\hat{\mathbf{y}}_{\text{sub}}, \mathbf{y}_{\text{sub}})$$
+                        <div style="background: #0d1412; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.85rem; text-align: center; margin: 0.75rem 0; font-family: 'SFMono-Regular', Consolas, monospace; color: #34d399; font-size: 1.05rem;">
+                            L<sub>joint</sub> = 0.3 &times; BCE<sub>smooth</sub>(y&#770;<sub>global</sub>, y<sub>global</sub>) + 0.7 &times; BCE<sub>smooth</sub>(y&#770;<sub>sub</sub>, y<sub>sub</sub>)
+                        </div>
 
                         <p>At inference time, top-down hierarchy probability consistency is mathematically enforced:</p>
-                        $$P_{\text{effective}}(\text{child}) = P(\text{child}) \times P(\text{parent})$$
+                        <div style="background: #0d1412; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.85rem; text-align: center; margin: 0.75rem 0; font-family: 'SFMono-Regular', Consolas, monospace; color: #34d399; font-size: 1.05rem;">
+                            P<sub>effective</sub>(child) = P(child) &times; P(parent)
+                        </div>
 
                         <p>Exported to ONNX Opset 17, this architecture executes on our Orange Pi 5 CPU in just <strong>4.15 milliseconds</strong> with <strong>100% deterministic reproducibility</strong>.</p>
 

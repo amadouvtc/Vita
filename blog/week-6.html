@@ -626,7 +626,7 @@
                         <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-secondary);">
                             <li><strong>European Dietary Specifics</strong>: Bread composition, dairy pasteurization, cured charcuterie, and regional culinary preparations in Europe differ markedly from American industrial food baselines.</li>
                             <li><strong>Government Authority</strong>: <strong>ANSES CIQUAL</strong> (French Agency for Food, Environmental and Occupational Health & Safety) is compiled directly by government research laboratories. Every single nutrient record is backed by empirical wet-lab chromatography, spectrometry, and peer-reviewed citations.</li>
-                            <li><strong>Open Public Data Licensing</strong>: Unlike many European national datasets that are locked behind expensive commercial paywalls or restrictive academic licenses, ANSES publishes CIQUAL as free public open data, making it compliant with our $250 one-time hardware purchase model.</li>
+                            <li><strong>Open Public Data Licensing</strong>: Unlike many European national datasets that are locked behind expensive commercial paywalls or restrictive academic licenses, ANSES publishes CIQUAL as free public open data, making it compliant with our 250€ one-time hardware purchase model.</li>
                         </ul>
 
                         <h2><i class="fas fa-folder-tree"></i> How We Organized the Database Architecture in the Repository</h2>
@@ -704,7 +704,7 @@
                         <h2><i class="fas fa-file-code"></i> The Importer & ETL Pipeline: Transforming Raw Government XML</h2>
                         <p>Raw government datasets are notoriously messy. ANSES distributes CIQUAL as a series of massive XML files filled with French localized formatting. Our importer script in <code>database_builders/ciqual_builder/importer.py</code> performs extensive automated sanitization:</p>
                         <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-secondary);">
-                            <li><strong>French Decimal Normalization</strong>: Converts French comma decimal strings (e.g. <code>"24,6"</code> $ightarrow$ <code>24.6</code>).</li>
+                            <li><strong>French Decimal Normalization</strong>: Converts French comma decimal strings (e.g. <code>"24,6"</code> &rarr; <code>24.6</code>).</li>
                             <li><strong>Qualitative Bound Resolution</strong>: Resolves laboratory uncertainty markers such as <code>"&lt; traces"</code> (normalized to 0.0 with trace flag), <code>"&lt; 0,5"</code> (set to the 0.5 upper bound for defensive caloric safety), and empty dashes <code>"-"</code>.</li>
                             <li><strong>Relational Table Normalization</strong>: Maps raw records into four clean tables: <code>foods</code> (keyed by <code>alim_code</code>), <code>nutrients</code> (keyed by <code>const_code</code>), <code>food_groups</code>, and the junction table <code>composition</code> containing <code>teneur</code> (nutrient quantity per 100 grams).</li>
                             <li><strong>Full-Text Search (FTS5)</strong>: Builds a virtual table <code>foods_fts</code> using the <code>unicode61</code> tokenizer, enabling sub-millisecond keyword and fuzzy matching for both French and English food names.</li>
@@ -833,15 +833,15 @@ class CiqualRepository(BaseReadOnlyRepository):
 
                         <div class="callout-box">
                             <h4><i class="fas fa-square-root-alt"></i> The Proportional Mass Scaling Formula</h4>
-                            <p>For any nutrient $i$ with reference laboratory concentration $T_i$ (teneur per 100g) and user portion mass $M$ (in grams):</p>
+                            <p>For any nutrient <em>i</em> with reference laboratory concentration <em>T<sub>i</sub></em> (teneur per 100g) and user portion mass <em>M</em> (in grams):</p>
                             <p style="font-family: monospace; font-size: 1.1rem; color: var(--primary-light); margin: 0.5rem 0;">
-                                Actual Amount = (T_i / 100.0) * M
+                                Actual Amount = (T<sub>i</sub> / 100.0) &times; M
                             </p>
-                            <p>For 150g of Atlantic Salmon (CIQUAL <code>alim_code = 20005</code>, where Protein $T_{25000} = 24.6	ext{g}/100	ext{g}$ and Energy $T_{328} = 216	ext{ kcal}/100	ext{g}$):</p>
+                            <p>For 150g of Atlantic Salmon (CIQUAL <code>alim_code = 20005</code>, where Protein <em>T</em><sub>25000</sub> = 24.6 g / 100g and Energy <em>T</em><sub>328</sub> = 216 kcal / 100g):</p>
                             <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: var(--text-secondary);">
-                                <li><strong>Protein</strong>: $(24.6 / 100.0) 	imes 150 = \mathbf{36.90	ext{ grams}}$</li>
-                                <li><strong>Energy</strong>: $(216.0 / 100.0) 	imes 150 = \mathbf{324.00	ext{ kcal}}$</li>
-                                <li><strong>Vitamin D</strong>: $(8.7 / 100.0) 	imes 150 = \mathbf{13.05	ext{ \mu g}}$</li>
+                                <li><strong>Protein</strong>: <code>(24.6 / 100.0) &times; 150 = 36.90 grams</code></li>
+                                <li><strong>Energy</strong>: <code>(216.0 / 100.0) &times; 150 = 324.00 kcal</code></li>
+                                <li><strong>Vitamin D</strong>: <code>(8.7 / 100.0) &times; 150 = 13.05 &mu;g</code></li>
                             </ul>
                         </div>
 
