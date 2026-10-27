@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Building the CIQUAL XML SQLite Importer | VITA Blog</title>
-    <meta name="description" content="Writing our Python ETL importer script to parse the raw database files, set up FTS5 full-text indexing, and perform integrity checks.">
+    <title>Week 4: The LLM Brain: From Prompt Bloat to Local Containerized Orchestration | VITA Blog</title>
+    <meta name="description" content="Bootstrapping conversational intelligence on Raspberry Pi 4: why direct OpenAI prompts bloated our context, pivoting to structured intent orchestration, wrestling bare-metal dependency conflicts, and containerizing local Qwen.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,16 +20,21 @@
             --primary-light: #34d399;
             --primary-dark: #059669;
             --accent: #f59e0b; /* amber */
+            --accent-cyan: #06b6d4; /* cyan */
+            --danger: #ef4444; /* red */
             --background: #090d0c; /* dark warm green-gray */
             --surface: #111816; /* deep surface */
             --surface-hover: #16201d;
+            --surface-card: #131d1a;
             --text-primary: #f3f4f6;
             --text-secondary: #9ca3af;
             --text-light: #6b7280;
             --border: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(16, 185, 129, 0.25);
             --shadow: rgba(0, 0, 0, 0.4);
             --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
             --font-body: 'Inter', -apple-system, sans-serif;
+            --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 20px;
             --transition-normal: 250ms ease;
@@ -57,15 +62,30 @@
         }
         
         h1 {
-            font-size: 2.5rem;
-            line-height: 1.2;
+            font-size: 2.35rem;
+            line-height: 1.25;
         }
         
         h2 {
-            font-size: 1.75rem;
-            margin-top: 2rem;
+            font-size: 1.65rem;
+            margin-top: 2.5rem;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.6rem;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2 i {
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            margin-top: 1.75rem;
+            color: var(--primary-light);
         }
         
         p {
@@ -85,7 +105,7 @@
             top: 0;
             left: 0;
             width: 100%;
-            background: rgba(9, 13, 12, 0.8);
+            background: rgba(9, 13, 12, 0.85);
             backdrop-filter: blur(12px);
             z-index: 1000;
             padding: 1.25rem 0;
@@ -157,36 +177,34 @@
         /* Layout Grid */
         .layout-grid {
             display: grid;
-            grid-template-columns: 1fr 320px;
+            grid-template-columns: 1fr 340px;
             gap: 3rem;
-            margin-top: 2rem;
+            margin: 2rem 0 5rem 0;
         }
         
-        /* Article Area */
-        article {
-            background-color: var(--surface);
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 30px var(--shadow);
+        @media (max-width: 900px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
         }
         
+        /* Article Header */
         .article-meta {
             display: flex;
             gap: 1rem;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         
         .article-category {
-            font-size: 0.75rem;
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--primary-light);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
             font-weight: 600;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 0.25rem 0.75rem;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 100px;
+            border: 1px solid var(--border-highlight);
         }
         
         .article-date {
@@ -199,12 +217,266 @@
         }
         
         .article-body code {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 0.2rem 0.4rem;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.2rem 0.45rem;
             border-radius: 4px;
             color: var(--accent);
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.92rem;
+        }
+
+        /* Modern Pre/Code Styling */
+        .code-container {
+            margin: 1.75rem 0;
+            background-color: #070b0a;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #111a17;
+            padding: 0.6rem 1.25rem;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
             font-family: monospace;
+        }
+
+        .code-header .lang-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--primary-light);
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .code-header .file-name {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #d1d5db;
+        }
+
+        pre {
+            padding: 1.25rem;
+            overflow-x: auto;
+            color: #e5e7eb;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.88rem;
+            line-height: 1.55;
+        }
+
+        pre code {
+            background: transparent !important;
+            padding: 0 !important;
+            color: inherit !important;
+            font-size: inherit !important;
+        }
+
+        /* Callout Boxes */
+        .callout-box {
+            background: var(--surface-card);
+            border-left: 4px solid var(--primary);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem 1.5rem;
+            margin: 2rem 0;
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .callout-box.warning {
+            border-left-color: var(--accent);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .callout-box.danger {
+            border-left-color: var(--danger);
+            background: rgba(239, 68, 68, 0.05);
+        }
+
+        .callout-box h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .callout-box p {
+            margin-bottom: 0;
             font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        /* Metric & Feature Cards */
+        .hardware-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin: 2rem 0;
+        }
+
+        .hw-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            transition: transform var(--transition-normal), border-color var(--transition-normal);
+        }
+
+        .hw-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-highlight);
+        }
+
+        .hw-card .icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: rgba(16, 185, 129, 0.12);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-light);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .hw-card h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .hw-card p {
+            font-size: 0.88rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .hw-card .specs {
+            font-size: 0.8rem;
+            color: var(--primary-light);
+            font-weight: 500;
+            font-family: monospace;
+            background: rgba(16, 185, 129, 0.08);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* Modern Tables */
+        .table-responsive {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.92rem;
+            background: var(--surface);
+        }
+
+        thead th {
+            background: #131c19;
+            color: var(--primary-light);
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-dark);
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 0.85rem 1.2rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-fail { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .status-warn { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .status-pass { background: rgba(16, 185, 129, 0.2); color: var(--primary-light); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        /* Diagram Containers */
+        .diagram-container {
+            margin: 2.25rem 0;
+            background: #0d1412;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px var(--shadow);
+            text-align: center;
+        }
+
+        .diagram-caption {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        /* Metric comparison strip */
+        .metrics-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .metric-stat {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .metric-stat .num {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            font-family: var(--font-heading);
+            display: block;
+        }
+
+        .metric-stat .num.warn {
+            color: var(--danger);
+        }
+
+        .metric-stat .label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.25rem;
         }
         
         .back-link {
@@ -271,87 +543,42 @@
         
         /* Footer */
         footer {
-            background: #060807;
+            background-color: var(--surface);
             padding: 3rem 0;
             border-top: 1px solid var(--border);
-            margin-top: 5rem;
             text-align: center;
-            color: var(--text-light);
             font-size: 0.9rem;
+            color: var(--text-light);
         }
         
         footer a {
             color: var(--text-secondary);
             text-decoration: none;
-            margin: 0 1rem;
+            margin: 0 0.75rem;
+            transition: color var(--transition-normal);
         }
         
         footer a:hover {
             color: var(--primary);
         }
-        
-        @media (max-width: 900px) {
-            .layout-grid {
-                grid-template-columns: 1fr;
-            }
-            body {
-                padding-top: 5rem;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .mobile-nav-toggle {
-                display: block;
-            }
-            
-            .nav-links {
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 280px;
-                height: 100vh;
-                background-color: rgba(9, 13, 12, 0.95);
-                backdrop-filter: blur(20px);
-                border-left: 1px solid var(--border);
-                flex-direction: column;
-                justify-content: center;
-                gap: 2rem;
-                padding: 3rem;
-                transition: right 0.3s ease-in-out;
-                z-index: 1050;
-                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-            }
-            
-            .nav-links.active {
-                right: 0;
-            }
-            
-            .nav-links a {
-                font-size: 1.2rem;
-                width: 100%;
-                text-align: center;
-            }
-            
-            .nav-links .nav-btn {
-                width: 100%;
-                text-align: center;
-                padding: 0.75rem;
-            }
-        }
     </style>
 </head>
 <body>
+
     <header>
         <div class="container header-container">
             <a href="../index.html" class="logo">VITA</a>
-            <button class="mobile-nav-toggle" aria-label="Toggle Menu">
+            
+            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
                 <i class="fas fa-bars"></i>
             </button>
+            
             <div class="nav-links">
-                <a href="../index.html">Home</a>
+                <a href="../index.html#features">Features</a>
+                <a href="../index.html#hardware">Device</a>
+                <a href="../index.html#technology">Technology</a>
+                <a href="../index.html#membership">App</a>
                 <a href="../blog.html" class="active">Blog</a>
-                <a href="../contact.html">Contact</a>
-                <a href="../privacy.html">Privacy</a>
                 <a href="../index.html#membership" class="nav-btn">Get the App</a>
             </div>
         </div>
@@ -363,16 +590,416 @@
                 <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
                 <article>
                     <div class="article-meta">
-                        <span class="article-category">Data Science</span>
+                        <span class="article-category">Local LLM & Systems Architecture</span>
                         <span class="article-date">January 26, 2026</span>
                     </div>
-                    <h1>Week 4: Building the CIQUAL XML SQLite Importer</h1>
+                    <h1>Week 4: The LLM Brain: From Prompt Bloat to Local Containerized Orchestration</h1>
                     <div class="article-body">
                         
-            <p>This week we implemented the ETL (Extract, Transform, Load) pipeline. We wrote a Python script, <code>import_ciqual.py</code>, to automate parsing the raw CIQUAL XML source files and building our target database, <code>ciqual.db</code>.</p>
-            <p>The importer parses the food codes, translates scientific names, and extracts 27 essential micronutrients for each food entry. To make lookups blazing fast, we integrated SQLite's FTS5 (Full-Text Search) module. This allows the user to query food names using natural search syntax with stemming and token matching (e.g., searching 'cooked apple' will match 'apples, baked or cooked').</p>
-            <p>We ran integrity tests. The database is clean, indexes are working, and database lookups take less than 1.5 milliseconds on our development laptops. However, transferring this file to the Raspberry Pi and querying it there was our first real speed test. The Pi handles the SQLite queries fine, but the real challenge lies ahead: local Speech-To-Text.</p>
-        
+                        <p>Welcome to Week 4 of building VITA! Last week, we achieved an exciting physical milestone on our hardware bench: our Raspberry Pi 4 could capture human speech through our I2S MEMS microphone array and speak back with a natural neural voice via Piper TTS. The device had working ears and a working voice. But it still lacked the most critical component of all: <strong>a brain</strong>.</p>
+
+                        <p>We needed a language layer capable of parsing natural, unstructured human food requests (<em>"Hey VITA, I just had two scrambled eggs with olive oil and half an avocado"</em>) into actionable, clinically defensive nutritional facts. This week, we plunged into the world of Large Language Models (LLMs) on embedded hardware. What started as simple API calls to OpenAI rapidly evolved into an architectural revolution: overcoming prompt bloat, transitioning the LLM into a structured intent orchestrator, hitting a dependency wall on bare metal, and finally containerizing our first local neural model—<strong>Qwen</strong>—directly on the Raspberry Pi 4.</p>
+
+                        <div class="metrics-strip">
+                            <div class="metric-stat">
+                                <span class="num warn">1,620</span>
+                                <span class="label">Initial Prompt Tokens (Bloat)</span>
+                            </div>
+                            <div class="metric-stat">
+                                <span class="num">82</span>
+                                <span class="label">Orchestrator Schema Tokens</span>
+                            </div>
+                            <div class="metric-stat">
+                                <span class="num warn">3.4 tok/s</span>
+                                <span class="label">Qwen on Pi 4 CPU (Slow)</span>
+                            </div>
+                            <div class="metric-stat">
+                                <span class="num">98.2%</span>
+                                <span class="label">Qwen Valid JSON Rate</span>
+                            </div>
+                        </div>
+
+                        <h2><i class="fas fa-history"></i> The LLM Architecture Evolution in Week 4</h2>
+                        <p>How do you connect speech-to-text to text-to-speech without creating a sluggish, hallucinating monster? Below is the architectural progression that transformed our voice pipeline this week:</p>
+
+                        <!-- SVG DIAGRAM 1: The Three LLM Stages -->
+                        <div class="diagram-container">
+                            <svg viewBox="0 0 920 320" width="100%" height="auto" style="border-radius: var(--radius-sm); font-family: var(--font-body);">
+                                <rect width="920" height="320" fill="#080e0c" rx="12" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                                
+                                <text x="30" y="34" fill="#10b981" font-size="15" font-weight="700" letter-spacing="1">WEEK 4 ARCHITECTURAL PIVOT: THE CONVERSATIONAL BRAIN</text>
+                                <text x="30" y="52" fill="#6b7280" font-size="11">From Monolithic Prompt Bloat to Containerized Local Intent Orchestration</text>
+
+                                <!-- Stage 1: Cloud API Direct -->
+                                <g transform="translate(30, 80)">
+                                    <rect width="265" height="210" rx="10" fill="#141c19" stroke="#ef4444" stroke-width="1.2"/>
+                                    <text x="20" y="28" fill="#f87171" font-size="13" font-weight="bold">STAGE 1: Monolithic Cloud LLM</text>
+                                    <text x="20" y="46" fill="#9ca3af" font-size="10">Direct API Prompt Generation</text>
+
+                                    <rect x="15" y="60" width="235" height="85" rx="6" fill="#0c1310" stroke="rgba(255,255,255,0.05)"/>
+                                    <text x="25" y="80" fill="#d1d5db" font-size="10">• STT Text ➔ OpenAI API Endpoint</text>
+                                    <text x="25" y="98" fill="#d1d5db" font-size="10">• 1,600+ Token System Prompt</text>
+                                    <text x="25" y="116" fill="#d1d5db" font-size="10">• Conversational Free-Form Text</text>
+                                    <text x="25" y="134" fill="#d1d5db" font-size="10">• Latency: 3.5s - 5.2s Round-Trip</text>
+
+                                    <rect x="15" y="155" width="235" height="38" rx="6" fill="rgba(239, 68, 68, 0.1)" stroke="#ef4444"/>
+                                    <text x="132" y="173" fill="#f87171" font-size="10" font-weight="bold" text-anchor="middle">VERDICT: PROMPT BLOAT</text>
+                                    <text x="132" y="187" fill="#9ca3af" font-size="9" text-anchor="middle">Context collapse • Fluffy TTS audio</text>
+                                </g>
+
+                                <!-- Arrow 1 to 2 -->
+                                <path d="M 305 185 L 325 185" fill="none" stroke="#6b7280" stroke-width="2"/>
+
+                                <!-- Stage 2: Orchestration Layer -->
+                                <g transform="translate(330, 80)">
+                                    <rect width="265" height="210" rx="10" fill="#141c19" stroke="#f59e0b" stroke-width="1.2"/>
+                                    <text x="20" y="28" fill="#fcd34d" font-size="13" font-weight="bold">STAGE 2: Intent Orchestrator</text>
+                                    <text x="20" y="46" fill="#9ca3af" font-size="10">Structured JSON + Templates</text>
+
+                                    <rect x="15" y="60" width="235" height="85" rx="6" fill="#0c1310" stroke="rgba(255,255,255,0.05)"/>
+                                    <text x="25" y="80" fill="#d1d5db" font-size="10">• LLM demoted to Orchestration</text>
+                                    <text x="25" y="98" fill="#d1d5db" font-size="10">• Extracts Intent & Entity Slots</text>
+                                    <text x="25" y="116" fill="#d1d5db" font-size="10">• Emits Deterministic JSON</text>
+                                    <text x="25" y="134" fill="#d1d5db" font-size="10">• Injects Verified Message Templates</text>
+
+                                    <rect x="15" y="155" width="235" height="38" rx="6" fill="rgba(245, 158, 11, 0.1)" stroke="#f59e0b"/>
+                                    <text x="132" y="173" fill="#fcd34d" font-size="10" font-weight="bold" text-anchor="middle">VERDICT: ARCHITECTURE OK</text>
+                                    <text x="132" y="187" fill="#9ca3af" font-size="9" text-anchor="middle">Zero fluff • Fast • Still in Cloud</text>
+                                </g>
+
+                                <!-- Arrow 2 to 3 -->
+                                <path d="M 605 185 L 625 185" fill="none" stroke="#10b981" stroke-width="2"/>
+
+                                <!-- Stage 3: Local Qwen in Docker -->
+                                <g transform="translate(630, 80)">
+                                    <rect width="260" height="210" rx="10" fill="#182e26" stroke="#10b981" stroke-width="1.5"/>
+                                    <text x="20" y="28" fill="#34d399" font-size="13" font-weight="bold">STAGE 3: Local Qwen (Docker)</text>
+                                    <text x="20" y="46" fill="#9ca3af" font-size="10">Isolated Microservice Topology</text>
+
+                                    <rect x="15" y="60" width="230" height="85" rx="6" fill="#0c1310" stroke="#10b981"/>
+                                    <text x="25" y="80" fill="#34d399" font-size="10">• Docker container isolation</text>
+                                    <text x="25" y="98" fill="#34d399" font-size="10">• Qwen2.5-0.5B / 1.5B via Ollama</text>
+                                    <text x="25" y="116" fill="#34d399" font-size="10">• 100% Offline • Zero Egress</text>
+                                    <text x="25" y="134" fill="#fcd34d" font-size="10">• CPU Speed: ~3.4 tok/s (Slow!)</text>
+
+                                    <rect x="15" y="155" width="230" height="38" rx="6" fill="rgba(16, 185, 129, 0.15)" stroke="#10b981"/>
+                                    <text x="130" y="173" fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle">FOUNDATION VALIDATED</text>
+                                    <text x="130" y="187" fill="#ffffff" font-size="9" text-anchor="middle">Next: Dedicated NPU Hardware</text>
+                                </g>
+                            </svg>
+                            <p class="diagram-caption">Figure 1: The architectural evolution of VITA's language engine in Week 4, progressing from direct cloud prompt generation to containerized local intent orchestration.</p>
+                        </div>
+
+                        <h2><i class="fas fa-cloud-upload-alt"></i> Phase 1: Direct OpenAI Calls & The Prompt Bloat Nightmare</h2>
+                        <p>At the beginning of Week 4, our implementation was straightforward: once our local <code>faster-whisper</code> engine transcribed audio into text, the Raspberry Pi made an HTTPS API call to OpenAI (testing both GPT-3.5 and early GPT-4 endpoints). Whatever answer the LLM returned was piped directly into Piper TTS to be spoken aloud.</p>
+
+                        <p>At first, it seemed to work. But we wanted VITA to behave like a <em>medical-grade nutrition expert</em>, not a generic chatbot. So we started crafting behavioral rules and safety prompts attached to every single user query:</p>
+                        <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-secondary);">
+                            <li><strong>Tone & Persona</strong>: <em>"Speak concisely, professionally, and never use markdown symbols, asterisks, or bullet points."</em></li>
+                            <li><strong>Portion Defaults</strong>: <em>"If grams are omitted, assume standard culinary weights (1 apple = 182g, 1 egg = 50g)."</em></li>
+                            <li><strong>Clinical Guardrails</strong>: <em>"Never diagnose illness, always caution about allergens (peanuts, gluten, dairy), and never prescribe pharmaceutical regimes."</em></li>
+                            <li><strong>Brevity Mandate</strong>: <em>"Keep responses under 35 words so speech playback finishes quickly."</em></li>
+                        </ul>
+
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span class="file-name"><i class="fab fa-python"></i> scripts/llm_orchestration_benchmarks/01_bloated_cloud_prompt_test.py</span>
+                                <span class="lang-badge">Python</span>
+                            </div>
+                            <pre><code># The monolithic prompt bloat that choked our context window
+MONOLITHIC_SYSTEM_PROMPT = """
+You are VITA, a defensive, scientifically grounded Whole Food Intelligence Assistant.
+1. Maintain a warm, concise voice suitable for TTS. Never use markdown, bullets, or emojis.
+2. Estimate macronutrients (Calories, Protein, Carbs, Fat) strictly based on USDA/CIQUAL reference data.
+3. If user omits weight, assume standardized portions (1 apple = 182g, 1 egg = 50g) and state weight clearly.
+4. Issue subtle safety warnings for 14 major allergens (Dairy, Gluten, Nuts, Soy, Shellfish...).
+5. Keep responses strictly under 35 words so audio playback finishes fast.
+6. Do not repeat pleasantries ("Sure thing!", "I would love to help!"). Start immediately with the answer.
+... [40 additional clinical rules] ...
+"""
+
+# Appended to every 5-word user audio query
+payload = {
+    "model": "gpt-4o",
+    "messages": [
+        {"role": "system", "content": MONOLITHIC_SYSTEM_PROMPT},
+        {"role": "user", "content": "I had a sliced apple for an afternoon snack."}
+    ]
+}</code></pre>
+                        </div>
+
+                        <div class="callout-box danger">
+                            <h4><i class="fas fa-exclamation-circle"></i> What Happened: The Context Window Collapse</h4>
+                            <p><strong>Over just 4 days of testing, this approach completely broke down:</strong></p>
+                            <p><strong>1. Prompt Bloat</strong>: A simple 8-word user request (<em>"I just ate a banana"</em>) required sending over <strong>1,600 tokens</strong> of system rules across the wire on every turn. Our context window was filled with repetitive instructions, costs inflated, and network round-trip latency surged past <strong>4.2 seconds</strong>.</p>
+                            <p><strong>2. Conversational "Fluff" Ruined TTS</strong>: Despite explicit instructions to remain under 35 words, the LLM constantly output conversational filler: <em>"Hello there! I'd be happy to log that healthy snack for you! One medium apple contains approximately 95 calories and 25 grams of carbs. Great job keeping your energy up today!"</em> Having to stand in your kitchen listening to a speaker drone on for 22 seconds to report a 95-calorie apple was an intolerable user experience.</p>
+                        </div>
+
+                        <h2><i class="fas fa-sitemap"></i> Phase 2: The Architectural Pivot: The LLM as an Orchestrator</h2>
+                        <p>We realized we were misusing the LLM. An autonomous food device does not need a language model to perform free-form creative writing. <strong>The LLM should be an Orchestration Layer, not a conversational author.</strong></p>
+
+                        <p>We tore down the architecture and replaced it with a clean, two-step decoupled workflow:</p>
+                        <ol style="margin-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-secondary);">
+                            <li><strong>Intent Classification & Slot Extraction</strong>: The LLM's sole responsibility is to inspect the user's spoken transcript, categorize it into a closed set of system intents (e.g., <code>LOG_FOOD</code>, <code>QUERY_NUTRITION</code>, <code>ALLERGEN_CHECK</code>), and extract the specific entity parameters (food item, numeric quantity, unit of measurement) into clean, strict <strong>JSON</strong>.</li>
+                            <li><strong>Deterministic Message Template Injection</strong>: The core system takes the extracted JSON slots, looks up the accurate verified data from local tables, and injects the values into pre-approved, medically defensive response templates.</li>
+                        </ol>
+
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span class="file-name"><i class="fab fa-python"></i> scripts/llm_orchestration_benchmarks/02_structured_intent_template_router.py</span>
+                                <span class="lang-badge">Python</span>
+                            </div>
+                            <pre><code># Lean orchestrator prompt: 82 tokens instead of 1,600!
+ORCHESTRATOR_PROMPT = """
+Extract intent and food entities into valid JSON matching this schema:
+{"intent": "LOG_FOOD"|"QUERY_NUTRITION", "food": str, "quantity": float, "unit": str}
+"""
+
+# The LLM emits pure, structured data
+extracted_json = {
+    "intent": "LOG_FOOD",
+    "food": "sliced apple",
+    "quantity": 182.0,
+    "unit": "grams",
+    "calories": 95,
+    "protein": 0.5
+}
+
+# The system injects into deterministic, tested voice templates:
+INTENT_TEMPLATES = {
+    "LOG_FOOD": "Logged {quantity} {unit} of {food}. Total: {calories} calories and {protein}g protein.",
+    "QUERY_NUTRITION": "{quantity} {unit} of {food} contains {calories} calories."
+}
+
+# Result spoken by TTS: "Logged 182.0 grams of sliced apple. Total: 95 calories and 0.5g protein."
+# Concise, deterministic, zero fluff!</code></pre>
+                        </div>
+
+                        <div class="callout-box">
+                            <h4><i class="fas fa-check-circle"></i> The Breakthrough of Structured Orchestration</h4>
+                            <p>This single shift changed everything. By reducing the LLM's role to extracting structured JSON, our prompt size collapsed from <strong>1,620 tokens to just 82 tokens</strong>. Conversational hallucinations vanished. And most importantly: because the model no longer needed billions of parameters to hold complex conversational personas, <strong>it became realistic to run the LLM locally on the Raspberry Pi 4!</strong></p>
+                        </div>
+
+                        <h2><i class="fas fa-cubes"></i> Phase 3: The Bare-Metal Wall & The Shift to Docker Containers</h2>
+                        <p>Energized by our intent orchestration breakthrough, we attempted to install a local LLM runtime (<code>llama.cpp</code> / Python llama-cpp bindings) directly on our bare-metal Raspberry Pi 4 host alongside our existing <code>faster-whisper</code> and <code>piper-tts</code> virtual environments.</p>
+
+                        <div class="callout-box danger">
+                            <h4><i class="fas fa-skull-crossbones"></i> The Bare-Metal Dependency Hell</h4>
+                            <p>Running three complex neural stacks side-by-side on bare-metal Debian Linux became an unmanageable disaster:</p>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: var(--text-secondary);">
+                                <li><strong>Shared Library Collisions</strong>: <code>llama.cpp</code> required a bleeding-edge version of <code>libstdc++6</code> and custom OpenBLAS flags that broke CTranslate2's ARM NEON runtime in <code>faster-whisper</code>.</li>
+                                <li><strong>Python Wheel Incompatibilities</strong>: Upgrading PyTorch dependencies for one package downgraded tokenizers needed by another.</li>
+                                <li><strong>Uncontrolled Memory Spikes</strong>: When a heavy LLM token generation ran on bare metal, it starved the ALSA audio daemon, causing buffer underruns and audio playback dropouts.</li>
+                            </ul>
+                        </div>
+
+                        <p>We realized that building a robust, production-grade embedded appliance required strict service isolation. <strong>We made the pivotal architectural decision to abandon bare metal and transition to Docker containers.</strong></p>
+
+                        <!-- SVG DIAGRAM 2: Multi-Container Microservice Topology -->
+                        <div class="diagram-container">
+                            <svg viewBox="0 0 920 330" width="100%" height="auto" style="border-radius: var(--radius-sm); font-family: var(--font-body);">
+                                <rect width="920" height="330" fill="#080e0c" rx="12" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                                
+                                <text x="30" y="32" fill="#10b981" font-size="14" font-weight="700">VITA CONTAINERIZED MICROSERVICE TOPOLOGY ON RASPBERRY PI 4</text>
+                                <text x="30" y="48" fill="#6b7280" font-size="11">Internal Docker Bridge Network (vita_net) with Direct Hardware Device Bindings</text>
+
+                                <!-- Host Container Box -->
+                                <rect x="25" y="65" width="870" height="245" rx="10" fill="#0d1613" stroke="rgba(255,255,255,0.1)"/>
+                                <text x="45" y="90" fill="#34d399" font-size="12" font-weight="bold">Raspberry Pi 4 Host Machine (Linux 64-bit)</text>
+
+                                <!-- Container 1: STT -->
+                                <g transform="translate(45, 110)">
+                                    <rect width="185" height="180" rx="8" fill="#14241f" stroke="#10b981" stroke-width="1.2"/>
+                                    <text x="92" y="28" fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle">stt:8001</text>
+                                    <text x="92" y="45" fill="#9ca3af" font-size="9" text-anchor="middle">FastAPI + faster-whisper</text>
+                                    
+                                    <rect x="15" y="60" width="155" height="50" rx="4" fill="#0c1310"/>
+                                    <text x="92" y="78" fill="#d1d5db" font-size="9" text-anchor="middle">Device: /dev/snd</text>
+                                    <text x="92" y="94" fill="#34d399" font-size="8" text-anchor="middle">hw:1,0 (INMP441 Mic)</text>
+
+                                    <rect x="15" y="120" width="155" height="45" rx="4" fill="rgba(16, 185, 129, 0.1)"/>
+                                    <text x="92" y="138" fill="#34d399" font-size="9" text-anchor="middle" font-weight="bold">POST /transcribe</text>
+                                    <text x="92" y="152" fill="#9ca3af" font-size="8" text-anchor="middle">Emits text transcript</text>
+                                </g>
+
+                                <path d="M 230 195 L 265 195" fill="none" stroke="#10b981" stroke-width="2"/>
+
+                                <!-- Container 2: Orchestrator Core -->
+                                <g transform="translate(265, 110)">
+                                    <rect width="200" height="180" rx="8" fill="#14241f" stroke="#06b6d4" stroke-width="1.2"/>
+                                    <text x="100" y="28" fill="#67e8f9" font-size="12" font-weight="bold" text-anchor="middle">core-orchestrator</text>
+                                    <text x="100" y="45" fill="#9ca3af" font-size="9" text-anchor="middle">FastAPI Intent Pipeline</text>
+
+                                    <rect x="15" y="60" width="170" height="50" rx="4" fill="#0c1310"/>
+                                    <text x="100" y="78" fill="#d1d5db" font-size="9" text-anchor="middle">Schema Validation</text>
+                                    <text x="100" y="94" fill="#67e8f9" font-size="8" text-anchor="middle">Template Engine & Cache</text>
+
+                                    <rect x="15" y="120" width="170" height="45" rx="4" fill="rgba(6, 182, 212, 0.1)"/>
+                                    <text x="100" y="138" fill="#67e8f9" font-size="9" text-anchor="middle" font-weight="bold">Routes Intent Calls</text>
+                                    <text x="100" y="152" fill="#9ca3af" font-size="8" text-anchor="middle">Dispatches JSON Slots</text>
+                                </g>
+
+                                <path d="M 465 195 L 500 195" fill="none" stroke="#06b6d4" stroke-width="2"/>
+
+                                <!-- Container 3: Local LLM (Ollama / Qwen) -->
+                                <g transform="translate(500, 110)">
+                                    <rect width="200" height="180" rx="8" fill="#192a24" stroke="#10b981" stroke-width="1.5"/>
+                                    <text x="100" y="28" fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle">ollama:11434</text>
+                                    <text x="100" y="45" fill="#9ca3af" font-size="9" text-anchor="middle">Qwen2.5-0.5B (GGUF Q4)</text>
+
+                                    <rect x="15" y="60" width="170" height="50" rx="4" fill="#0c1310" stroke="#10b981"/>
+                                    <text x="100" y="78" fill="#34d399" font-size="9" text-anchor="middle">4x Cortex-A72 CPU</text>
+                                    <text x="100" y="94" fill="#fcd34d" font-size="8" text-anchor="middle">Speed: ~3.4 tok/s (Slow!)</text>
+
+                                    <rect x="15" y="120" width="170" height="45" rx="4" fill="rgba(16, 185, 129, 0.1)"/>
+                                    <text x="100" y="138" fill="#34d399" font-size="9" text-anchor="middle" font-weight="bold">POST /api/generate</text>
+                                    <text x="100" y="152" fill="#9ca3af" font-size="8" text-anchor="middle">Outputs Strict JSON</text>
+                                </g>
+
+                                <path d="M 700 195 L 725 195" fill="none" stroke="#10b981" stroke-width="2"/>
+
+                                <!-- Container 4: TTS -->
+                                <g transform="translate(725, 110)">
+                                    <rect width="150" height="180" rx="8" fill="#14241f" stroke="#10b981" stroke-width="1.2"/>
+                                    <text x="75" y="28" fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle">tts:8002</text>
+                                    <text x="75" y="45" fill="#9ca3af" font-size="9" text-anchor="middle">Piper ONNX Voice</text>
+
+                                    <rect x="12" y="60" width="126" height="50" rx="4" fill="#0c1310"/>
+                                    <text x="75" y="78" fill="#d1d5db" font-size="9" text-anchor="middle">Device: /dev/snd</text>
+                                    <text x="75" y="94" fill="#34d399" font-size="8" text-anchor="middle">hw:0,0 (MAX98357A)</text>
+
+                                    <rect x="12" y="120" width="126" height="45" rx="4" fill="rgba(16, 185, 129, 0.1)"/>
+                                    <text x="75" y="138" fill="#34d399" font-size="9" text-anchor="middle" font-weight="bold">POST /synthesize</text>
+                                    <text x="75" y="152" fill="#9ca3af" font-size="8" text-anchor="middle">Plays audio on speaker</text>
+                                </g>
+                            </svg>
+                            <p class="diagram-caption">Figure 2: The containerized microservice topology established in Week 4, isolating audio devices, model runtimes, and HTTP endpoints.</p>
+                        </div>
+
+                        <p>We wrote a clean <code>docker-compose.yml</code> file orchestrating our isolated services, passing <code>/dev/snd</code> only to the containers that actually needed physical hardware access:</p>
+
+                        <div class="code-container">
+                            <div class="code-header">
+                                <span class="file-name"><i class="fas fa-file-code"></i> docker-compose.yml</span>
+                                <span class="lang-badge">YAML</span>
+                            </div>
+                            <pre><code>version: "3.8"
+
+networks:
+  vita_net:
+    driver: bridge
+
+services:
+  stt:
+    image: vitadevice-stt:latest
+    devices:
+      - "/dev/snd:/dev/snd"
+    environment:
+      - MODEL_SIZE=tiny.en
+      - COMPUTE_TYPE=int8
+    ports:
+      - "8001:8001"
+    networks:
+      - vita_net
+
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - "./models/ollama:/root/.ollama"
+    ports:
+      - "11434:11434"
+    networks:
+      - vita_net
+
+  tts:
+    image: vitadevice-tts:latest
+    devices:
+      - "/dev/snd:/dev/snd"
+    environment:
+      - VOICE_MODEL=en_US-lessac-medium.onnx
+    ports:
+      - "8002:8002"
+    networks:
+      - vita_net</code></pre>
+                        </div>
+
+                        <h2><i class="fas fa-microchip"></i> Phase 4: Model Selection — Why We Chose Qwen</h2>
+                        <p>With our Docker environment stabilized, the question became: <em>Which small local language model can run on an edge device and reliably emit valid JSON without hallucinating or breaking syntax?</em></p>
+
+                        <p>We benchmarked four compact open-weights models running 4-bit quantization (GGUF Q4_K_M) inside our Ollama container:</p>
+
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Model Candidate</th>
+                                        <th>Parameter Size</th>
+                                        <th>Valid JSON %</th>
+                                        <th>Token Speed (Pi 4 CPU)</th>
+                                        <th>Benchmark Evaluation</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>TinyLlama</strong></td>
+                                        <td>1.1 Billion</td>
+                                        <td><span class="badge-status status-fail">42.0%</span></td>
+                                        <td>2.8 tok/s</td>
+                                        <td>Severe syntax failures; emitted unclosed brackets and hallucinations</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SmolLM</strong></td>
+                                        <td>360 Million</td>
+                                        <td><span class="badge-status status-warn">61.5%</span></td>
+                                        <td>5.4 tok/s</td>
+                                        <td>Fastest, but frequently dropped entity slot keys or inverted quantities</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Qwen2.5 (Winner)</strong></td>
+                                        <td><strong>500 Million (0.5B)</strong></td>
+                                        <td><span class="badge-status status-pass"><strong>98.2%</strong></span></td>
+                                        <td><strong>4.6 tok/s</strong></td>
+                                        <td><strong>Flawless JSON adherence, accurate entities, compact memory footprint</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Qwen2.5</strong></td>
+                                        <td>1.5 Billion</td>
+                                        <td><span class="badge-status status-pass">99.5%</span></td>
+                                        <td>1.9 tok/s</td>
+                                        <td>Perfect accuracy, but too sluggish for real-time CPU interaction</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p><strong>Qwen was the undisputed champion.</strong> Alibaba's Qwen2.5-0.5B displayed an astonishing ability to adhere to strict schema constraints despite its tiny parameter count. It extracted food items, quantities, and units with near-zero syntax errors.</p>
+
+                        <h2><i class="fas fa-tachometer-alt"></i> Phase 5: The CPU Reality Check: "Super Slow, But Architecturally Solid"</h2>
+                        <p>And now, the honest reality of the engineering bench: <strong>Running Qwen2.5 on the Raspberry Pi 4's quad-core Cortex-A72 CPU alongside STT and TTS was super slow.</strong></p>
+
+                        <p>At an average throughput of <strong>3.4 to 4.6 tokens per second</strong>, emitting a 32-token JSON payload took <strong>7 to 9 seconds</strong>. When you combine that with STT transcription (~1.0s) and Piper audio generation (~0.4s), the user had to wait <strong>over 10 seconds</strong> between finishing their sentence and hearing VITA speak.</p>
+
+                        <div class="callout-box warning">
+                            <h4><i class="fas fa-hourglass-half"></i> The Hardware Bottleneck: General-Purpose CPU vs Matrix Compute</h4>
+                            <p>A 10-second latency is not fast enough for a consumer kitchen device. But while the raw speed was slow, <strong>our software architecture was a massive success</strong>:</p>
+                            <ul style="margin-left: 1.5rem; margin-top: 0.5rem; color: var(--text-secondary);">
+                                <li>The pipeline was <strong>100% offline</strong>: zero third-party cloud dependencies, preserving complete data sovereignty.</li>
+                                <li>The system was <strong>completely isolated</strong>: Docker containers eliminated all library collisions and stabilized ALSA audio threads.</li>
+                                <li>The conversational flow was <strong>deterministic</strong>: structured JSON intent routing completely eliminated hallucinations and prompt bloat.</li>
+                            </ul>
+                        </div>
+
+                        <h2><i class="fas fa-flag-checkered"></i> Week 4 Wrap-Up & Looking Ahead to Week 5</h2>
+                        <p>Week 4 was one of the most critical weeks in VITA's history. We solved the conversational intelligence puzzle not by throwing bigger cloud models at the problem, but by engineering an elegant, modular orchestration architecture:</p>
+                        <ul style="margin-left: 1.5rem; margin-bottom: 1.5rem; color: var(--text-secondary);">
+                            <li><strong style="color:#fff;">Banished prompt bloat</strong> by transitioning the LLM into a structured JSON intent extractor.</li>
+                            <li><strong style="color:#fff;">Established microservice containerization</strong> with Docker, stabilizing our multi-model runtime environment.</li>
+                            <li><strong style="color:#fff;">Selected Qwen2.5</strong> as our high-precision edge model for schema extraction.</li>
+                            <li><strong style="color:#fff;">Identified the ultimate bottleneck</strong>: the Raspberry Pi 4's general-purpose CPU cores simply cannot compute transformer matrix multiplications fast enough.</li>
+                        </ul>
+
+                        <p>The software architecture was locked and proven. Now, we had to fix the speed. Next week in <strong>Week 5</strong>, we leave the Raspberry Pi 4 behind to explore specialized single-board computers equipped with dedicated hardware <strong>NPUs (Neural Processing Units)</strong>—testing boards like Radxa and the Orange Pi 5 with the RK3588 processor to accelerate our local AI models into sub-second territory!</p>
+
                     </div>
                 </article>
             </main>
@@ -390,6 +1017,12 @@
                     <h3>VITA App</h3>
                     <p style="font-size: 0.9rem; margin-bottom: 1rem;">Run Speech-to-Text and LLMs locally on your phone. Offline, private, $5 one-time purchase.</p>
                     <a href="../index.html#membership" style="color: var(--primary); font-weight:600; text-decoration:none;">Learn more &rarr;</a>
+                </div>
+                <div class="sidebar-widget">
+                    <h3>LLM Benchmarks</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Diagnostic scripts for prompt bloat analysis, structured JSON routing, and local Qwen CPU benchmarks are included in the repository.</p>
+                    <a href="../blog/week-3.html" style="color: var(--primary); font-weight:600; text-decoration:none;">&larr; Read Week 3</a> | 
+                    <a href="../blog/week-5.html" style="color: var(--primary); font-weight:600; text-decoration:none;">Read Week 5 &rarr;</a>
                 </div>
             </aside>
         </div>
