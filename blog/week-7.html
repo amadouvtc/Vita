@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prototyping on the Orange Pi 5 | VITA Blog</title>
-    <meta name="description" content="Evaluating the RK3588 processor on the Orange Pi 5. Excellent NPU performance, but massive manufacturing and distribution questions arise.">
+    <title>Week 7: The Knowledge Federation: Ingesting Agribalyse, Statutory Allergens, and Clinical Hypersensitivities | VITA Blog</title>
+    <meta name="description" content="Federating 4 authoritative SQLite knowledge databases on embedded hardware: how we ingested ADEME Agribalyse LCA footprints, statutory allergen registries, and EAACI pollen cross-reactivities into an auditable engine.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,16 +20,21 @@
             --primary-light: #34d399;
             --primary-dark: #059669;
             --accent: #f59e0b; /* amber */
+            --accent-cyan: #06b6d4; /* cyan */
+            --danger: #ef4444; /* red */
             --background: #090d0c; /* dark warm green-gray */
             --surface: #111816; /* deep surface */
             --surface-hover: #16201d;
+            --surface-card: #131d1a;
             --text-primary: #f3f4f6;
             --text-secondary: #9ca3af;
             --text-light: #6b7280;
             --border: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(16, 185, 129, 0.25);
             --shadow: rgba(0, 0, 0, 0.4);
             --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
             --font-body: 'Inter', -apple-system, sans-serif;
+            --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 20px;
             --transition-normal: 250ms ease;
@@ -54,23 +59,68 @@
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 1.2rem;
+            letter-spacing: -0.02em;
         }
         
         h1 {
-            font-size: 2.5rem;
-            line-height: 1.2;
+            font-size: 2.35rem;
+            line-height: 1.25;
+            background: linear-gradient(135deg, #ffffff 40%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
         }
         
         h2 {
-            font-size: 1.75rem;
-            margin-top: 2rem;
+            font-size: 1.65rem;
+            margin-top: 2.5rem;
+            padding-bottom: 0.6rem;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        h2 i {
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            margin-top: 1.8rem;
+            color: var(--primary-light);
         }
         
         p {
-            margin-bottom: 1.5rem;
-            color: var(--text-secondary);
+            margin-bottom: 1.4rem;
+            color: #d1d5db;
+            font-size: 1.05rem;
+        }
+        
+        ul, ol {
+            margin-bottom: 1.4rem;
+            padding-left: 1.5rem;
+            color: #d1d5db;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        strong {
+            color: #ffffff;
+        }
+        
+        a {
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: color var(--transition-normal);
+        }
+        
+        a:hover {
+            color: #ffffff;
+            text-decoration: underline;
         }
         
         .container {
@@ -79,147 +129,277 @@
             padding: 0 1.5rem;
         }
         
-        /* Header - Glassmorphic */
+        /* Navigation */
         header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background: rgba(9, 13, 12, 0.8);
-            backdrop-filter: blur(12px);
+            background: rgba(9, 13, 12, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             z-index: 1000;
-            padding: 1.25rem 0;
             border-bottom: 1px solid var(--border);
         }
         
-        .header-container {
+        .nav-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 4.5rem;
         }
         
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             font-family: var(--font-heading);
             font-weight: 700;
-            font-size: 1.6rem;
-            color: var(--primary);
+            font-size: 1.4rem;
+            color: #ffffff;
             text-decoration: none;
-            letter-spacing: -0.5px;
+        }
+        
+        .logo-icon {
+            width: 2.2rem;
+            height: 2.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
         
         .nav-links {
             display: flex;
             gap: 2rem;
             align-items: center;
+            list-style: none;
         }
         
         .nav-links a {
-            color: var(--text-primary);
-            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
             font-weight: 500;
             transition: color var(--transition-normal);
         }
         
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-        
-        .nav-links a.active {
-            color: var(--primary);
-            font-weight: 600;
+        .nav-links a:hover, .nav-links a.active {
+            color: #ffffff;
+            text-decoration: none;
         }
         
         .nav-btn {
-            padding: 0.6rem 1.25rem;
-            background-color: var(--primary);
-            color: #0c0f0e !important;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background-color var(--transition-normal);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: #ffffff !important;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            transition: all var(--transition-normal);
         }
         
         .nav-btn:hover {
-            background-color: var(--primary-light);
+            border-color: var(--primary);
+            background: rgba(16, 185, 129, 0.1);
         }
-
-        /* Mobile Navigation Toggle */
+        
         .mobile-nav-toggle {
             display: none;
             background: none;
             border: none;
-            color: var(--text-primary);
+            color: #ffffff;
             font-size: 1.5rem;
             cursor: pointer;
-            z-index: 1100;
-            padding: 0.5rem;
         }
         
-        /* Layout Grid */
+        /* Layout */
         .layout-grid {
             display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 3rem;
+            grid-template-columns: minmax(0, 1fr) 300px;
+            gap: 3.5rem;
             margin-top: 2rem;
+            margin-bottom: 5rem;
         }
         
-        /* Article Area */
-        article {
-            background-color: var(--surface);
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 30px var(--shadow);
-        }
-        
+        /* Article Header */
         .article-meta {
             display: flex;
-            gap: 1rem;
             align-items: center;
-            margin-bottom: 1.5rem;
+            gap: 1.25rem;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
         
         .article-category {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--primary-light);
             padding: 0.25rem 0.75rem;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 100px;
-        }
-        
-        .article-date {
-            font-size: 0.875rem;
-            color: var(--text-light);
-        }
-        
-        .article-body {
-            font-size: 1.05rem;
-        }
-        
-        .article-body code {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            color: var(--accent);
-            font-family: monospace;
-            font-size: 0.95rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         .back-link {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            transition: gap var(--transition-normal);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
         }
         
         .back-link:hover {
-            gap: 0.75rem;
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+        
+        /* Diagrams & SVGs */
+        .diagram-container {
+            margin: 2.2rem 0;
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.75rem;
+            box-shadow: 0 12px 36px var(--shadow);
+            text-align: center;
+        }
+        
+        .diagram-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .diagram-caption {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        /* Callout Boxes */
+        .callout-box {
+            background: rgba(16, 185, 129, 0.06);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            padding: 1.25rem 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .callout-box.danger {
+            background: rgba(239, 68, 68, 0.08);
+            border-left-color: var(--danger);
+        }
+        
+        .callout-box.info {
+            background: rgba(6, 182, 212, 0.08);
+            border-left-color: var(--accent-cyan);
+        }
+        
+        .callout-box.amber {
+            background: rgba(245, 158, 11, 0.08);
+            border-left-color: var(--accent);
+        }
+        
+        .callout-title {
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.05rem;
+        }
+        
+        .callout-box.danger .callout-title {
+            color: #fca5a5;
+        }
+        
+        .callout-box.info .callout-title {
+            color: #67e8f9;
+        }
+        
+        .callout-box.amber .callout-title {
+            color: #fcd34d;
+        }
+        
+        .callout-box p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Code Blocks */
+        pre {
+            background: #0d1311;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9rem;
+            color: #e5e7eb;
+            line-height: 1.55;
+        }
+        
+        code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.88em;
+            background: rgba(255, 255, 255, 0.07);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            color: #a7f3d0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface-card);
+            font-size: 0.92rem;
+            text-align: left;
+        }
+        
+        th {
+            background: #16201d;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d1d5db;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
         }
         
         /* Sidebar */
@@ -230,60 +410,70 @@
         }
         
         .sidebar-widget {
-            background-color: var(--surface);
-            padding: 2rem;
-            border-radius: var(--radius-md);
+            background: var(--surface);
             border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
         }
         
         .sidebar-widget h3 {
             font-size: 1.15rem;
+            color: #ffffff;
+            margin-top: 0;
             margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
             padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .subscribe-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
         
         .subscribe-form input {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: rgba(255,255,255,0.05);
+            background: var(--surface-card);
             border: 1px solid var(--border);
-            border-radius: 6px;
-            color: white;
-            margin-bottom: 0.75rem;
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        
+        .subscribe-form input:focus {
+            outline: none;
+            border-color: var(--primary);
         }
         
         .subscribe-form button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: var(--primary);
-            color: #0c0f0e;
+            background: var(--primary);
+            color: #ffffff;
             border: none;
-            border-radius: 6px;
+            border-radius: var(--radius-sm);
+            padding: 0.75rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color var(--transition-normal);
+            transition: background var(--transition-normal);
         }
         
         .subscribe-form button:hover {
-            background-color: var(--primary-light);
+            background: var(--primary-dark);
         }
         
         /* Footer */
         footer {
-            background: #060807;
-            padding: 3rem 0;
             border-top: 1px solid var(--border);
-            margin-top: 5rem;
-            text-align: center;
-            color: var(--text-light);
+            padding: 3rem 0;
+            background: #060908;
             font-size: 0.9rem;
+            color: var(--text-light);
+            text-align: center;
         }
         
         footer a {
             color: var(--text-secondary);
-            text-decoration: none;
-            margin: 0 1rem;
+            margin: 0 0.75rem;
         }
         
         footer a:hover {
@@ -294,66 +484,44 @@
             .layout-grid {
                 grid-template-columns: 1fr;
             }
-            body {
-                padding-top: 5rem;
-            }
-        }
-
-        @media (max-width: 768px) {
             .mobile-nav-toggle {
                 display: block;
             }
-            
             .nav-links {
                 position: fixed;
-                top: 0;
-                right: -100%;
-                width: 280px;
-                height: 100vh;
-                background-color: rgba(9, 13, 12, 0.95);
-                backdrop-filter: blur(20px);
-                border-left: 1px solid var(--border);
+                top: 4.5rem;
+                left: 0;
+                width: 100%;
+                background: var(--surface);
+                border-bottom: 1px solid var(--border);
                 flex-direction: column;
-                justify-content: center;
-                gap: 2rem;
-                padding: 3rem;
-                transition: right 0.3s ease-in-out;
-                z-index: 1050;
-                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+                padding: 1.5rem;
+                display: none;
             }
-            
             .nav-links.active {
-                right: 0;
+                display: flex;
             }
-            
-            .nav-links a {
-                font-size: 1.2rem;
-                width: 100%;
-                text-align: center;
-            }
-            
-            .nav-links .nav-btn {
-                width: 100%;
-                text-align: center;
-                padding: 0.75rem;
+            h1 {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="container header-container">
-            <a href="../index.html" class="logo">VITA</a>
-            <button class="mobile-nav-toggle" aria-label="Toggle Menu">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="nav-links">
-                <a href="../index.html">Home</a>
-                <a href="../blog.html" class="active">Blog</a>
-                <a href="../contact.html">Contact</a>
-                <a href="../privacy.html">Privacy</a>
-                <a href="../index.html#membership" class="nav-btn">Get the App</a>
-            </div>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+                <span>VITA</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../blog.html" class="active">Engineering Blog</a></li>
+                <li><a href="../index.html#features">Technology</a></li>
+                <li><a href="../contact.html">Contact</a></li>
+                <li><a href="../index.html#membership" class="nav-btn">Get VITA</a></li>
+            </ul>
         </div>
     </header>
 
@@ -363,22 +531,372 @@
                 <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
                 <article>
                     <div class="article-meta">
-                        <span class="article-category">Hardware Architecture</span>
+                        <span class="article-category">Knowledge Engineering & System Safety</span>
                         <span class="article-date">February 16, 2026</span>
+                        <span>&bull;</span>
+                        <span>10 min read</span>
                     </div>
-                    <h1>Week 7: Prototyping on the Orange Pi 5</h1>
+                    <h1>Week 7: The Knowledge Federation: Ingesting Agribalyse, Statutory Allergens, and Clinical Hypersensitivities</h1>
+                    
                     <div class="article-body">
-                        
-            <p>This week we received and set up our Orange Pi 5 board. The Orange Pi 5 features the Rockchip RK3588 processor, which boasts an integrated NPU delivering 6 TOPS of compute power. This is an order of magnitude faster than anything we've tested so far.</p>
-            
-            <div style="margin: 2rem 0; text-align: center;">
-                <img src="../assets/images/orange_pi_board.png" alt="Orange Pi 5 Development Board" style="max-width: 100%; border-radius: var(--radius-md); border: 1px solid var(--border); box-shadow: 0 10px 30px var(--shadow);">
-                <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem; font-style: italic;">The high-performance Orange Pi 5 board used for edge AI model testing. It features the RK3588 NPU for fast deep-learning inference.</p>
-            </div>
+                        <p>In <a href="week-6.html">Week 6</a>, we solved a fundamental vulnerability in our voice assistant: we eradicated hallucinated macronutrients by grounding our local Qwen 2.5 1.5B orchestrator in France's official ANSES CIQUAL nutrition database. By establishing the ironclad rule that <em>the language model must never generate raw SQL queries</em>, our Orange Pi 5 could accurately state calories, proteins, carbohydrates, and fats in sub-millisecond lookups.</p>
 
-            <p>We compiled the RKNN (Rockchip Neural Network) toolchain and converted Whisper to the RKNN format. The results were impressive: transcribing our test audio clip on the Orange Pi 5 took less than 800 milliseconds! The processing is near-instantaneous and thermal output is low.</p>
-            <p>However, this success highlighted another problem. Building and selling a custom physical device around an Orange Pi 5 board is incredibly expensive. Hardware sourcing, assembly, audio codecs, custom casework, power supplies, and regulatory certifications (FCC/CE) would make the VITA hardware unit retail for at least $250. Is this price point viable for our users?</p>
-        
+                        <p>Yet as our small hardware bench began using VITA for daily meal logging, our queries immediately stretched beyond standard macros:</p>
+                        
+                        <ul>
+                            <li><em>"What is the environmental carbon footprint of 200g of ribeye steak versus a lentil patty?"</em></li>
+                            <li><em>"I have an anaphylactic peanut allergy. Is this satay or pesto dressing safe for me?"</em></li>
+                            <li><em>"I have severe birch pollen hay fever. Why do raw apples make my lips and palate swell, but applesauce causes zero reaction?"</em></li>
+                            <li><em>"I am diagnosed with lactose intolerance. Can I safely eat aged cheddar cheese?"</em></li>
+                        </ul>
+
+                        <p>A single nutrition database cannot answer these questions. Worse, relying on a generative LLM's parametric weights for clinical allergies is hazardous—a hallucinated allergen prediction can trigger anaphylactic shock. To solve this, Week 7 became our <strong>Knowledge Federation Sprint</strong>: building an immutable, multi-database factual foundation where ecological life-cycle metrics, statutory allergen crosswalks, and clinical pollen-food cross-reactivities are compiled into synchronized SQLite artifacts on edge hardware.</p>
+
+                        <h2><i class="fas fa-layer-group"></i> The 4 Authoritative Databases Explained</h2>
+                        <p>Rather than dumping unrelated datasets into an untracked repository, we designed a modular compilation architecture under <code>database_builders/</code>. Every database represents a distinct factual domain, compiled from authoritative government or clinical sources, and anchored to a common primary identifier.</p>
+
+                        <!-- Diagram 1: CIQUAL-First Build Order & Dependency Graph -->
+                        <div class="diagram-container">
+                            <svg viewBox="0 0 880 440" xmlns="http://www.w3.org/2000/svg" style="background:#0b110f; border-radius:12px; font-family:'Inter', sans-serif;">
+                                <defs>
+                                    <linearGradient id="emeraldGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+                                        <stop offset="100%" stop-color="#059669" stop-opacity="0.05"/>
+                                    </linearGradient>
+                                    <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#06b6d4" stop-opacity="0.3"/>
+                                        <stop offset="100%" stop-color="#0891b2" stop-opacity="0.05"/>
+                                    </linearGradient>
+                                    <linearGradient id="amberGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.3"/>
+                                        <stop offset="100%" stop-color="#d97706" stop-opacity="0.05"/>
+                                    </linearGradient>
+                                    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981" />
+                                    </marker>
+                                </defs>
+
+                                <!-- Title -->
+                                <text x="440" y="32" fill="#ffffff" font-size="16" font-weight="bold" text-anchor="middle">Stage 1 CIQUAL-First Knowledge Federation &amp; Verification Pipeline</text>
+                                <text x="440" y="52" fill="#9ca3af" font-size="12" text-anchor="middle">Mandatory Build Order: Zero Orphan alim_code Invariant Protected by Acceptance Gates</text>
+
+                                <!-- Step 0: Source Manifest -->
+                                <rect x="40" y="80" width="800" height="44" rx="8" fill="#111816" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                                <text x="60" y="107" fill="#a7f3d0" font-size="13" font-weight="bold">Step 0: SOURCE_MANIFEST.json Verification</text>
+                                <text x="360" y="107" fill="#9ca3af" font-size="12">Cryptographic SHA-256 validation across 7 legal &amp; scientific source artifacts</text>
+                                <circle cx="815" cy="102" r="10" fill="#065f46"/>
+                                <text x="815" y="106" fill="#34d399" font-size="12" text-anchor="middle">✓</text>
+
+                                <!-- Builder 1: CIQUAL (Authoritative Anchor) -->
+                                <rect x="40" y="155" width="180" height="130" rx="10" fill="url(#emeraldGlow)" stroke="#10b981" stroke-width="2"/>
+                                <text x="130" y="182" fill="#34d399" font-size="13" font-weight="bold" text-anchor="middle">1. ciqual_builder</text>
+                                <text x="130" y="202" fill="#ffffff" font-size="11" text-anchor="middle">ANSES XML 2025</text>
+                                <text x="130" y="222" fill="#9ca3af" font-size="10" text-anchor="middle">3,483 Foods (alim_code)</text>
+                                <text x="130" y="238" fill="#9ca3af" font-size="10" text-anchor="middle">74 Nutrients | FTS5 Index</text>
+                                <rect x="55" y="255" width="150" height="20" rx="4" fill="#064e3b"/>
+                                <text x="130" y="269" fill="#a7f3d0" font-size="10" font-weight="bold" text-anchor="middle">database/ciqual.db (17.7MB)</text>
+
+                                <!-- Downstream Arrows from CIQUAL -->
+                                <path d="M 220 220 L 255 220" stroke="#10b981" stroke-width="2" marker-end="url(#arrow)"/>
+
+                                <!-- Builder 2: Agribalyse -->
+                                <rect x="260" y="155" width="180" height="130" rx="10" fill="url(#cyanGlow)" stroke="#06b6d4" stroke-width="1.5"/>
+                                <text x="350" y="182" fill="#67e8f9" font-size="13" font-weight="bold" text-anchor="middle">2. agribalyse_builder</text>
+                                <text x="350" y="202" fill="#ffffff" font-size="11" text-anchor="middle">ADEME 3.2 (Excel EF 3.1)</text>
+                                <text x="350" y="222" fill="#9ca3af" font-size="10" text-anchor="middle">16 PEF Midpoint Indicators</text>
+                                <text x="350" y="238" fill="#9ca3af" font-size="10" text-anchor="middle">2,301 Products | DQR Metric</text>
+                                <rect x="275" y="255" width="150" height="20" rx="4" fill="#083344"/>
+                                <text x="350" y="269" fill="#a5f3fc" font-size="10" font-weight="bold" text-anchor="middle">agribalyse.db (2.7MB)</text>
+
+                                <!-- Builder 3: Allergens -->
+                                <rect x="460" y="155" width="180" height="130" rx="10" fill="url(#amberGlow)" stroke="#f59e0b" stroke-width="1.5"/>
+                                <text x="550" y="182" fill="#fcd34d" font-size="13" font-weight="bold" text-anchor="middle">3. allergens_builder_v2</text>
+                                <text x="550" y="202" fill="#ffffff" font-size="11" text-anchor="middle">EU 1169 &amp; US FDA FASTER</text>
+                                <text x="550" y="222" fill="#9ca3af" font-size="10" text-anchor="middle">24 Regulatory Groups</text>
+                                <text x="550" y="238" fill="#9ca3af" font-size="10" text-anchor="middle">Typed Evidence States</text>
+                                <rect x="475" y="255" width="150" height="20" rx="4" fill="#451a03"/>
+                                <text x="550" y="269" fill="#fef08a" font-size="10" font-weight="bold" text-anchor="middle">food_allergens_v2.db</text>
+
+                                <!-- Builder 4: Hypersensitivities -->
+                                <rect x="660" y="155" width="180" height="130" rx="10" fill="url(#emeraldGlow)" stroke="#34d399" stroke-width="1.5"/>
+                                <text x="750" y="182" fill="#6ee7b7" font-size="13" font-weight="bold" text-anchor="middle">4. hypersens_builder_v2</text>
+                                <text x="750" y="202" fill="#ffffff" font-size="11" text-anchor="middle">EAACI &amp; WHO/IUIS</text>
+                                <text x="750" y="222" fill="#9ca3af" font-size="10" text-anchor="middle">8 Inhalants | 7 Intolerances</text>
+                                <text x="750" y="238" fill="#9ca3af" font-size="10" text-anchor="middle">Pollen-Food OAS (Bet v 1)</text>
+                                <rect x="675" y="255" width="150" height="20" rx="4" fill="#064e3b"/>
+                                <text x="750" y="269" fill="#a7f3d0" font-size="10" font-weight="bold" text-anchor="middle">hypersensitivities_v2.db</text>
+
+                                <!-- Gate 1A: Integrity Validator -->
+                                <rect x="40" y="315" width="380" height="95" rx="8" fill="#111816" stroke="#10b981" stroke-width="1"/>
+                                <text x="60" y="340" fill="#34d399" font-size="12" font-weight="bold">Gate 1A: Referential Integrity Verification</text>
+                                <text x="60" y="360" fill="#d1d5db" font-size="11">Assert zero orphan alim_code references in secondary databases.</text>
+                                <text x="60" y="378" fill="#9ca3af" font-size="10">• Filtered 155 Agribalyse orphan products at ingestion</text>
+                                <text x="60" y="394" fill="#9ca3af" font-size="10">• Validated 100% referential integrity across 2,695 allergen relations</text>
+
+                                <!-- Gate 1B: Coverage Baseline -->
+                                <rect x="460" y="315" width="380" height="95" rx="8" fill="#111816" stroke="#06b6d4" stroke-width="1"/>
+                                <text x="480" y="340" fill="#67e8f9" font-size="12" font-weight="bold">Gate 1B: Coverage Baseline &amp; Entity Extractor</text>
+                                <text x="480" y="360" fill="#d1d5db" font-size="11">Snapshots cross-database coverage (dataset_coverage_baseline.json)</text>
+                                <text x="480" y="378" fill="#9ca3af" font-size="10">• Cross-coverage: 72.12% of CIQUAL foods carry secondary links</text>
+                                <text x="480" y="394" fill="#9ca3af" font-size="10">• Generates entity registries for MiniLM upstream domain gating</text>
+                            </svg>
+                            <p class="diagram-caption">Figure 1: The CIQUAL-First Knowledge Build Pipeline. Downstream databases link to CIQUAL's authoritative alim_code; orphaned references are rejected by Gate 1A.</p>
+                        </div>
+
+                        <h3>1. ANSES CIQUAL 2025: The Master Anchor</h3>
+                        <p>As detailed in Week 6, CIQUAL provides 3,483 authoritative food items with 74 nutritional constituents and 257,742 chemical composition measurements. But CIQUAL's most important architectural role in Week 7 is serving as the <strong>ecosystem anchor</strong>. Every food entry carries an immutable integer identifier: <code>alim_code</code>.</p>
+                        
+                        <p>By making <code>alim_code</code> our universal foreign key, we prevented the catastrophic entity fragmentation that plagues most nutrition apps (e.g., matching "Salmon fillet" in one DB to "Atlantic Salmon, grilled" in another via messy runtime string heuristics).</p>
+
+                        <h3>2. ADEME / INRAE Agribalyse 3.2: Environmental LCA &amp; PEF 3.1 Eco-Scores</h3>
+                        <p>Consumers increasingly want to know the ecological cost of their diet. To provide mathematically verifiable environmental metrics, we integrated <strong>Agribalyse 3.2</strong>, published in August 2025 by France's ADEME and INRAE.</p>
+
+                        <p>Agribalyse compiles rigorous Life Cycle Assessment (LCA) footprints adhering to the European Commission's <strong>Product Environmental Footprint (PEF) EF 3.1</strong> standard. For every food item, it models 16 standardized midpoint indicators across six distinct lifecycle stages: <em>Agriculture, Food Processing, Packaging, Transportation, Distribution, and Home Preparation</em>.</p>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>PEF Midpoint Indicator</th>
+                                        <th>Physical Unit</th>
+                                        <th>Beef Rib Steak (6103)</th>
+                                        <th>Lentil Patty (25591)</th>
+                                        <th>Ecological Impact</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Climate Change (Carbon)</strong></td>
+                                        <td>kg CO2 eq / kg</td>
+                                        <td style="color:#f87171;">29.10 kg</td>
+                                        <td style="color:#34d399;">1.68 kg</td>
+                                        <td><strong>17.3x lower emissions</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>PEF Single Score</strong></td>
+                                        <td>mPt (millipoints)</td>
+                                        <td style="color:#f87171;">2.710 mPt</td>
+                                        <td style="color:#34d399;">0.213 mPt</td>
+                                        <td><strong>12.7x overall footprint reduction</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Water Deprivation</strong></td>
+                                        <td>m³ world eq depriv.</td>
+                                        <td style="color:#f87171;">4.82 m³</td>
+                                        <td style="color:#34d399;">0.64 m³</td>
+                                        <td><strong>7.5x lower water impact</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Land Use</strong></td>
+                                        <td>Pt (soil quality deficit)</td>
+                                        <td style="color:#f87171;">920.4 Pt</td>
+                                        <td style="color:#34d399;">52.1 Pt</td>
+                                        <td><strong>17.6x less land consumed</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p><strong>ETL &amp; Data Transformation:</strong> The raw Agribalyse release comes as an unindexed 45MB Excel workbook containing dozens of merged headers and complex multi-scenario variations (raw vs. cooked, farm gate vs. consumer ready). Our <code>agribalyse_builder/importer.py</code> parses this artifact, normalizes lifecycle phases, maps the indicators into a lean 2.69MB SQLite database, and resolves scenarios using a deterministic <code>ScenarioSelectionPolicy</code> (prioritizing the lowest Data Quality Rating, or DQR score, for empirical certainty).</p>
+
+                        <div class="callout-box info">
+                            <div class="callout-title"><i class="fas fa-filter"></i> Enforcing Zero Orphan Invariants</div>
+                            <p>During our initial import, 155 food products in the Agribalyse spreadsheet referenced French culinary concepts that lacked an exact match in CIQUAL 2025. Rather than tolerating dangling pointers, our builder strictly dropped all 155 orphan rows, guaranteeing that every single entry in <code>database/agribalyse.db</code> joins cleanly to a verified CIQUAL <code>alim_code</code>.</p>
+                        </div>
+
+                        <h3>3. Statutory Food Allergens v2: EU 1169/2011 &amp; US FDA FASTER Act</h3>
+                        <p>When an allergic user speaks to VITA, there is zero margin for error. We built <code>database/food_allergens_v2.db</code> to model statutory allergen disclosures with clinical rigor.</p>
+
+                        <p>The builder compiles legal standards across two major jurisdictions:</p>
+                        <ul>
+                            <li><strong>European Union (Regulation 1169/2011 Annex II)</strong>: 14 mandatory declarable allergen groups (Gluten-containing cereals, Crustaceans, Eggs, Fish, Peanuts, Soybeans, Milk/Lactose, Tree Nuts, Celery, Mustard, Sesame, Sulfur dioxide/Sulfites, Lupin, Molluscs).</li>
+                            <li><strong>United States (FDA FALCPA &amp; FASTER Act 2021)</strong>: 9 major food allergens (adding Sesame as the 9th major statutory group as of January 2023).</li>
+                        </ul>
+
+                        <p><strong>Upgrading to Schema v2 (Typed Evidence States):</strong> In our initial v1 prototype, allergens were simple binary flags (<code>is_peanut = 1</code>). In real clinical life, allergen contamination is far more nuanced. In Schema v2, we introduced <strong>typed evidence states</strong> across 2,695 food relationships:</p>
+                        
+                        <ul>
+                            <li><code>positive</code> (2,686 rows): Definitively containing the allergenic substance (e.g. Peanut butter containing peanuts).</li>
+                            <li><code>uncertain</code> (9 rows): Ingredient variations require explicit advisory warnings.</li>
+                            <li><code>precautionary_labeling</code> &amp; <code>cross_contact_risk</code>: Factory line sharing and shared equipment risk.</li>
+                        </ul>
+
+                        <p>Every profile query automatically injects a statutory disclaimer citation (<code>"REGULATORY CITATION: EU Reg 1169/2011 Annex II / US 21 USC 321(qq)"</code>), ensuring that VITA's spoken responses can be legally audited by public health compliance teams.</p>
+
+                        <h3>4. Clinical Hypersensitivities &amp; Inhalants v2: Pollen-Food Syndrome &amp; Metabolic Intolerances</h3>
+                        <p>The most scientifically complex database in our stack is <code>database/hypersensitivities_and_inhalants_v2.db</code>. It models two distinct medical phenomena documented by the European Academy of Allergy and Clinical Immunology (EAACI) and the WHO/IUIS Allergen Nomenclature Committee:</p>
+
+                        <h4>A. Pollen-Food Allergy Syndrome (PFAS / Oral Allergy Syndrome)</h4>
+                        <p>Millions of people with seasonal pollen allergies experience itching and swelling in their lips and throat when eating fresh fruit or nuts. This is caused by <strong>cross-reactive protein homologs</strong>: the immune system's IgE antibodies confuse plant food proteins with inhaled airborne pollens.</p>
+
+                        <!-- Diagram 2: Pollen Cross-Reactivity Flow -->
+                        <div class="diagram-container">
+                            <svg viewBox="0 0 880 260" xmlns="http://www.w3.org/2000/svg" style="background:#0b110f; border-radius:12px; font-family:'Inter', sans-serif;">
+                                <defs>
+                                    <marker id="arrow2" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981" />
+                                    </marker>
+                                </defs>
+
+                                <text x="440" y="28" fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle">Pollen-Food Allergy Syndrome (PFAS) &amp; Heat-Lability Resolution</text>
+
+                                <!-- Inhalant Box -->
+                                <rect x="40" y="60" width="210" height="160" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+                                <text x="145" y="90" fill="#38bdf8" font-size="14" font-weight="bold" text-anchor="middle">Inhaled Allergen</text>
+                                <text x="145" y="115" fill="#ffffff" font-size="12" text-anchor="middle">Birch Pollen (Betula)</text>
+                                <text x="145" y="135" fill="#94a3b8" font-size="11" text-anchor="middle">inhalant:bet_v_1</text>
+                                <rect x="60" y="155" width="170" height="45" rx="6" fill="#0f172a"/>
+                                <text x="145" y="173" fill="#e2e8f0" font-size="10" text-anchor="middle">Sensitizing Epitope:</text>
+                                <text x="145" y="190" fill="#38bdf8" font-size="11" font-weight="bold" text-anchor="middle">PR-10 Protein Family</text>
+
+                                <path d="M 250 140 L 320 140" stroke="#10b981" stroke-width="2" marker-end="url(#arrow2)"/>
+
+                                <!-- Cross-Reactivity Core -->
+                                <rect x="330" y="60" width="220" height="160" rx="10" fill="#131d1a" stroke="#10b981" stroke-width="1.5"/>
+                                <text x="440" y="90" fill="#34d399" font-size="14" font-weight="bold" text-anchor="middle">Homology Match</text>
+                                <text x="440" y="115" fill="#ffffff" font-size="12" text-anchor="middle">Apple Protein: Mal d 1</text>
+                                <text x="440" y="135" fill="#a7f3d0" font-size="11" text-anchor="middle">&gt;60% Sequence Homology</text>
+                                <rect x="350" y="155" width="180" height="45" rx="6" fill="#064e3b"/>
+                                <text x="440" y="173" fill="#d1fae5" font-size="10" text-anchor="middle">IgE Cross-Binding:</text>
+                                <text x="440" y="190" fill="#fbbf24" font-size="11" font-weight="bold" text-anchor="middle">Epitope Cross-Reaction</text>
+
+                                <path d="M 550 110 L 620 95" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow2)"/>
+                                <path d="M 550 170 L 620 185" stroke="#10b981" stroke-width="2" marker-end="url(#arrow2)"/>
+
+                                <!-- Outcome 1: Raw Apple -->
+                                <rect x="630" y="50" width="210" height="75" rx="8" fill="#450a0a" stroke="#ef4444" stroke-width="1.5"/>
+                                <text x="735" y="75" fill="#f87171" font-size="12" font-weight="bold" text-anchor="middle">Raw Apple (alim_code 13039)</text>
+                                <text x="735" y="95" fill="#ffffff" font-size="11" text-anchor="middle">Intact PR-10 Epitope</text>
+                                <text x="735" y="112" fill="#fca5a5" font-size="10" font-weight="bold" text-anchor="middle">⚠️ Oral Itching &amp; Swelling</text>
+
+                                <!-- Outcome 2: Cooked Apple -->
+                                <rect x="630" y="150" width="210" height="75" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+                                <text x="735" y="175" fill="#34d399" font-size="12" font-weight="bold" text-anchor="middle">Cooked Apple (alim_code 13176)</text>
+                                <text x="735" y="195" fill="#ffffff" font-size="11" text-anchor="middle">PR-10 Denatured by Heat</text>
+                                <text x="735" y="212" fill="#a7f3d0" font-size="10" font-weight="bold" text-anchor="middle">✓ Safe Clinical Tolerance</text>
+                            </svg>
+                            <p class="diagram-caption">Figure 2: Biological Cross-Reactivity Engine. The system models epitope heat-lability, distinguishing between dangerous raw ingestion and safe cooked forms.</p>
+                        </div>
+
+                        <p>Our database models 8 inhalant allergen sources (Birch, Grass, Ragweed, Mugwort, Latex, Olive, Plane tree, and Alder) mapped across 43 cross-reactivity associations. Crucially, our schema includes a <code>preparation_state</code> field that tracks <strong>heat-lability</strong>: PR-10 proteins are heat-sensitive and denature during cooking, while Lipid Transfer Proteins (LTPs, such as peach Pru p 3) are heat-stable and resist boiling.</p>
+
+                        <h4>B. Non-IgE Clinical Metabolic Intolerances</h4>
+                        <p>Beyond allergic reactions, the database maps 2,093 foods against 7 clinical metabolic conditions: <em>Celiac gluten sensitivity, Lactose intolerance, Histamine intolerance, Fructose malabsorption, FODMAPs, Salicylate sensitivity, and Sulfite sensitivity</em>.</p>
+
+                        <p>Importantly, our engine tracks quantitative measurements. For example, while raw whole milk (<code>alim_code 19010</code>) triggers severe lactose alerts, Aged Cheddar (<code>alim_code 12726</code>) is mapped with <code>evidence_state="low_measurement"</code> and <code>quantitative_value=0.01 g/100g</code>. Because bacterial aging consumes the lactose, the database recognizes that Cheddar is clinically safe for most lactose-intolerant adults.</p>
+
+                        <h2><i class="fas fa-code"></i> The Read-Only KnowledgeFacade: Edge Performance</h2>
+                        <p>To expose these 4 distinct SQLite files to VITA without code duplication, we engineered the <code>KnowledgeFacade</code> service under <code>core/knowledge/service.py</code>. The facade guarantees three architectural invariants:</p>
+
+                        <ol>
+                            <li><strong>Hardware-Level Immutability:</strong> All database handles are opened with <code>file:...mode=ro</code> URI flags and execute <code>PRAGMA query_only = ON;</code>. Write operations are physically blocked by the SQLite engine.</li>
+                            <li><strong>Unified Food Profile:</strong> A single call to <code>facade.get_food_profile(alim_code)</code> queries CIQUAL for macros, Agribalyse for LCA carbon metrics, Food Allergens for regulatory evidence, and Hypersensitivities for OAS cross-reactivities in a unified data structure.</li>
+                            <li><strong>Zero Garbage Collection Pressure:</strong> Connections persist across voice turns, reusing cached query plans.</li>
+                        </ol>
+
+                        <pre><code># core/knowledge/repositories/base.py
+class BaseReadOnlyRepository:
+    def __init__(self, database_path: str | Path) -> None:
+        self.database_path = Path(database_path).resolve()
+        if not self.database_path.is_file():
+            raise FileNotFoundError(self.database_path)
+
+    def connect(self) -> sqlite3.Connection:
+        # Enforce OS &amp; SQLite C-library read-only isolation
+        conn = sqlite3.connect(f"file:{self.database_path.as_posix()}?mode=ro", uri=True)
+        conn.row_factory = sqlite3.Row
+        conn.execute("PRAGMA query_only = ON;")
+        return conn</code></pre>
+
+                        <h3>Local Latency Benchmarks on the Orange Pi 5</h3>
+                        <p>Running on our embedded Rockchip RK3588S SoC, we benchmarked the multi-database facade across 100 consecutive search and join operations. The results confirm that SQLite easily outperforms microservice architectures on local devices:</p>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Database Operation</th>
+                                        <th>Engine / Table</th>
+                                        <th>Mean Latency</th>
+                                        <th>p95 Latency</th>
+                                        <th>Memory Footprint</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Full-Text Search (FTS5)</strong></td>
+                                        <td><code>ciqual.db / foods_fts</code></td>
+                                        <td><strong>0.162 ms</strong></td>
+                                        <td>0.291 ms</td>
+                                        <td>Shared SQLite cache</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Authoritative Macro Lookup</strong></td>
+                                        <td><code>ciqual.db / composition</code></td>
+                                        <td><strong>0.115 ms</strong></td>
+                                        <td>0.198 ms</td>
+                                        <td>Indexed B-Tree lookup</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Agribalyse LCA Scenario</strong></td>
+                                        <td><code>agribalyse.db / lca_products</code></td>
+                                        <td><strong>0.180 ms</strong></td>
+                                        <td>0.312 ms</td>
+                                        <td>Compound index</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Statutory Allergen Check</strong></td>
+                                        <td><code>food_allergens_v2.db</code></td>
+                                        <td><strong>0.210 ms</strong></td>
+                                        <td>0.380 ms</td>
+                                        <td>Covering index</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Hypersensitivities &amp; OAS Check</strong></td>
+                                        <td><code>hypersensitivities_v2.db</code></td>
+                                        <td><strong>0.245 ms</strong></td>
+                                        <td>0.420 ms</td>
+                                        <td>Dual-table probe</td>
+                                    </tr>
+                                    <tr style="background: rgba(16, 185, 129, 0.08); font-weight: bold;">
+                                        <td><strong>Full 4-Way Federated Profile Join</strong></td>
+                                        <td><code>KnowledgeFacade (All 4 DBs)</code></td>
+                                        <td style="color:#34d399;"><strong>3.304 ms</strong></td>
+                                        <td style="color:#34d399;">3.850 ms</td>
+                                        <td>Total disk: 22.18 MB</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p>Resolving a user query across four disparate databases—checking nutritional macros, carbon emissions, statutory allergens, and clinical pollen cross-reactivities—takes just <strong>3.3 milliseconds</strong>! By keeping the data on bare-metal SQLite rather than wrapping it in HTTP REST APIs, our embedded voice pipeline remains blazing fast.</p>
+
+                        <h2><i class="fas fa-flask"></i> Real-World Scenario Walkthroughs</h2>
+                        <p>Here is what happens inside VITA when real users query our federated knowledge base:</p>
+
+                        <h3>Scenario 1: Ecological Footprint Query</h3>
+                        <p><em>"What is the carbon footprint difference between 200g of ribeye steak and 200g of lentil patty?"</em></p>
+                        <ul>
+                            <li><strong>LLM Extraction:</strong> Extracts entity slots: <code>[{"food": "ribeye steak", "portion": 200}, {"food": "lentil patty", "portion": 200}]</code>.</li>
+                            <li><strong>Facade Execution:</strong> Queries <code>agribalyse.db</code> for <code>alim_code 6103</code> (29.1 kg CO2e/kg) and <code>alim_code 25591</code> (1.68 kg CO2e/kg).</li>
+                            <li><strong>Deterministic Math:</strong> Computes 29.1 &times; 0.200 = 5.82 kg CO2e vs. 1.68 &times; 0.200 = 0.34 kg CO2e. Ratio: 17.3&times;.</li>
+                            <li><strong>Spoken Output:</strong> <em>"A 200g ribeye steak emits 5.82 kg of CO2 equivalent, compared to just 0.34 kg for a 200g lentil patty—a 17-fold reduction in greenhouse gas emissions."</em></li>
+                        </ul>
+
+                        <h3>Scenario 2: Birch Pollen &amp; Apple Cross-Reactivity</h3>
+                        <p><em>"I have a birch pollen allergy. Why do raw apples make my lips tingle, but applesauce is fine?"</em></p>
+                        <ul>
+                            <li><strong>LLM Extraction:</strong> Identifies user condition: <code>inhalant:bet_v_1</code>, foods: raw apple vs cooked apple.</li>
+                            <li><strong>Facade Execution:</strong> Probes <code>food_pollen_cross_reactivity_map</code>. For raw apple (<code>13039</code>), finds <code>Pollen-food allergy syndrome (birch / PR-10)</code> with <code>raw_declared_in_food_name</code>. For cooked apple (<code>13176</code>), finds 0 active records.</li>
+                            <li><strong>Spoken Output:</strong> <em>"Birch pollen allergen Bet v 1 cross-reacts with the PR-10 protein Mal d 1 in raw apples, causing oral tingling. However, PR-10 proteins are heat-sensitive and denature during cooking, making cooked applesauce safe for you."</em></li>
+                        </ul>
+
+                        <h2><i class="fas fa-arrow-right"></i> Looking Ahead: The Intent Explosion Dilemma</h2>
+                        <p>By the end of Week 7, we had achieved something extraordinary: our local edge assistant was grounded in 22MB of verified European government and clinical databases. It could calculate ecological footprints, verify statutory allergens, and explain complex pollen-food cross-reactions without a single arithmetic error or hallucination.</p>
+
+                        <p>Yet as we connected all these capabilities to our conversational loop, a brand-new architectural crisis emerged. To enable the LLM to query all these specialized databases—nutrition, carbon footprints, statutory allergens, clinical intolerances, preparation states—we had to define a massive catalog of intents, tool definitions, and slot parameters.</p>
+
+                        <p>Injecting this enormous intent dictionary into the system prompt at every user turn began consuming hundreds of tokens, bloating the context window of our local Qwen 2.5 1.5B model and slowing inference down. Worse, during safety audits, it was nearly impossible to explain deterministically why the LLM selected one complex intent over another. In Week 8, we would have to confront the limits of prompt-injected intent routers on edge hardware...</p>
                     </div>
                 </article>
             </main>
@@ -393,9 +911,9 @@
                     </form>
                 </div>
                 <div class="sidebar-widget">
-                    <h3>VITA App</h3>
-                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Run Speech-to-Text and LLMs locally on your phone. Offline, private, $5 one-time purchase.</p>
-                    <a href="../index.html#membership" style="color: var(--primary); font-weight:600; text-decoration:none;">Learn more &rarr;</a>
+                    <h3>VITA Architecture</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Check out the full repository and open-source database builders on GitHub.</p>
+                    <a href="https://github.com/amadouvtc/Vita" target="_blank" style="color: var(--primary); font-weight:600; text-decoration:none;">View Repository &rarr;</a>
                 </div>
             </aside>
         </div>
@@ -415,7 +933,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile Menu Toggle
             const mobileToggle = document.querySelector('.mobile-nav-toggle');
             const navLinks = document.querySelector('.nav-links');
             
@@ -431,7 +948,6 @@
                     }
                 });
                 
-                // Close menu if clicking outside
                 document.addEventListener('click', function(e) {
                     if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
                         navLinks.classList.remove('active');
@@ -439,7 +955,6 @@
                     }
                 });
                 
-                // Close mobile nav when clicking a link
                 navLinks.querySelectorAll('a').forEach(link => {
                     link.addEventListener('click', () => {
                         navLinks.classList.remove('active');
