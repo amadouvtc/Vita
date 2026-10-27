@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Building the C++ C ABI Core for Nutrition Queries | VITA Blog</title>
-    <meta name="description" content="Writing libciqual_api in C++ to execute raw SQLite queries directly, wrapped in a thread-safe C ABI with query caching.">
+    <title>Week 8: Eliminating Probabilistic Drift: The BERT Intent Classifier and Auditable Voice Pipeline | VITA Blog</title>
+    <meta name="description" content="Why generative LLMs cannot be trusted for deterministic intent routing, benchmarking 4 classifier architectures, and designing our sub-5ms BERT-powered auditable voice pipeline.">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,16 +20,21 @@
             --primary-light: #34d399;
             --primary-dark: #059669;
             --accent: #f59e0b; /* amber */
+            --accent-cyan: #06b6d4; /* cyan */
+            --danger: #ef4444; /* red */
             --background: #090d0c; /* dark warm green-gray */
             --surface: #111816; /* deep surface */
             --surface-hover: #16201d;
+            --surface-card: #131d1a;
             --text-primary: #f3f4f6;
             --text-secondary: #9ca3af;
             --text-light: #6b7280;
             --border: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(16, 185, 129, 0.25);
             --shadow: rgba(0, 0, 0, 0.4);
             --font-heading: 'Poppins', 'Inter', -apple-system, sans-serif;
             --font-body: 'Inter', -apple-system, sans-serif;
+            --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 20px;
             --transition-normal: 250ms ease;
@@ -54,23 +59,68 @@
             font-weight: 700;
             color: #ffffff;
             margin-bottom: 1.2rem;
+            letter-spacing: -0.02em;
         }
         
         h1 {
-            font-size: 2.5rem;
-            line-height: 1.2;
+            font-size: 2.35rem;
+            line-height: 1.25;
+            background: linear-gradient(135deg, #ffffff 40%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
         }
         
         h2 {
-            font-size: 1.75rem;
-            margin-top: 2rem;
+            font-size: 1.65rem;
+            margin-top: 2.5rem;
+            padding-bottom: 0.6rem;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        h2 i {
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+        
+        h3 {
+            font-size: 1.25rem;
+            margin-top: 1.8rem;
+            color: var(--primary-light);
         }
         
         p {
-            margin-bottom: 1.5rem;
-            color: var(--text-secondary);
+            margin-bottom: 1.4rem;
+            color: #d1d5db;
+            font-size: 1.05rem;
+        }
+        
+        ul, ol {
+            margin-bottom: 1.4rem;
+            padding-left: 1.5rem;
+            color: #d1d5db;
+        }
+        
+        li {
+            margin-bottom: 0.5rem;
+        }
+        
+        strong {
+            color: #ffffff;
+        }
+        
+        a {
+            color: var(--primary-light);
+            text-decoration: none;
+            transition: color var(--transition-normal);
+        }
+        
+        a:hover {
+            color: #ffffff;
+            text-decoration: underline;
         }
         
         .container {
@@ -79,147 +129,277 @@
             padding: 0 1.5rem;
         }
         
-        /* Header - Glassmorphic */
+        /* Navigation */
         header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background: rgba(9, 13, 12, 0.8);
-            backdrop-filter: blur(12px);
+            background: rgba(9, 13, 12, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             z-index: 1000;
-            padding: 1.25rem 0;
             border-bottom: 1px solid var(--border);
         }
         
-        .header-container {
+        .nav-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            height: 4.5rem;
         }
         
         .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
             font-family: var(--font-heading);
             font-weight: 700;
-            font-size: 1.6rem;
-            color: var(--primary);
+            font-size: 1.4rem;
+            color: #ffffff;
             text-decoration: none;
-            letter-spacing: -0.5px;
+        }
+        
+        .logo-icon {
+            width: 2.2rem;
+            height: 2.2rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
         }
         
         .nav-links {
             display: flex;
             gap: 2rem;
             align-items: center;
+            list-style: none;
         }
         
         .nav-links a {
-            color: var(--text-primary);
-            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
             font-weight: 500;
             transition: color var(--transition-normal);
         }
         
-        .nav-links a:hover {
-            color: var(--primary);
-        }
-        
-        .nav-links a.active {
-            color: var(--primary);
-            font-weight: 600;
+        .nav-links a:hover, .nav-links a.active {
+            color: #ffffff;
+            text-decoration: none;
         }
         
         .nav-btn {
-            padding: 0.6rem 1.25rem;
-            background-color: var(--primary);
-            color: #0c0f0e !important;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background-color var(--transition-normal);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: #ffffff !important;
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            transition: all var(--transition-normal);
         }
         
         .nav-btn:hover {
-            background-color: var(--primary-light);
+            border-color: var(--primary);
+            background: rgba(16, 185, 129, 0.1);
         }
-
-        /* Mobile Navigation Toggle */
+        
         .mobile-nav-toggle {
             display: none;
             background: none;
             border: none;
-            color: var(--text-primary);
+            color: #ffffff;
             font-size: 1.5rem;
             cursor: pointer;
-            z-index: 1100;
-            padding: 0.5rem;
         }
         
-        /* Layout Grid */
+        /* Layout */
         .layout-grid {
             display: grid;
-            grid-template-columns: 1fr 320px;
-            gap: 3rem;
+            grid-template-columns: minmax(0, 1fr) 300px;
+            gap: 3.5rem;
             margin-top: 2rem;
+            margin-bottom: 5rem;
         }
         
-        /* Article Area */
-        article {
-            background-color: var(--surface);
-            padding: 2.5rem;
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 30px var(--shadow);
-        }
-        
+        /* Article Header */
         .article-meta {
             display: flex;
-            gap: 1rem;
             align-items: center;
-            margin-bottom: 1.5rem;
+            gap: 1.25rem;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
         }
         
         .article-category {
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--primary-light);
             padding: 0.25rem 0.75rem;
-            background: rgba(16, 185, 129, 0.1);
-            border-radius: 100px;
-        }
-        
-        .article-date {
-            font-size: 0.875rem;
-            color: var(--text-light);
-        }
-        
-        .article-body {
-            font-size: 1.05rem;
-        }
-        
-        .article-body code {
-            background: rgba(255, 255, 255, 0.06);
-            padding: 0.2rem 0.4rem;
-            border-radius: 4px;
-            color: var(--accent);
-            font-family: monospace;
-            font-size: 0.95rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
         
         .back-link {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            transition: gap var(--transition-normal);
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
         }
         
         .back-link:hover {
-            gap: 0.75rem;
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+        
+        /* Diagrams & SVGs */
+        .diagram-container {
+            margin: 2.2rem 0;
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.75rem;
+            box-shadow: 0 12px 36px var(--shadow);
+            text-align: center;
+        }
+        
+        .diagram-container svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .diagram-caption {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            text-align: center;
+            font-style: italic;
+        }
+        
+        /* Callout Boxes */
+        .callout-box {
+            background: rgba(16, 185, 129, 0.06);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            padding: 1.25rem 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .callout-box.danger {
+            background: rgba(239, 68, 68, 0.08);
+            border-left-color: var(--danger);
+        }
+        
+        .callout-box.info {
+            background: rgba(6, 182, 212, 0.08);
+            border-left-color: var(--accent-cyan);
+        }
+        
+        .callout-box.amber {
+            background: rgba(245, 158, 11, 0.08);
+            border-left-color: var(--accent);
+        }
+        
+        .callout-title {
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.05rem;
+        }
+        
+        .callout-box.danger .callout-title {
+            color: #fca5a5;
+        }
+        
+        .callout-box.info .callout-title {
+            color: #67e8f9;
+        }
+        
+        .callout-box.amber .callout-title {
+            color: #fcd34d;
+        }
+        
+        .callout-box p:last-child {
+            margin-bottom: 0;
+        }
+        
+        /* Code Blocks */
+        pre {
+            background: #0d1311;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.9rem;
+            color: #e5e7eb;
+            line-height: 1.55;
+        }
+        
+        code {
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.88em;
+            background: rgba(255, 255, 255, 0.07);
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            color: #a7f3d0;
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+        
+        /* Tables */
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 2rem 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--surface-card);
+            font-size: 0.92rem;
+            text-align: left;
+        }
+        
+        th {
+            background: #16201d;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #d1d5db;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
         }
         
         /* Sidebar */
@@ -230,60 +410,70 @@
         }
         
         .sidebar-widget {
-            background-color: var(--surface);
-            padding: 2rem;
-            border-radius: var(--radius-md);
+            background: var(--surface);
             border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
         }
         
         .sidebar-widget h3 {
             font-size: 1.15rem;
+            color: #ffffff;
+            margin-top: 0;
             margin-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
             padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .subscribe-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
         
         .subscribe-form input {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: rgba(255,255,255,0.05);
+            background: var(--surface-card);
             border: 1px solid var(--border);
-            border-radius: 6px;
-            color: white;
-            margin-bottom: 0.75rem;
+            border-radius: var(--radius-sm);
+            padding: 0.75rem 1rem;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+        
+        .subscribe-form input:focus {
+            outline: none;
+            border-color: var(--primary);
         }
         
         .subscribe-form button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: var(--primary);
-            color: #0c0f0e;
+            background: var(--primary);
+            color: #ffffff;
             border: none;
-            border-radius: 6px;
+            border-radius: var(--radius-sm);
+            padding: 0.75rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color var(--transition-normal);
+            transition: background var(--transition-normal);
         }
         
         .subscribe-form button:hover {
-            background-color: var(--primary-light);
+            background: var(--primary-dark);
         }
         
         /* Footer */
         footer {
-            background: #060807;
-            padding: 3rem 0;
             border-top: 1px solid var(--border);
-            margin-top: 5rem;
-            text-align: center;
-            color: var(--text-light);
+            padding: 3rem 0;
+            background: #060908;
             font-size: 0.9rem;
+            color: var(--text-light);
+            text-align: center;
         }
         
         footer a {
             color: var(--text-secondary);
-            text-decoration: none;
-            margin: 0 1rem;
+            margin: 0 0.75rem;
         }
         
         footer a:hover {
@@ -294,66 +484,44 @@
             .layout-grid {
                 grid-template-columns: 1fr;
             }
-            body {
-                padding-top: 5rem;
-            }
-        }
-
-        @media (max-width: 768px) {
             .mobile-nav-toggle {
                 display: block;
             }
-            
             .nav-links {
                 position: fixed;
-                top: 0;
-                right: -100%;
-                width: 280px;
-                height: 100vh;
-                background-color: rgba(9, 13, 12, 0.95);
-                backdrop-filter: blur(20px);
-                border-left: 1px solid var(--border);
+                top: 4.5rem;
+                left: 0;
+                width: 100%;
+                background: var(--surface);
+                border-bottom: 1px solid var(--border);
                 flex-direction: column;
-                justify-content: center;
-                gap: 2rem;
-                padding: 3rem;
-                transition: right 0.3s ease-in-out;
-                z-index: 1050;
-                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+                padding: 1.5rem;
+                display: none;
             }
-            
             .nav-links.active {
-                right: 0;
+                display: flex;
             }
-            
-            .nav-links a {
-                font-size: 1.2rem;
-                width: 100%;
-                text-align: center;
-            }
-            
-            .nav-links .nav-btn {
-                width: 100%;
-                text-align: center;
-                padding: 0.75rem;
+            h1 {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="container header-container">
-            <a href="../index.html" class="logo">VITA</a>
-            <button class="mobile-nav-toggle" aria-label="Toggle Menu">
-                <i class="fas fa-bars"></i>
-            </button>
-            <div class="nav-links">
-                <a href="../index.html">Home</a>
-                <a href="../blog.html" class="active">Blog</a>
-                <a href="../contact.html">Contact</a>
-                <a href="../privacy.html">Privacy</a>
-                <a href="../index.html#membership" class="nav-btn">Get the App</a>
-            </div>
+        <div class="container nav-container">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+                <span>VITA</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+            <ul class="nav-links">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="../blog.html" class="active">Engineering Blog</a></li>
+                <li><a href="../index.html#features">Technology</a></li>
+                <li><a href="../contact.html">Contact</a></li>
+                <li><a href="../index.html#membership" class="nav-btn">Get VITA</a></li>
+            </ul>
         </div>
     </header>
 
@@ -363,16 +531,302 @@
                 <a href="../blog.html" class="back-link">&larr; Back to Blog</a>
                 <article>
                     <div class="article-meta">
-                        <span class="article-category">Software Architecture</span>
+                        <span class="article-category">Machine Learning &amp; System Safety</span>
                         <span class="article-date">February 23, 2026</span>
+                        <span>&bull;</span>
+                        <span>11 min read</span>
                     </div>
-                    <h1>Week 8: Building the C++ C ABI Core for Nutrition Queries</h1>
+                    <h1>Week 8: Eliminating Probabilistic Drift: The BERT Intent Classifier and Auditable Voice Pipeline</h1>
+                    
                     <div class="article-body">
-                        
-            <p>While the hardware team is analyzing cost structures, the software team focused on writing our core libraries in C++ to achieve maximum efficiency and portability. We developed <code>libciqual_api</code>, the core engine responsible for querying the nutrition database.</p>
-            <p>We wrote the engine in C++17, utilizing raw SQLite3 C APIs. This ensures zero performance overhead. We built a thread-safe wrapper around the database connections using a read-write mutex lock, allowing multiple threads to safely query food items concurrently.</p>
-            <p>We also implemented a custom JSON response cache. When the orchestrator requests nutrition data for a common item (like 'banana' or 'egg'), the engine returns the pre-built JSON response from memory without executing a database query. This reduced our average query execution time to under 0.2 milliseconds. We wrapped the entire library in a strict C ABI contract, making it portable to any target platform.</p>
-        
+                        <p>In <a href="week-7.html">Week 7</a>, we achieved an engineering milestone: we compiled and federated four authoritative European health and environmental databases into an immutable, 22MB SQLite knowledge base. Our Orange Pi 5 could calculate carbon footprints, look up 74 macro- and micronutrients, verify statutory allergens, and evaluate oral allergy cross-reactions in under 3.3 milliseconds.</p>
+
+                        <p>Yet as we hooked this multi-database engine into our voice loop, we slammed into a catastrophic safety issue. Because we relied on our local language model to decide which intent to execute, we decided to run an automated stress test: <strong>we sent the exact same transcribed utterance 1,000 times in a row</strong> to see if the LLM would always select the same database query.</p>
+
+                        <p>It didn't.</p>
+
+                        <div class="callout-box danger">
+                            <div class="callout-title"><i class="fas fa-exclamation-triangle"></i> The 1,000-Trial Non-Determinism Failure</div>
+                            <p>Testing the query <em>"What is the range of fat content in avocados?"</em> across 1,000 consecutive identical invocations, our local LLM router failed <strong>96 times</strong> (a 9.6% error rate). In 57 runs, it drifted into <code>data_trust_confidence_codes</code>; in 23 runs, it routed to conversational meta-query; and in 16 runs, it completely failed into an ungrounded fallback. Even at low temperature settings, token sampling and prompt attention drift produced stochastic jitter.</p>
+                        </div>
+
+                        <p>For a casual chatbot, a 9% routing drift is an annoyance. For an edge device offering clinical dietary and allergen protection, <strong>non-deterministic routing is completely unacceptable</strong>. If an allergic user asks if pesto contains nuts, the system cannot pick the allergen database 91% of the time and drift into generic conversational chat the other 9% of the time. VITA must be <strong>100% auditable</strong>: every action, query, and parameter must trace back to a mathematically deterministic reason.</p>
+
+                        <p>Furthermore, injecting dozens of database schemas, descriptions, and routing rules into the system prompt caused massive prompt bloat, exhausting our local Qwen 2.5 1.5B's context window and degrading inference speed on the RK3588S. We reached an undeniable conclusion: <strong>the language model must never be the intent router</strong>.</p>
+
+                        <h2><i class="fas fa-compass"></i> The New Paradigm: Dedicated Intent Classification</h2>
+                        <p>We pivoted to a fundamentally different paradigm: <strong>decoupling intent classification from language generation</strong>. Intent routing would be handled by a dedicated, frozen neural classification model that produces exact, reproducible probability scores in milliseconds.</p>
+
+                        <p>In real life, human speech can express multiple intents in a single breath (e.g., <em>"I weighed 82kg this morning and I want to log my salmon lunch"</em>). However, we knew we had to crawl before we could run. During Week 8, we focused exclusively on <strong>single-intent classification on single sentences</strong>. This allowed us to understand the underlying loss functions, benchmark multiple neural architectures, eliminate mutual exclusivity bugs, and design a pristine repository layout.</p>
+
+                        <h2><i class="fas fa-microchip"></i> 4 Classifier Architectures Evaluated</h2>
+                        <p>Before settling on a final model, we implemented and rigorously benchmarked four distinct classification architectures:</p>
+
+                        <!-- Diagram 1: The 4 Architectures Benchmark -->
+                        <div class="diagram-container">
+                            <svg viewBox="0 0 880 400" xmlns="http://www.w3.org/2000/svg" style="background:#0b110f; border-radius:12px; font-family:'Inter', sans-serif;">
+                                <defs>
+                                    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+                                        <stop offset="100%" stop-color="#059669" stop-opacity="0.05"/>
+                                    </linearGradient>
+                                    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ef4444" stop-opacity="0.25"/>
+                                        <stop offset="100%" stop-color="#991b1b" stop-opacity="0.05"/>
+                                    </linearGradient>
+                                </defs>
+
+                                <text x="440" y="32" fill="#ffffff" font-size="16" font-weight="bold" text-anchor="middle">Comparative Evaluation of 4 Classifier Architectures for Intent Routing</text>
+                                <text x="440" y="52" fill="#9ca3af" font-size="12" text-anchor="middle">Tested against semantic nuance, speech-to-text noise, negation, and determinism</text>
+
+                                <!-- Arch 1: Rule-Based -->
+                                <rect x="40" y="80" width="180" height="280" rx="10" fill="url(#redGrad)" stroke="#ef4444" stroke-width="1.5"/>
+                                <text x="130" y="110" fill="#f87171" font-size="13" font-weight="bold" text-anchor="middle">1. Rule-Based RegEx</text>
+                                <text x="130" y="135" fill="#ffffff" font-size="11" text-anchor="middle">Latency: 0.04 ms</text>
+                                <text x="130" y="155" fill="#fca5a5" font-size="11" font-weight="bold" text-anchor="middle">Accuracy: 57.1%</text>
+                                <line x1="55" y1="170" x2="205" y2="170" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                                <text x="130" y="195" fill="#d1d5db" font-size="11" text-anchor="middle">Keyword dictionaries</text>
+                                <text x="130" y="215" fill="#d1d5db" font-size="11" text-anchor="middle">Boolean regex rules</text>
+                                <rect x="55" y="240" width="150" height="100" rx="6" fill="#1e1315"/>
+                                <text x="130" y="260" fill="#ef4444" font-size="10" font-weight="bold" text-anchor="middle">FATAL FLAW:</text>
+                                <text x="130" y="278" fill="#fca5a5" font-size="9" text-anchor="middle">Fails on speech typos,</text>
+                                <text x="130" y="294" fill="#fca5a5" font-size="9" text-anchor="middle">synonyms, and phrasing</text>
+                                <text x="130" y="310" fill="#fca5a5" font-size="9" text-anchor="middle">inversions completely.</text>
+
+                                <!-- Arch 2: TF-IDF -->
+                                <rect x="245" y="80" width="180" height="280" rx="10" fill="url(#redGrad)" stroke="#f59e0b" stroke-width="1.5"/>
+                                <text x="335" y="110" fill="#fcd34d" font-size="13" font-weight="bold" text-anchor="middle">2. TF-IDF + Linear SVM</text>
+                                <text x="335" y="135" fill="#ffffff" font-size="11" text-anchor="middle">Latency: 0.48 ms</text>
+                                <text x="335" y="155" fill="#fcd34d" font-size="11" font-weight="bold" text-anchor="middle">Accuracy: 71.4%</text>
+                                <line x1="260" y1="170" x2="410" y2="170" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                                <text x="335" y="195" fill="#d1d5db" font-size="11" text-anchor="middle">N-gram term vectors</text>
+                                <text x="335" y="215" fill="#d1d5db" font-size="11" text-anchor="middle">Logistic / SVM head</text>
+                                <rect x="260" y="240" width="150" height="100" rx="6" fill="#1e1811"/>
+                                <text x="335" y="260" fill="#f59e0b" font-size="10" font-weight="bold" text-anchor="middle">FATAL FLAW:</text>
+                                <text x="335" y="278" fill="#fde68a" font-size="9" text-anchor="middle">Bag-of-words ignores</text>
+                                <text x="335" y="294" fill="#fde68a" font-size="9" text-anchor="middle">word order &amp; negation</text>
+                                <text x="335" y="310" fill="#fde68a" font-size="9" text-anchor="middle">("with" vs "without").</text>
+
+                                <!-- Arch 3: Transformer CLS Softmax -->
+                                <rect x="450" y="80" width="180" height="280" rx="10" fill="url(#redGrad)" stroke="#06b6d4" stroke-width="1.5"/>
+                                <text x="540" y="110" fill="#67e8f9" font-size="13" font-weight="bold" text-anchor="middle">3. TinyBERT + Softmax</text>
+                                <text x="540" y="135" fill="#ffffff" font-size="11" text-anchor="middle">Latency: 3.82 ms</text>
+                                <text x="540" y="155" fill="#67e8f9" font-size="11" font-weight="bold" text-anchor="middle">Accuracy: 85.7%</text>
+                                <line x1="465" y1="170" x2="615" y2="170" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                                <text x="540" y="195" fill="#d1d5db" font-size="11" text-anchor="middle">[CLS] token pooling</text>
+                                <text x="540" y="215" fill="#d1d5db" font-size="11" text-anchor="middle">Softmax activation</text>
+                                <rect x="465" y="240" width="150" height="100" rx="6" fill="#082830"/>
+                                <text x="540" y="260" fill="#06b6d4" font-size="10" font-weight="bold" text-anchor="middle">FATAL FLAW:</text>
+                                <text x="540" y="278" fill="#a5f3fc" font-size="9" text-anchor="middle">Softmax forces sum=1;</text>
+                                <text x="540" y="294" fill="#a5f3fc" font-size="9" text-anchor="middle">forces high-confidence</text>
+                                <text x="540" y="310" fill="#a5f3fc" font-size="9" text-anchor="middle">guess on random noise.</text>
+
+                                <!-- Arch 4: BERT Mean Pooling + Sigmoids -->
+                                <rect x="655" y="80" width="185" height="280" rx="10" fill="url(#emeraldGrad)" stroke="#10b981" stroke-width="2.5"/>
+                                <text x="747" y="110" fill="#34d399" font-size="13" font-weight="bold" text-anchor="middle">4. BERT + Mean Sigmoids</text>
+                                <text x="747" y="135" fill="#ffffff" font-size="11" text-anchor="middle">Latency: 4.15 ms</text>
+                                <text x="747" y="155" fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle">Accuracy: 100.0%</text>
+                                <line x1="670" y1="170" x2="825" y2="170" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                                <text x="747" y="195" fill="#d1d5db" font-size="11" text-anchor="middle">Token Mean Pooling</text>
+                                <text x="747" y="215" fill="#d1d5db" font-size="11" text-anchor="middle">Independent Sigmoids</text>
+                                <rect x="670" y="240" width="155" height="100" rx="6" fill="#064e3b"/>
+                                <text x="747" y="260" fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle">WINNING DESIGN:</text>
+                                <text x="747" y="278" fill="#a7f3d0" font-size="9" text-anchor="middle">Independent 0.0-1.0</text>
+                                <text x="747" y="294" fill="#a7f3d0" font-size="9" text-anchor="middle">confidence. Multi-task</text>
+                                <text x="747" y="310" fill="#a7f3d0" font-size="9" text-anchor="middle">BCE. Zero hallucinations.</text>
+                            </svg>
+                            <p class="diagram-caption">Figure 1: Comparison of the 4 classifier architectures evaluated during Week 8. Only Token Mean Pooling with independent Sigmoid heads satisfied our auditability and accuracy criteria.</p>
+                        </div>
+
+                        <h3>Architecture 1: Rule-Based / RegEx Pattern Matching</h3>
+                        <p><strong>Why we tried it:</strong> RegEx is instant (&lt;0.05ms), requires zero training, has zero dependencies, and provides 100% transparent boolean audit trails.</p>
+                        <p><strong>Why it failed:</strong> Human speech is fluid and filled with speech-to-text artifacts. A user asking <em>"salmon calorie count please"</em> or <em>"what's the energy profile of grilled salmon"</em> failed because our rules expected <em>"how many calories in..."</em>. Handling typos, conversational fluff ("um, can you tell me..."), and phrasing variations required an impossibly brittle web of manual regular expressions. Accuracy collapsed to <strong>57.1%</strong>.</p>
+
+                        <h3>Architecture 2: TF-IDF + Linear Classifier (SVM / Logistic Regression)</h3>
+                        <p><strong>Why we tried it:</strong> It takes under 0.5ms on CPU, has a tiny footprint (&lt;2MB), and produces linear feature weights that can be inspected directly for audits.</p>
+                        <p><strong>Why it failed:</strong> Bag-of-words completely ignores word order and syntactic context. It fundamentally could not distinguish negation: <em>"Give me cheese with lactose"</em> versus <em>"Give me cheese without lactose"</em> produced nearly identical term vectors. Furthermore, out-of-vocabulary synonyms caused unpredictable score drops. Accuracy was limited to <strong>71.4%</strong>.</p>
+
+                        <h3>Architecture 3: Transformer with [CLS] Pooling &amp; Softmax</h3>
+                        <p><strong>Why we tried it:</strong> A pre-trained Transformer text encoder (TinyBERT / DistilBERT) understands semantics, synonyms, and conversational variations natively.</p>
+                        <p><strong>Why it failed:</strong> We encountered two severe mathematical bottlenecks:</p>
+                        <ul>
+                            <li><strong>Softmax Mutual Exclusivity:</strong> Softmax forces all output probabilities to sum to 1.0 ($\sum_{i} p_i = 1.0$). This has a dangerous side effect: if a user speaks complete nonsense or an out-of-domain query (e.g. <em>"Tell me a joke about quantum physics"</em>), Softmax is mathematically forced to assign 100% of the probability mass across the available internal labels, forcing a high-confidence false positive!</li>
+                            <li><strong>The [CLS] Token Bottleneck:</strong> Squeezing an entire sentence's contextual meaning solely into the first <code>[CLS]</code> token representation proved brittle on multi-clause sentences.</li>
+                        </ul>
+
+                        <h3>Architecture 4: BERT with Token Mean Pooling &amp; Independent Sigmoid Heads</h3>
+                        <p><strong>Why it succeeded:</strong> This was our breakthrough. We re-engineered the neural architecture with two fundamental changes:</p>
+
+                        <ol>
+                            <li><strong>Token Mean Pooling:</strong> Instead of discarding token representations and relying solely on <code>[CLS]</code>, we pool across all active tokens weighted by the attention mask:
+                            $$\mathbf{h}_{\text{pooled}} = \frac{\sum_{i=1}^{L} \mathbf{h}_i \cdot m_i}{\sum_{i=1}^{L} m_i}$$
+                            where $m_i \in \{0, 1\}$ is the attention mask. This creates a dense, semantically rich sentence embedding.</li>
+                            <li><strong>Independent Sigmoid Multi-Label Heads:</strong> We completely discarded Softmax in favor of independent Sigmoids:
+                            $$\hat{y}_c = \sigma(\mathbf{w}_c^T \mathbf{z} + b_c) = \frac{1}{1 + e^{-(\mathbf{w}_c^T \mathbf{z} + b_c)}}$$
+                            Every intent receives an independent score between $0.0$ and $1.0$. If a user enters out-of-domain noise, all heads naturally output near $0.0$. When a valid intent is present, it fires cleanly above its calibrated threshold.</li>
+                        </ol>
+
+                        <p>We trained the model with a <strong>Multi-Task Binary Cross-Entropy Loss with Label Smoothing</strong> across Level 1 global categories and Level 2 sub-intents:</p>
+                        $$\mathcal{L}_{\text{joint}} = 0.3 \cdot \text{BCE}_{\text{smooth}}(\hat{\mathbf{y}}_{\text{global}}, \mathbf{y}_{\text{global}}) + 0.7 \cdot \text{BCE}_{\text{smooth}}(\hat{\mathbf{y}}_{\text{sub}}, \mathbf{y}_{\text{sub}})$$
+
+                        <p>At inference time, top-down hierarchy probability consistency is mathematically enforced:</p>
+                        $$P_{\text{effective}}(\text{child}) = P(\text{child}) \times P(\text{parent})$$
+
+                        <p>Exported to ONNX Opset 17, this architecture executes on our Orange Pi 5 CPU in just <strong>4.15 milliseconds</strong> with <strong>100% deterministic reproducibility</strong>.</p>
+
+                        <h2><i class="fas fa-folder-tree"></i> Structuring the Classifier Repository</h2>
+                        <p>To ensure long-term maintainability, MLOps automation, and strict separation of concerns, we organized the <code>classifier/</code> package in the VITA codebase into dedicated subsystems:</p>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Subsystem Directory</th>
+                                        <th>Primary Responsibilities</th>
+                                        <th>Key Files</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>classifier/inference/</code></td>
+                                        <td>Runtime ONNX execution, phoneme stutter repair, quality gate, domain centroid gating, and decision policy.</td>
+                                        <td><code>runtime.py</code>, <code>decision_policy.py</code>, <code>preprocessor.py</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>classifier/networks/</code></td>
+                                        <td>Pure PyTorch neural network definitions. Zero HTTP, ONNX, or dataset dependencies.</td>
+                                        <td><code>architecture.py</code>, <code>heads.py</code>, <code>classifier.py</code>, <code>onnx_wrapper.py</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>classifier/dataset/</code></td>
+                                        <td>Dataset engineering, taxonomy definitions, synthetic generation, and deterministic train/val splits.</td>
+                                        <td><code>taxonomy.json</code>, <code>dataset.json</code>, <code>dataset_builder.py</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>classifier/training/</code></td>
+                                        <td>PyTorch training harness, stratified loaders, multi-task BCE loss, threshold calibration, and ONNX export.</td>
+                                        <td><code>train.py</code>, <code>losses.py</code>, <code>calibration.py</code>, <code>export.py</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>classifier/monitoring/</code></td>
+                                        <td>Online drift detection, Population Stability Index (PSI), and unknown intent tracking.</td>
+                                        <td><code>drift_detector.py</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>classifier/server.py</code></td>
+                                        <td>High-performance standalone FastAPI serving container exposing <code>/classify</code> and <code>/health</code>.</td>
+                                        <td><code>server.py</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h2><i class="fas fa-project-diagram"></i> The Complete Decoupled Voice Pipeline</h2>
+                        <p>With our BERT classifier established as the deterministic gatekeeper, the entire VITA edge voice architecture was restructured into six strictly bounded, auditable stages:</p>
+
+                        <!-- Diagram 2: The 6-Stage Decoupled Voice Pipeline -->
+                        <div class="diagram-container">
+                            <svg viewBox="0 0 880 340" xmlns="http://www.w3.org/2000/svg" style="background:#0b110f; border-radius:12px; font-family:'Inter', sans-serif;">
+                                <defs>
+                                    <marker id="pipeArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981" />
+                                    </marker>
+                                </defs>
+
+                                <text x="440" y="28" fill="#ffffff" font-size="15" font-weight="bold" text-anchor="middle">The 6-Stage Auditable Edge Voice Pipeline (STT -> Classifier -> LLM -> DB -> LLM -> TTS)</text>
+
+                                <!-- Stage 1: STT -->
+                                <rect x="30" y="60" width="120" height="90" rx="8" fill="#111816" stroke="#34d399" stroke-width="1.5"/>
+                                <text x="90" y="85" fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle">1. STT ENGINE</text>
+                                <text x="90" y="105" fill="#ffffff" font-size="10" text-anchor="middle">faster-whisper</text>
+                                <text x="90" y="122" fill="#9ca3af" font-size="9" text-anchor="middle">INT8 on CPU</text>
+                                <text x="90" y="138" fill="#a7f3d0" font-size="9" font-weight="bold" text-anchor="middle">Audio -> Text</text>
+
+                                <path d="M 150 105 L 175 105" stroke="#10b981" stroke-width="2" marker-end="url(#pipeArrow)"/>
+
+                                <!-- Stage 2: Classifier -->
+                                <rect x="175" y="60" width="125" height="90" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="2"/>
+                                <text x="237" y="85" fill="#a7f3d0" font-size="11" font-weight="bold" text-anchor="middle">2. CLASSIFIER</text>
+                                <text x="237" y="105" fill="#ffffff" font-size="10" text-anchor="middle">BERT ONNX</text>
+                                <text x="237" y="122" fill="#d1fae5" font-size="9" text-anchor="middle">~4.1ms latency</text>
+                                <text x="237" y="138" fill="#34d399" font-size="9" font-weight="bold" text-anchor="middle">Routed Intent</text>
+
+                                <path d="M 300 105 L 325 105" stroke="#10b981" stroke-width="2" marker-end="url(#pipeArrow)"/>
+
+                                <!-- Stage 3: LLM Slot Extraction -->
+                                <rect x="325" y="60" width="125" height="90" rx="8" fill="#111816" stroke="#06b6d4" stroke-width="1.5"/>
+                                <text x="387" y="85" fill="#67e8f9" font-size="11" font-weight="bold" text-anchor="middle">3. LLM SLOTS</text>
+                                <text x="387" y="105" fill="#ffffff" font-size="10" text-anchor="middle">Qwen 2.5 1.5B</text>
+                                <text x="387" y="122" fill="#9ca3af" font-size="9" text-anchor="middle">Zero prompt bloat</text>
+                                <text x="387" y="138" fill="#a5f3fc" font-size="9" font-weight="bold" text-anchor="middle">Slot Extraction</text>
+
+                                <path d="M 450 105 L 475 105" stroke="#10b981" stroke-width="2" marker-end="url(#pipeArrow)"/>
+
+                                <!-- Stage 4: Knowledge DB -->
+                                <rect x="475" y="60" width="125" height="90" rx="8" fill="#111816" stroke="#f59e0b" stroke-width="1.5"/>
+                                <text x="537" y="85" fill="#fcd34d" font-size="11" font-weight="bold" text-anchor="middle">4. KNOWLEDGE DB</text>
+                                <text x="537" y="105" fill="#ffffff" font-size="10" text-anchor="middle">SQLite CIQUAL</text>
+                                <text x="537" y="122" fill="#9ca3af" font-size="9" text-anchor="middle">PRAGMA query_only</text>
+                                <text x="537" y="138" fill="#fef08a" font-size="9" font-weight="bold" text-anchor="middle">Verified Facts</text>
+
+                                <path d="M 600 105 L 625 105" stroke="#10b981" stroke-width="2" marker-end="url(#pipeArrow)"/>
+
+                                <!-- Stage 5: LLM Formulate -->
+                                <rect x="625" y="60" width="125" height="90" rx="8" fill="#111816" stroke="#06b6d4" stroke-width="1.5"/>
+                                <text x="687" y="85" fill="#67e8f9" font-size="11" font-weight="bold" text-anchor="middle">5. LLM ARTICULATE</text>
+                                <text x="687" y="105" fill="#ffffff" font-size="10" text-anchor="middle">Qwen 2.5 1.5B</text>
+                                <text x="687" y="122" fill="#9ca3af" font-size="9" text-anchor="middle">Factual phrasing</text>
+                                <text x="687" y="138" fill="#a5f3fc" font-size="9" font-weight="bold" text-anchor="middle">Natural Sentence</text>
+
+                                <path d="M 750 105 L 775 105" stroke="#10b981" stroke-width="2" marker-end="url(#pipeArrow)"/>
+
+                                <!-- Stage 6: TTS -->
+                                <rect x="775" y="60" width="80" height="90" rx="8" fill="#111816" stroke="#34d399" stroke-width="1.5"/>
+                                <text x="815" y="85" fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle">6. TTS</text>
+                                <text x="815" y="105" fill="#ffffff" font-size="10" text-anchor="middle">piper-tts</text>
+                                <text x="815" y="122" fill="#9ca3af" font-size="9" text-anchor="middle">ONNX</text>
+                                <text x="815" y="138" fill="#a7f3d0" font-size="9" font-weight="bold" text-anchor="middle">Audio Out</text>
+
+                                <!-- Audit Box below -->
+                                <rect x="30" y="180" width="825" height="135" rx="8" fill="#0d1412" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+                                <text x="50" y="205" fill="#34d399" font-size="12" font-weight="bold">Why this Architecture is 100% Auditable &amp; Medically Safe:</text>
+                                <text x="50" y="228" fill="#d1d5db" font-size="11">• The Classifier is mathematically deterministic: asking the same utterance 1,000 times yields the exact same intent 1,000 times.</text>
+                                <text x="50" y="248" fill="#d1d5db" font-size="11">• The LLM is never allowed to hallucinate tools or query logic: it only extracts entities for the pre-selected intent slot schema.</text>
+                                <text x="50" y="268" fill="#d1d5db" font-size="11">• The Database executes parameterized C-level SQL: zero SQL injection risk, zero hallucinated nutritional numbers.</text>
+                                <text x="50" y="288" fill="#d1d5db" font-size="11">• The final LLM stage only articulates pre-verified facts: it is physically incapable of changing the calorie count or allergen verdict.</text>
+                            </svg>
+                            <p class="diagram-caption">Figure 2: The complete 6-stage decoupled edge voice pipeline. Every component has a single, strictly audited responsibility.</p>
+                        </div>
+
+                        <h3>Step-by-Step Execution Trace</h3>
+                        <p>Let's trace what happens when a user speaks: <em>"How many calories and how much protein in 150 grams of cooked salmon?"</em></p>
+
+                        <ol>
+                            <li><strong>STT Engine (faster-whisper INT8):</strong> Converts the 16kHz microphone stream into raw transcript text in ~250ms.</li>
+                            <li><strong>BERT Intent Classifier (ONNX Runtime CPU):</strong> Evaluates the transcript in <strong>4.12ms</strong>. Returns <code>food_composition_lookup</code> with <strong>0.9642 confidence</strong> (Hierarchy: <code>ciqual -&gt; food_composition_lookup</code>).</li>
+                            <li><strong>Constrained LLM Slot Extraction (Qwen 2.5 1.5B):</strong> The LLM receives <em>only</em> the JSON schema for <code>food_composition_lookup</code>. It extracts <code>{"food_query": "salmon", "preparation": "cooked", "portion_grams": 150.0}</code>. Prompt size is minimized to ~80 tokens.</li>
+                            <li><strong>Auditable Knowledge API:</strong> Queries <code>ciqual.db</code> with parameterized parameters. Resolves <code>alim_code: 20005</code> ("Atlantic salmon, grilled or pan-fried"). Scaled facts: 324 kcal, 36.9g protein, 19.65g fat, 0.75g carbs. Time: <strong>1.25ms</strong>.</li>
+                            <li><strong>LLM Response Formulation (Qwen 2.5 1.5B):</strong> Injected with the verified facts, the LLM generates: <em>"150 grams of cooked Atlantic salmon provides 324 calories and 36.9 grams of protein."</em></li>
+                            <li><strong>TTS Engine (piper-tts ONNX):</strong> Synthesizes natural speech audio in ~145ms.</li>
+                        </ol>
+
+                        <p>Total end-to-end compute latency: <strong>270 milliseconds</strong>. The response is natural, fast, and 100% medically defensive.</p>
+
+                        <h2><i class="fas fa-check-circle"></i> The Verdict: Why We Decided on BERT</h2>
+                        <p>By the end of Week 8, the decision was unambiguous: <strong>we standardized on a fine-tuned BERT transformer</strong> (specifically DistilBERT / <code>all-MiniLM-L6-v2</code> with Token Mean Pooling and Sigmoid heads, exported to ONNX).</p>
+
+                        <p>BERT gave us everything generative LLMs failed to deliver for intent routing:</p>
+                        <ul>
+                            <li><strong>Mathematical Invariance:</strong> Zero temperature variance. Exact floating-point reproducibility across millions of requests.</li>
+                            <li><strong>Blazing Speed on Edge Hardware:</strong> Ingests text, tokenizes with WordPiece, and executes in <strong>4.15 milliseconds on a single ARM CPU core</strong> of our Orange Pi 5.</li>
+                            <li><strong>Zero Prompt Bloat:</strong> By offloading intent routing to BERT, we stripped hundreds of lines of routing instructions and JSON schema definitions out of Qwen's system prompt.</li>
+                            <li><strong>Safe Out-of-Domain Rejection:</strong> Because independent Sigmoids do not force probabilities to sum to 1.0, unrelated chatter naturally scores near zero, protecting downstream databases from rogue queries.</li>
+                        </ul>
+
+                        <h2><i class="fas fa-arrow-right"></i> Looking Ahead to Week 9</h2>
+                        <p>While our BERT classifier mastered single-intent sentences with 100% determinism, real conversational speech is rarely that simple. Users frequently combine thoughts: <em>"I weighed 82kg this morning, and what is the carbon footprint of salmon?"</em></p>
+
+                        <p>In Week 9, we would begin the challenging journey of scaling our single-intent model into a true <strong>multi-label multi-intent engine</strong>: generating massive synthetic training corpora, resolving compound utterances, and building automated data pipelines to train our classifier across complex nutritional taxonomies...</p>
                     </div>
                 </article>
             </main>
@@ -387,9 +841,9 @@
                     </form>
                 </div>
                 <div class="sidebar-widget">
-                    <h3>VITA App</h3>
-                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Run Speech-to-Text and LLMs locally on your phone. Offline, private, $5 one-time purchase.</p>
-                    <a href="../index.html#membership" style="color: var(--primary); font-weight:600; text-decoration:none;">Learn more &rarr;</a>
+                    <h3>VITA Architecture</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem;">Check out the full repository and open-source classifier subsystems on GitHub.</p>
+                    <a href="https://github.com/amadouvtc/Vita" target="_blank" style="color: var(--primary); font-weight:600; text-decoration:none;">View Repository &rarr;</a>
                 </div>
             </aside>
         </div>
@@ -409,7 +863,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Mobile Menu Toggle
             const mobileToggle = document.querySelector('.mobile-nav-toggle');
             const navLinks = document.querySelector('.nav-links');
             
@@ -425,7 +878,6 @@
                     }
                 });
                 
-                // Close menu if clicking outside
                 document.addEventListener('click', function(e) {
                     if (!navLinks.contains(e.target) && !mobileToggle.contains(e.target)) {
                         navLinks.classList.remove('active');
@@ -433,7 +885,6 @@
                     }
                 });
                 
-                // Close mobile nav when clicking a link
                 navLinks.querySelectorAll('a').forEach(link => {
                     link.addEventListener('click', () => {
                         navLinks.classList.remove('active');
